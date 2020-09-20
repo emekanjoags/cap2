@@ -1,0 +1,50 @@
+{% extends 'layout/base.html'%}
+{% load static%}
+{% block title%} Referral{%endblock%}
+{% block content%}
+    <div class="container">
+        <div class="row">
+            <div class="col-12">
+                <br>
+                <h4 class="side-stick">Referrals</h4>
+                <div class="info-area" style="margin-bottom:20px;">
+                    <h4>Referral Bonus Balance:</h4>
+                    <form class="form-wrap" method="POST" action="">
+                        {%csrf_token%}
+                        <h4 ><b style="color:red">&#8358;{{profile.referral_balance}}</b></h4>
+                        <input type="submit" value="withdraw" class="btn btn-primary" {%if withdraw_btn == 0 %} disabled{%endif%}>
+                    </form>
+                    <div>
+                      <i>referral bonus balance must be up to <i style="color:green">&#8358;10,000</i> before you are eligible to withdraw </i>
+                    </div>
+                </div>
+               
+                <div class="table-responsive">
+                    <table class="table">
+                        <thead class="thead-dark"></thead>
+                          <tr style="background-color:#0a8cff;color:#ffffff">
+                            <th scope="col">S/N</th>
+                            <th scope="col">Username</th>
+                            <th scope="col">Referral Bonus</th>
+                            <th scope="col">Activity</th>
+                            <th scope="col">Date joined</th>
+                          </tr>
+                        </thead>
+                        <tbody>
+                          {% for ref in referral%}
+                          <tr>
+                            <th scope="row">{{forloop.counter}}</th>
+                            <td>{{ref.user.username}}</td>
+                            <td>&#8358;2000</td>
+                            {% if ref.is_settled%}<td style='color:green'>active</td>{%else%}<td style='color:red'> not active</td>{%endif%}
+                            <td>{{ref.created_at}}</td>
+                          </tr>
+                          {%endfor%}
+      
+                        </tbody>
+                      </table>
+                </div>
+            </div>
+        </div>
+    </div>
+{%endblock%}

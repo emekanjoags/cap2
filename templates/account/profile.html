@@ -1,0 +1,160 @@
+{%extends 'layout/base.html'%}
+{%load static%}
+{%block title%}Profile{%endblock%}
+{% block later_style%}
+    <style>
+        .fa-eye-slash{
+            display:none
+        }
+    </style>
+{%endblock%}
+{% block content%}
+    <div class="container">
+        <div class="row">
+            <div class="col-12">
+                <br>
+                <h4 class="side-stick">Profile Setting</h4>
+                {% for message in messages%}
+                <div  {% if message.tags %} class="alert alert-{{ message.tags }}" {% endif %}>
+                    {{message}}
+                </div>
+                {%endfor%}
+                <div>
+                    <p><b>Note:</b> You must fill in your account details and phone number before making any donation</p>
+                </div>
+                <div class="info-area">
+                    <div class="form-group">
+                        <label>Username</label>
+                        <input type="text" class="form-control"
+                               value="{{profile.user.username}}" readonly>
+                    </div>
+                    <div class="form-group">
+                        <label>Email</label>
+                        <input type="text" class="form-control" value="{{profile.user.email}}" readonly>
+                    </div>
+                    <form method="post" action="{% url 'account:profile' %}" enctype="multipart/form-data">
+                        {% csrf_token %}
+                        <div class="form-group">
+                            <label>Phone Number</label>
+                            {% if profile.phone%}
+                            <input type="number" class="form-control"
+                                   value="{{profile.phone}}" readonly>
+                            {%else%}
+                            <input type="number" class="form-control"
+                            placeholder="Enter phone number" name="phone">
+                            <i style="color:red;font-size:12px;">Your phone number cannot be changed once it has been saved</i>
+                            {%endif%}
+                        </div>
+                        <div class="form-group">
+                            <label>Profile Image</label>
+                            <img src="{{profile.profile_pic.url}}"
+                                 class="img-profile img-thumbnail" heigth="100px" width="150px"/>
+                        </div>
+                        <div>
+                            <label>Upload Profile Image</label>
+                            <div class="row" style="margin-top: 5px">
+                                <div class="col-12 col-sm-6 form-group">
+                                    <input type="file" name="profile_image" class="form-control" accept="image/*">
+                                </div>
+
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <button type="submit" class="btn btn-danger">Update Details</button>
+                        </div>
+                    </form>
+                </div>
+
+            </div>
+
+            <div class="col-xl-6 mt-30">
+                <h4 class="side-stick">Account Details</h4>
+                <form method="POST" action="" class="rd-form">
+                    {%csrf_token%}
+                    <div class="form-group">
+                        <label>Account Name</label>
+                        {%if profile.account_name%}
+                        <br>
+                        <label style="color:green">{{profile.account_name}}</label>
+                        {%endif%}
+                        <input type="text" class="form-control"
+                            name="account_name" placeholder="Update account name">
+                    </div>
+                    <div class="form-group">
+                        <label>Account Number</label>
+                        {%if profile.account_number%}
+                        <br>
+                        <label  style="color:green">{{profile.account_number}}</label>
+                        {%endif%}
+                        <input type="text" class="form-control" name="account_num" placeholder="Update account number">
+                    </div>
+                    <div class="form-group">
+                        <label>Bank</label>
+                        {%if profile.bank%}
+                        <br>
+                        <label style="color:green">{{profile.bank}}</label>
+                        {%endif%}
+                        <input type="text" class="form-control" name="bank" placeholder="Update bank name">
+                    </div>
+                    <h5>Mode of Receiving payment</h5>
+                    <div >
+                        <h6>Naira</h6>
+                        <input type="radio"  name="mode" value="naira" {% if profile.mode_of_receiving < 2 %}checked{%endif%}><br>
+                        <i style="color:red;font-size:12px;">If selected ensure you fill in your bank account details</i>
+                    </div><br>
+                    <div>
+                        <h6>Bitcoin</h6>
+                        
+                        <input type="radio" name="mode" value="bitcoin"  {% if profile.mode_of_receiving > 1 %}checked{%endif%}><br>
+                        <i style="color:red;font-size:12px;">If selected ensure you fill in a bitcoin wallet address below</i>
+                    </div>
+                    <div class="form-group">
+                        <p>Bitcoin Wallet Address</p>
+                        {% if profile.bitcoin_wallet%}
+                        <label style="color:green">{{profile.bitcoin_wallet}}</label>
+                        {%endif%}
+                        <input type="text" class="form-control" name="bitcoin_wallet" placeholder="Update bitcoin wallet">
+                    </div>
+                    
+                    <div class="form-group">
+                        <button type="submit" class="btn btn-danger">Update Account</button>
+                    </div>
+                </form>
+            </div>
+
+                <div class="col-xl-6 mt-30 info-area">
+                <article class="heading-component">
+                    <div class="heading-component-inner">
+                        <h5 class="heading-component-title side-stick">Update password
+                        </h5>
+                    </div>
+                </article>
+                <div>
+                    <form method="post" action="">
+                        {% csrf_token %}
+                        <div class="form-group">
+                            <label>New Password</label>
+                            <input type="password" name="password" class="form-control"
+                                   placeholder="Enter New Password" id="password">
+                            <div class="mt-1" style="text-align: center"><input type="checkbox" onclick="showPassword('password')">
+                            <b>Show Password</b></div>
+                        </div>
+                        <div class="form-group">
+                            <label>Retype New Password</label>
+                            <input type="password" name="retype_password" class="form-control"
+                                   placeholder="Retype New Password" id="retype_password">
+                            <div class="mt-1" style="text-align: center"><i id="testt" class="fa fa-eye see" onclick="showPassword('retype_password')"></i><i class="fa fa-eye-slash not-see" onclick="hidePassword('retype_password')"></i>
+                            <b>Show Password</b></div>
+                        </div>
+                        <div class="form-group">
+                            <button type="submit" class="btn btn-danger">Update Password</button>
+                        </div>
+                    </form>
+                </div>
+                </div>
+        
+               
+            
+        </div>
+    </div>
+{%endblock%}

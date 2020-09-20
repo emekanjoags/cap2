@@ -1,0 +1,54 @@
+{% extends 'layout/base.html'%}
+{% load static%}
+{% block title%}Testimonies{%endblock%}
+{% block content%}
+    <div class="container">
+        <div class="row">
+            <div class='col-12'><br>
+                <h4 class="side-stick">Testimonies</h4>
+                <p class='alert alert-success'>These are testimonies from some members of our community</p>    
+            </div>
+            {% for testimony in post_list%}
+            <div class="col-lg-4 info-area" style="margin-left:20px;margin-right:20px;">
+                <div class="single_carousel">
+                    <div class="row">
+                        <div class="col-lg-11">
+                            <div class="single_testmonial d-flex align-items-center">
+                                
+                                <!-- <div class="thumb">
+                                    <img src="{% static 'img/home/test2.jpg' %}" alt="" height='50px' width='50px' style="border-radius:50%;">
+                                    <div class="quote_icon">
+                                        <i class=" Flaticon flaticon-quote"></i>
+                                    </div>
+                                </div> -->
+                                <div class="info">
+                                    <p>{{testimony.content}}</p>
+                                    <span>- {{testimony.user.username}}</span>&nbsp;&nbsp;&nbsp;<img src="{{testimony.profile.profile_pic.url}}" alt="" height='50px' width='50px' style="border-radius:50%;">
+                                    &nbsp;&nbsp;&nbsp;<span style="font-size:12px;color:grey;text-align:pull-right"><i class="fa fa-clock-o"></i> {{testimony.time|date:"D, d M, Y"}}</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>                
+            </div>
+            <div class="col-lg-4">
+                <br><br>
+            </div>
+            {%endfor%}
+            {% if post_list.has_other_pages%}
+
+            <nav aria-label="Page navigation container" style="margin-left:20px;">
+            <ul class="pagination justify-content-center">
+              {% if post_list.has_previous %}
+              <li><a href="?page={{ post_list.previous_page_number }}" class="page-link">&laquo; PREV </a></li>
+              {% endif %}
+              {% if post_list.has_next %}
+              <li><a href="?page={{ post_list.next_page_number }}" class="page-link"> NEXT &raquo;</a></li>
+             {% endif %}
+            </ul>
+            </nav>
+          </div>
+          {% endif %}
+        </div>
+    </div>
+{%endblock%}

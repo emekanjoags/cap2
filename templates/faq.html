@@ -1,0 +1,74 @@
+{% extends 'layout/base.html'%}
+{%load static%}
+{% block title%} FAQS{%endblock%}
+{%block content%}
+    <div class="container">
+        <div class="row">
+            <div class="col-12">
+                <br>
+                <div>
+                    <h4 class="side-stick">Frequently Asked Questions</h4>
+                </div>
+               <div class="info-area">
+                <div class="accordion" id="accordionExample">
+                    <div class="card z-depth-0 bordered">
+                      <div class="card-header" id="headingOne">
+                        <h5 class="mb-0">
+                          <button class="btn btn-link" type="button" data-toggle="collapse" data-target="#collapseOne"
+                            aria-expanded="true" aria-controls="collapseOne">
+                            How can i make a donation?
+                          </button>
+                        </h5>
+                      </div>
+                      <div id="collapseOne" class="collapse show" aria-labelledby="headingOne"
+                        data-parent="#accordionExample">
+                        <div class="card-body">
+                            <ol style="list-style-type:decimal" class="info-area">
+                                <li style="margin-bottom:10px"><b>1. </b>Leverage capital do not automatically match you with any user, we give you the freedom to choose a user to pay to from the receiving list that is located at the
+                                <a href='#'>Make Donation</a> page</li>
+                                <li><b>2. </b>At the donation page type in the amount you are willing to donate either in the Naira box or Bitcoin box(if you wish to donate in bitcoin, you will also receive payment in bitcoin)</li>
+                                <li><b>3.</b>Select any user from the receivers list and click on reserve. </li>
+                                <li><b>4. </b>After reserving a name, you have to make payment within 6hours to avoid getting blocked from the system</li>
+                                </ol>
+                        </div>
+                      </div>
+                    </div>
+                    <div class="card z-depth-0 bordered">
+                      <div class="card-header" id="headingTwo">
+                        <h5 class="mb-0">
+                          <button class="btn btn-link collapsed" type="button" data-toggle="collapse"
+                            data-target="#collapseTwo" aria-expanded="false" aria-controls="collapseTwo">
+                            How can my name enter the receiving list?
+                          </button>
+                        </h5>
+                      </div>
+                      <div id="collapseTwo" class="collapse" aria-labelledby="headingTwo" data-parent="#accordionExample">
+                        <div class="card-body info-area">
+                            After making payment, wait for 7days(3days if its your first time) for your money to mature
+                            and on the 7th day your name will enter into the receivers list for people to pay you.
+                        </div>
+                      </div>
+                    </div>
+                    <div class="card z-depth-0 bordered">
+                      <div class="card-header" id="headingThree">
+                        <h5 class="mb-0">
+                          <button class="btn btn-link collapsed" type="button" data-toggle="collapse"
+                            data-target="#collapseThree" aria-expanded="false" aria-controls="collapseThree">
+                            How can i get referral bonus?
+                          </button>
+                        </h5>
+                      </div>
+                      <div id="collapseThree" class="collapse" aria-labelledby="headingThree" data-parent="#accordionExample">
+                        <div class="card-body info-area">
+                            If you refer a friend with your referral code(your referral code is your username), you wil get a bonus
+                            of &#8358;1,000 as soon as your friend makes the first donation. The minimum withdrawal for this bonus is &#8358;5,000, which means you must
+                            accumulate the referral bonus till it gets to &#8358;5,000 afterwhich you can now withdraw.
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+               </div>
+            </div>
+        </div>
+    </div>
+{%endblock%}

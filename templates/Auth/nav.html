@@ -1,0 +1,102 @@
+{%load static%}
+<!doctype html>
+<html class="no-js" lang="zxx">
+
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="x-ua-compatible" content="ie=edge">
+    <title>Leverage Capital | {%block title%}{%endblock%}</title>
+    <meta name="description" content="">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+
+    <!-- <link rel="manifest" href="site.webmanifest"> -->
+    <link rel="shortcut icon" type="image/x-icon" href="{% static 'img/levefavicon.ico' %}">
+    <!-- Place favicon.ico in the root directory -->
+
+    <!-- CSS here -->
+    <link rel="stylesheet" href="{% static 'css/bootstrap.min.css' %}">
+    <link rel="stylesheet" href="{% static 'css/owl.carousel.min.css' %}">
+    <!-- <link rel="stylesheet" href="{% static 'css/magnific-popup.css' %}"> -->
+    <link rel="stylesheet" href="{% static 'css/font-awesome.min.css' %}">
+    <link rel="stylesheet" href="{% static 'css/themify-icons.css' %}">
+    <!-- <link rel="stylesheet" href="{% static 'css/nice-select.css' %}"> -->
+    <!-- <link rel="stylesheet" href="{% static 'css/flaticon.css' %}"> -->
+    <!-- <link rel="stylesheet" href="{% static 'css/gijgo.css' %}"> -->
+    <link rel="stylesheet" href="{% static 'css/animate.min.css' %}">
+    <!-- <link rel="stylesheet" href="{% static 'css/slick.css' %}"> -->
+    <link rel="stylesheet" href="{% static 'css/slicknav.css' %}">
+
+    <link rel="stylesheet" href="{%static 'css/style.css' %}">
+    <link rel="stylesheet" href="{%static 'css/myapp.css' %}">
+    {% block later_style%}{%endblock%}
+    <!-- <link rel="stylesheet" href="css/responsive.css"> -->
+</head>
+<body>
+    <header>
+        <div class="header-area " style="background: #054680;">
+            <div id="sticky-header" class="main-header-area">
+                <div class="container-fluid ">
+                    <div class="header_bottom_border">
+                        <div class="row align-items-center">
+                            <div class="col-xl-3 col-lg-2">
+                                <div class="logo">
+                                    <a href="/">
+                                        <img src="{% static 'img/logo2.png' %}" alt="">
+                                    </a>
+                                </div>
+                            </div>
+                            <div class="col-xl-6 col-lg-7">
+                                <div class="main-menu  d-none d-lg-block">
+                                    <nav>
+                                        <ul id="navigation">
+                                            <li id="laptop"><a href="/">home</a></li>
+                                            <li><a href="{% url 'dashboard:donate' %}">Make Donation</a></li>
+                                            <li><a href="{% url 'dashboard:dashboard' %}">Dashboard</a></li>
+                                            <li><a href="#">Account <i class="ti-angle-down"></i></a>
+                                                <ul class="submenu">
+                                                    <li><a href="{% url 'dashboard:transactions' %}">Transactions</a></li>
+                                                    <li><a href="{% url 'account:profile' %}">settings</a></li>
+                                                    <li><a href="support">Support</a></li>
+                                                </ul>
+                                            </li>
+                                            <!-- <li><a href="#">blog <i class="ti-angle-down"></i></a>
+                                                <ul class="submenu">
+                                                    <li><a href="blog.html">blog</a></li>
+                                                    <li><a href="single-blog.html">single-blog</a></li>
+                                                </ul>
+                                            </li> -->
+                                            <li><a href="{% url 'dashboard:referral' %}">Referral</a></li>
+                                            <li><a href="{% url 'faq' %}">FAQ</a></li>
+                                            <li><a href="contact.html">Logout</a></li>
+                                        </ul>
+                                    </nav>
+                                </div>
+                            </div>
+                            <div class="col-xl-3 col-lg-3 d-none d-lg-block">
+                                <div class="Appointment">
+                                    <!-- <div class="phone_num d-none d-xl-block">
+                                        <a href="#"> <i class="fa fa-phone"></i> +10 673 567 367</a>
+                                    </div> -->
+                                    <div class="d-none d-lg-block">
+                                        <a class="boxed-btn4" href="apply.html">Make Donation</a>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-12">
+                                <div class="mobile_menu d-block d-lg-none"></div>
+                            </div>
+                        </div>
+                    </div>
+
+                </div>
+            </div>
+        </div>
+    </header>
+    {% block content%}
+    {%endblock%}
+    {%include 'layout/footer.html'%}
+    {% block outer %} {% endblock %}
+    {%include 'layout/scripts.html'%}
+    {%block latter_js%}{%endblock%}
+</body>
+</html>

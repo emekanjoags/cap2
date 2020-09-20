@@ -1,0 +1,45 @@
+{% extends 'layout/base.html' %}
+{% load static %}
+{% block page_title %}Lost Password{% endblock %}
+{% block content %}
+
+   <div class="container">
+       <div class="row"> 
+           <div class="col-12"><br>
+               <h4 class="side-stick">Lost Password</h4>
+           </div>
+           <div class="col-12" style="text-align:center">
+            <form class="rd-form" method="post" action="">
+                {% csrf_token %}
+                {% if messages %}
+                    {% for message in messages %}
+                        <div {% if message.tags %} class="alert alert-{{ message.tags }}" {% endif %}>
+                            <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+                                <i class="fa fa-times"></i>
+                            </button>
+                            <span>
+                {{ message }}
+            </span>
+                        </div>
+                    {% endfor %}
+                {% endif %}
+                {% if form.non_field_errors %}
+                    <div class="alert alert-warning">
+                        {{ form.non_field_errors|striptags }}
+                    </div>
+                {% endif %}
+
+
+                <div class="form-wrap">
+                    <input class="form-input" placeholder="Enter Registered Email Address" type="email" name="email">
+                </div><br>
+                <div>
+                <button class="btn btn-danger" type="submit">
+                    <span>Request Password Reset</span>
+                </button>
+                </div>
+            </form>
+           </div>
+       </div>
+   </div>
+{% endblock content %}

@@ -1,0 +1,134 @@
+	/*
+  	Flaticon icon font: Flaticon
+  	Creation date: 25/12/2019 06:08
+  	*/
+
+      @font-face {
+        font-family: "Flaticon";
+        src: url("../fonts/Flaticon.eot");
+        src: url("../fonts/Flaticon.eot?#iefix") format("embedded-opentype"),
+             url("../fonts/Flaticon.woff2") format("woff2"),
+             url("../fonts/Flaticon.woff") format("woff"),
+             url("../fonts/Flaticon.ttf") format("truetype"),
+             url("../fonts/Flaticon.svg#Flaticon") format("svg");
+        font-weight: normal;
+        font-style: normal;
+      }
+      
+      @media screen and (-webkit-min-device-pixel-ratio:0) {
+        @font-face {
+          font-family: "Flaticon";
+          src: url("../fonts/Flaticon.svg#Flaticon") format("svg");
+        }
+      }
+      
+      [class^="flaticon-"]:before, [class*=" flaticon-"]:before,
+      [class^="flaticon-"]:after, [class*=" flaticon-"]:after {   
+        font-family: Flaticon;
+      font-style: normal;
+      }
+      
+      .flaticon-quote:before { content: "\f100"; }
+
+
+
+@media only screen and (max-width: 600px){
+    #laptop{
+        display:none;
+    }
+}
+
+.list{
+    background: -webkit-linear-gradient(top, #0a8cff 0%, #054680 100%);
+    -webkit-border-radius: 5px;
+    -moz-border-radius: 5px;
+    border-radius: 5px;
+    margin-bottom: 30px;
+    margin-top:30px;
+    padding:20px 30px;
+    color:#ffffff
+}
+.list li{
+    margin-top:10px;
+}
+.side-stick{
+    border-left: 5px solid #0a8cff;
+    padding-left: 6px;
+    margin-bottom:30px;
+}
+
+.info-area{
+    background-color: #f5fbff;
+    /* background-color: #ddf0ff; */
+    padding:10px 14px;
+}
+.error-area{
+    background-color: #ff0000 !important;;
+    /* background-color: #ddf0ff; */
+    padding:10px 14px;
+    color:white !important;;
+}
+
+.circle-area{
+    background-color: #ddf0ff;
+}
+.colored-link{
+    color:#ff0000
+}
+.toggle{
+    margin-bottom:20px;
+}
+
+/* preloader */
+#loader {
+    position: absolute;
+    left: 50%;
+    top: 50%;
+    z-index: 1;
+    width: 100px;
+    height: 100px;
+    margin: -75px 0 0 -75px;
+    border: 16px solid #f3f3f3;
+    border-radius: 50%;
+    border-top: 16px solid #3498db;
+    border-bottom: 16px solid #3498db;
+    width: 70px;
+    height: 70px;
+    -webkit-animation: spin 2s linear infinite;
+    animation: spin 2s linear infinite;
+  }
+  
+  @-webkit-keyframes spin {
+    0% { -webkit-transform: rotate(0deg); }
+    100% { -webkit-transform: rotate(360deg); }
+  }
+  
+  @keyframes spin {
+    0% { transform: rotate(0deg); }
+    100% { transform: rotate(360deg); }
+  }
+  
+  /* Add animation to "page content" */
+  .animate-bottom {
+    position: relative;
+    -webkit-animation-name: animatebottom;
+    -webkit-animation-duration: 1s;
+    animation-name: animatebottom;
+    animation-duration: 1s
+  }
+  
+  @-webkit-keyframes animatebottom {
+    from { bottom:-100px; opacity:0 } 
+    to { bottom:0px; opacity:1 }
+  }
+  
+  @keyframes animatebottom { 
+    from{ bottom:-100px; opacity:0 } 
+    to{ bottom:0; opacity:1 }
+  }
+  
+  #app {
+    display: none;
+  }
+  /* end of preloader */
+
