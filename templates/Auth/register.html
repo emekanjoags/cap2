@@ -101,12 +101,18 @@
                             <span class="input-group-text"><i class="fa fa-key"></i></span>
                         </div>
                         <input type="password" name="password1">
+                        <div class="input-group-append">
+                            <span class="input-group-text"><i class="fa fa-eye" onclick="seep(3, 0)"></i><i class="fa fa-eye-slash" style='display:none' onclick="seep(3,0)"></i></span>
+                        </div>
                     </div>
                     <div class="input-group mb-2">
                         <div class="input-group-append">
                             <span class="input-group-text"><i class="fa fa-key"></i></span>
                         </div>
                         <input type="password" name="password2">
+                        <div class="input-group-append">
+                            <span class="input-group-text"><i class="fa fa-eye" onclick="seep(4,1)"></i><i class="fa fa-eye-slash" style='display:none' onclick="seep(4,1)"></i></span>
+                        </div>
                     </div>
                     <div class="input-group mb-2">
                         <div class="input-group-append">
@@ -147,6 +153,23 @@ form_fields[5].placeholder='Referral code...(optional)';
 
 for (var field in form_fields){	
 form_fields[field].className += ' form-control'
+}
+var eyes = document.getElementsByClassName('fa-eye')
+var eyeslash = document.getElementsByClassName('fa-eye-slash')
+var password_state = false
+function seep (index, num){
+    password_state = !password_state
+    if(password_state == true){
+        eyes[num].style.display = 'none'
+        eyeslash[num].style.display = 'inline'
+        form_fields[index].type = 'text'
+    }
+    else{
+        eyes[num].style.display = 'inline'
+        eyeslash[num].style.display = 'none'
+        form_fields[index].type = 'password'
+    }
+    
 }
 </script>
 {%endblock%}

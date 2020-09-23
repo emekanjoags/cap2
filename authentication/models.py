@@ -26,7 +26,6 @@ class Profile(models.Model):
 def profileCreate(sender, instance, created, **kwargs):
     if created:
         profile = Profile.objects.create(user=instance, referral_code=instance.username.lower())
-        print('profile created')
 post_save.connect(profileCreate, sender=User)
 
 # def profileUpdate(sender, instance, created, **kwargs):

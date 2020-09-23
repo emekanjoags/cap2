@@ -22,13 +22,13 @@ def referral(request):
     profile = Profile.objects.get(user=request.user)
     referral = Referral.objects.filter(referrer=request.user)
     withdraw_btn = 0
-    if profile.referred_active % 5 == 0:
+    if profile.referred_active % 5 == 0 and profile.referral_balance != 0:
         withdraw_btn = 1
 
     if profile.referred_active == 0:
         withdraw_btn = 0
     if request.method == "POST":
-        if profile.referral_active % 5 == 0:
+        if profile.referred_active % 5 == 0 and profile.referral_balance != 0:
             ref_bal = profile.referral_balance
             WithrawRefBal.objects.create(user=request.user, balance=ref_bal)
             profile.referral_balance = 0

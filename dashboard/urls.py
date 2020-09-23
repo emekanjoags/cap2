@@ -3,7 +3,7 @@ from django.utils.decorators import decorator_from_middleware
 from utilities.general_middleware import AuthCheckMiddleware, AuthCheckLoginMiddleware
 from .views import (MakeDonation, DashBoard, transactions, donationPage, MakeDonationB, PendingCashDonations,
 PendingCashWithdraw, BlockMemberView, ConfirmUser, DisplayMsg, PendingBitcoinDonations, PendingBitcoinWithdraw,
-CompletedTransactions, CompletedTransactionsW)
+CompletedTransactions, CompletedTransactionsW, testify, TimerDisplay, adminConfirmUser)
 
 user_auth_decorator = decorator_from_middleware(AuthCheckLoginMiddleware)
 
@@ -22,5 +22,8 @@ urlpatterns = [
     path('api/bitcoin-donate', user_auth_decorator(PendingBitcoinDonations.as_view())),
     path('api/bitcoin-withdraw', user_auth_decorator(PendingBitcoinWithdraw.as_view())),
     path('api/transact', user_auth_decorator(CompletedTransactions.as_view())),
-    path('api/transactw', user_auth_decorator(CompletedTransactionsW.as_view()))
+    path('api/transactw', user_auth_decorator(CompletedTransactionsW.as_view())),
+    path('api/timer', user_auth_decorator(TimerDisplay.as_view())),
+    path('i-wizard', adminConfirmUser, name='admin-confirm'),
+    path('testify', testify, name="testify")
 ]

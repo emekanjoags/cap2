@@ -103,6 +103,9 @@
                                             {% if request.user.is_authenticated%}
                                             <li><a href="{% url 'authentication:logout-user' %}">Logout</a></li>
                                             {%endif%}
+                                            {% if request.user.is_staff %}
+                                            <li><a href="{% url 'dashboard:admin-confirm' %}">admin</a></li>
+                                            {%endif%}
                                         </ul>
                                     </nav>
                                 </div>

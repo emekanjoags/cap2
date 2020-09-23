@@ -3,8 +3,8 @@
     <div v-if="is_loading" id="loader"></div>
         <div v-else>
             <div class='col-12' v-if="receiver_msg" v-for="(msg, index) in receiver_msg">
-            <div style="background:gold;padding:10px 14px;margin-bottom:20px;border-radius:5px">
-                <p>You have completed your payment and your Return on Investment is <span v-if="msg_type[index] == 1">&#8358;</span><span v-else>BTC</span>{{msg.r_amount}}. Your name will enter the receiver's list between {{msg.start}} and {{msg.end}}</p>
+            <div style="background:green;color:#ffffff;padding:10px 14px;margin-bottom:20px;box-shadow: 5px 5px 5px gray;">
+                <p style="color:white">You have completed your payment and your Return on Investment is <span v-if="msg_type[index] == 1">&#8358;</span><span v-else>BTC </span>{{msg.r_amount}}. Your name will enter the receiver's list between {{msg.start}} and {{msg.end}}</p>
             </div>
            </div>
            <div class="col-12">
@@ -39,10 +39,10 @@
            <!-- CASH DONATIONS -->
         <div v-if="donation_view">
            <div class="col-lg-12">
-               <p v-if="pending_payment || pending_payment_b" class="info-area">Please make payment before the countdown runs out to avoid getting blocked</p>
-               <p v-else class="info-area">You have no pending payments</p>
+               <p v-if="pending_payment || pending_payment_b" class="info-area">Please make payment before the countdown runs out to avoid getting blocked, as soon as you pay and get confirmed you will be in line to enter the receiver's list. </p>
+               <p v-else class="info-area">You have no pending payments, to see your completed transactions go to Transactions under the Account section</p>
                <div class="col-md-4 list" v-if="money_pending_payments" v-for="(pending, index) in money_pending_payments">
-                    <ul><li v-if='expired' style="color:#000000;">{{expired}}</li><li v-else style="width:5px:height:5px;"><flip-countdown v-bind:deadline="timer_list[index].converted_time"></flip-countdown></li>
+                    <ul><span v-show="!pending.pop"><li v-if='expired' style="color:#000000;">{{expired}}</li><li v-else style="width:5px:height:5px;"><flip-countdown v-bind:deadline="timer_list[index].converted_time"></flip-countdown></li></span>
                         <li>Account Name: {{pending.account_name}}</li>
                         <li>Bank Name: {{pending.bank}}</li>
                         <li>Account Number: {{pending.account_number}}</li>
@@ -63,7 +63,7 @@
                         <li v-if='expired' style="color:#000000;">{{expired}}</li><li v-else style="width:5px:height:5px;"><flip-countdown v-bind:deadline="timer_listb[index].converted_time"></flip-countdown></li>
                         <li>Username: {{pending.receivers_name}}</li>
                         <li>Wallet ID: {{pending.bitcoin_wallet}}</li>
-                        <li>Amount:{{pending.receiving_amount}}btc</li>
+                        <li>Amount: {{pending.receiving_amount}}BTC</li>
                         <li>Phone: {{pending.phone}}</li>
                     </ul><br>
                     <div class="apply_btn" v-show="!expired">
@@ -80,16 +80,21 @@
            <!-- WITHDRAWALS -->
            <div class="col-lg-12">
                 <p v-if="pending_withdrawal || pending_withdrawal_b" class="info-area">This member has reserved you and will make payment to you shortly</p>
-                <p v-else class="info-area">You have no pending withdrawal</p>
+                <p v-else class="info-area">You have no pending withdrawal, to see your completed transactions go to Transactions under the Account section</p>
                 <div class="col-md-4 list" v-if="money_pending_receiving" v-for="(pending, index) in money_pending_receiving">
-                     <ul><span v-if="pending.pop" style="text-align:center;color:green;">Member has made payment</span>
+                     <ul><span v-if="pending.pop" style="text-align:center;color:#000000;">Member has made payment</span>
                      <span v-else><li v-if='block[index].block_btn' style="color:#000000;">This member's time has expired, please block this member so that you can go back into the receiving list</li><li v-else style="width:5px:height:5px;"><flip-countdown v-bind:deadline="r_timer_list[index].converted_time"></flip-countdown></li></span>
                          <li>Username: {{pending.givers_name}}</li>
                          <li>Amount: &#8358;{{pending.receiving_amount}}</li>
                          <li>Phone: {{pending.givers_phone}}</li>
-                         <li v-if="pending.pop"><img :src="pending.pop" height='100px' width='100px' /></li>
+                         <button class="btn btn-warning btn-block" type="button" v-if="pending.pop" @click='viewPop(index)'>View Proof of payment</button>
+                        <div class="proofm" style="display:none;">
+                            <div>
+                                <img :src="pending.pop" height='300px' width='100%' />
+                            </div>
+                        </div>
                      </ul><br>
-                     <div v-if="block[index].block_btn" class="apply_btn">
+                     <div v-if="block[index].block_btn && !pending.pop" class="apply_btn">
                          <button class="boxed-btn3 btn-block" type="submit" @click="blockUser(index)">Block member</button>
                      </div>
                      <div v-if="pending.pop" class="apply_btn">
@@ -100,10 +105,10 @@
 
             <!-- BITCOIN WITHDRAWAL -->
                 <div class="col-md-4 list" v-if="bitcoin_pending_receiving" v-for="(pending, index) in bitcoin_pending_receiving">
-                    <ul><span v-if="pending.pop" style="text-align:center;color:green;">Member has made payment</span>
+                    <ul><span v-if="pending.pop" style="text-align:center;color:#000000;">Member has made payment</span>
                         <span v-else><li v-if='blockb[index].block_btn' style="color:#000000;">This member's time has expired, please block this member so that you can go back into the receiving list</li><li v-else style="width:5px:height:5px;"><flip-countdown v-bind:deadline="r_timer_listb[index].converted_time"></flip-countdown></li></span>
                         <li>Username: {{pending.givers_name}}</li>
-                        <li>Amount: {{pending.receiving_amount}}btc</li>
+                        <li>Amount: {{pending.receiving_amount}}BTC</li>
                         <li>Phone: {{pending.givers_phone}}</li>
                         <button class="btn btn-warning btn-block" type="button" v-if="pending.pop" @click='viewPopb(index)'>View Proof of payment</button>
                         <div class="proof" style="display:none;">
@@ -162,7 +167,9 @@ export default {
             popb:[],
             selected_filesb:[],
             close:false,
-            msg_type:[]
+            msg_type:[],
+            closem:false
+            
         }
     },
     methods:{
@@ -336,6 +343,20 @@ export default {
         .catch(err=>{
             console.log('error:' + err)
         })
+    },
+    viewPop(index){
+        this.closem = !this.closem
+        console.log('button was trigggered')
+        var el = document.getElementsByClassName('proofm')[index]
+        if(this.closem == true){
+            el.style.display = 'block'
+        }
+        else if (this.closem == false){
+            el.style.display = 'none'
+        }
+        
+        console.log('finsihed')
+    
     },
     viewPopb(index){
         this.close = !this.close

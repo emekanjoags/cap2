@@ -7,6 +7,17 @@
            <div class="col-12">
             <h4 class="side-stick">Pending Transactions</h4>
            </div>
+           {% for message in messages%}
+					
+            <div  {% if message.tags %} class="alert alert-{{ message.tags }}" {% endif %}>
+                {{message}}
+            </div>
+            {%endfor%}
+           {% if not_testified > 0 %}
+           <div class="col-12" style="text-align:right;">
+               <a href="{% url 'dashboard:testify'%}" class="btn btn-success">Write Testimony <i class="fa fa-bullhorn"></i></a>
+           </div>
+           {%endif%}
            
           <dashboard></dashboard>
            

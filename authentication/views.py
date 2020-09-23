@@ -62,7 +62,7 @@ def loginPage(request):
                 messages.success(request, 'Welcome ' + username)
                 return redirect('/')
         else:
-            messages.warning(request, 'username or password incorrect')
+            messages.warning(request, 'username or password incorrect, username and password are case sensitive')
             return HttpResponseRedirect(reverse('authentication:login-page'))
     return render(request, 'auth/login.html')
 

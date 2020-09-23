@@ -60,7 +60,7 @@
                             </div>
                         </div>
                         <div class="form-group">
-                            <button type="submit" class="btn btn-danger">Update Details</button>
+                            <button type="submit" class="btn btn-success">Update Personal Details</button>
                         </div>
                     </form>
                 </div>
@@ -134,17 +134,20 @@
                         {% csrf_token %}
                         <div class="form-group">
                             <label>New Password</label>
-                            <input type="password" name="password" class="form-control"
+                            <input  type="password" name="password" class="form-control pwd"
                                    placeholder="Enter New Password" id="password">
-                            <div class="mt-1" style="text-align: center"><input type="checkbox" onclick="showPassword('password')">
-                            <b>Show Password</b></div>
+                            <div class="mt-1" style="text-align: center">
+                                <i class="fa fa-eye" onclick="seepwd(0, 0)"><b>Show Password</b></i>
+                                <i class="fa fa-eye-slash" style='display:none' onclick="seepwd(0,0)"><b>Hide Password</b></i></div>
                         </div>
                         <div class="form-group">
                             <label>Retype New Password</label>
-                            <input type="password" name="retype_password" class="form-control"
+                            <input type="password" name="retype_password" class="form-control pwd"
                                    placeholder="Retype New Password" id="retype_password">
-                            <div class="mt-1" style="text-align: center"><i id="testt" class="fa fa-eye see" onclick="showPassword('retype_password')"></i><i class="fa fa-eye-slash not-see" onclick="hidePassword('retype_password')"></i>
-                            <b>Show Password</b></div>
+                            <div class="mt-1" style="text-align: center">
+                                <i class="fa fa-eye" onclick="seepwd(1, 1)"><b>Show Password</b></i>
+                                <i class="fa fa-eye-slash" style='display:none' onclick="seepwd(1,1)"><b>Hide Password</b></i>
+                            </div>
                         </div>
                         <div class="form-group">
                             <button type="submit" class="btn btn-danger">Update Password</button>
@@ -157,4 +160,25 @@
             
         </div>
     </div>
+{%endblock%}
+{%block latter_js%}
+<script>
+    var form_fields = document.getElementsByClassName('pwd')
+    var pw_eyes = document.getElementsByClassName('fa-eye')
+    var pw_slash = document.getElementsByClassName('fa-eye-slash')
+    var password_stat = false
+    function seepwd(index, num){
+        password_stat = !password_stat
+        if(password_stat){
+            pw_eyes[num].style.display = 'none'
+            pw_slash[num].style.display = 'inline'
+            form_fields[index].type = 'text'
+        }
+        else{
+            pw_eyes[num].style.display = 'inline'
+            pw_slash[num].style.display = 'none'
+            form_fields[index].type = 'password'
+        }
+    }
+</script>
 {%endblock%}

@@ -1,0 +1,35 @@
+{%extends 'layout/base.html'%}
+{%load static%}
+{%block title%}Testify{%endblock%}
+{%block content%}
+    <div class="container"  style="margin-top:30px;">
+       <div class="row">
+           <div class="col-12">
+            <h4 class="side-stick">Create your testimony</h4>
+           </div>
+           <div class="col-lg-6">
+            {% for message in messages%}
+					
+            <div  {% if message.tags %} class="alert alert-{{ message.tags }}" {% endif %}>
+                {{message}}
+            </div>
+            {%endfor%}
+               <p class='info-area'>Writing a testimony after successfully getting your return on investment(ROI) is important to encourage new members and keep the system sustainable</p>
+              <form method="POST" action="">
+                  {%csrf_token%}
+                  <div class='form-group'>
+                      <textarea class="form-control" name="text" placeholder="Write your testimony here..."></textarea>
+                  </div>
+                  <div>
+                      <input type="submit" value="Submit" class="btn btn-success">
+                  </div>
+              </form>  
+            </div>
+          
+           
+       </div> 
+           
+          
+    </div> 
+          
+{%endblock%}

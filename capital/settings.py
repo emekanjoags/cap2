@@ -40,7 +40,7 @@ INSTALLED_APPS = [
 
     #all my apps
     'dashboard',
-    'account',
+    'account.apps.AccountConfig',
     'authentication',
     'testimony',
     'rest_framework'

@@ -11,16 +11,16 @@
                 <div v-else>
                     <div class="col-md-4 list" v-for="(transact, index) in donations">
                          <ul>
-                             <li> Username: {{transact.receivers_name}}<li>
+                             <li> Receiver: {{transact.receivers_name}}<li>
                              <div v-if="transact.transaction_type == 1">
                                 <li>Account Name: {{transact.account_name}}</li>
                                 <li>Bank Name: {{transact.bank}}</li>
                                 <li>Account Number: {{transact.account_number}}</li>
-                                <li>Amount: &#8358;{{receiving_amount}}</li>
+                                <li>Amount: &#8358;{{transact.receiving_amount}}</li>
                             </div>
                             <div v-else>
                                 <li>Wallet ID: {{transact.bitcoin_wallet}}</li>
-                                <li>Amount: BTC {{transact.receiving_amount}}</li>
+                                <li>Amount: {{transact.receiving_amount}}BTC</li>
                             </div>
                              <li>Date: {{transact.date_reserved}}</li>
                              <li>Phone: {{transact.phone}}</li>
@@ -36,9 +36,9 @@
                 <div v-else>
                     <div class="col-md-4 list" v-for="(transact, index) in withdrawals">
                      <ul>
-                         <li>Username: {{transact.givers_name}}</li>
+                         <li>Giver: {{transact.givers_name}}</li>
                          <li v-if="transact.transaction_type == 1">Amount: &#8358;{{transact.receiving_amount}}</li>
-                         <li v-else>Amount: BTC {{transact.receiving_amount}}</li>
+                         <li v-else>Amount: {{transact.receiving_amount}}BTC</li>
                          <li>Date: {{transact.date_reserved}}</li>
                          <li>Phone: {{transact.givers_phone}}</li>
                          <li>Status: Received</li>

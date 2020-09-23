@@ -2070,6 +2070,11 @@ __webpack_require__.r(__webpack_exports__);
 //
 //
 //
+//
+//
+//
+//
+//
 
 /* harmony default export */ __webpack_exports__["default"] = ({
   components: {
@@ -2105,7 +2110,8 @@ __webpack_require__.r(__webpack_exports__);
       popb: [],
       selected_filesb: [],
       close: false,
-      msg_type: []
+      msg_type: [],
+      closem: false
     };
   },
   methods: {
@@ -2317,6 +2323,19 @@ __webpack_require__.r(__webpack_exports__);
       })["catch"](function (err) {
         console.log('error:' + err);
       });
+    },
+    viewPop: function viewPop(index) {
+      this.closem = !this.closem;
+      console.log('button was trigggered');
+      var el = document.getElementsByClassName('proofm')[index];
+
+      if (this.closem == true) {
+        el.style.display = 'block';
+      } else if (this.closem == false) {
+        el.style.display = 'none';
+      }
+
+      console.log('finsihed');
     },
     viewPopb: function viewPopb(index) {
       this.close = !this.close;
@@ -2578,12 +2597,34 @@ __webpack_require__.r(__webpack_exports__);
 __webpack_require__.r(__webpack_exports__);
 /* harmony import */ var core_js_modules_es_array_concat__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! core-js/modules/es.array.concat */ "./node_modules/core-js/modules/es.array.concat.js");
 /* harmony import */ var core_js_modules_es_array_concat__WEBPACK_IMPORTED_MODULE_0___default = /*#__PURE__*/__webpack_require__.n(core_js_modules_es_array_concat__WEBPACK_IMPORTED_MODULE_0__);
-/* harmony import */ var core_js_modules_es_function_name__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! core-js/modules/es.function.name */ "./node_modules/core-js/modules/es.function.name.js");
-/* harmony import */ var core_js_modules_es_function_name__WEBPACK_IMPORTED_MODULE_1___default = /*#__PURE__*/__webpack_require__.n(core_js_modules_es_function_name__WEBPACK_IMPORTED_MODULE_1__);
-/* harmony import */ var vue2_flip_countdown__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! vue2-flip-countdown */ "./node_modules/vue2-flip-countdown/dist/vue2-flip-countdown.js");
-/* harmony import */ var vue2_flip_countdown__WEBPACK_IMPORTED_MODULE_2___default = /*#__PURE__*/__webpack_require__.n(vue2_flip_countdown__WEBPACK_IMPORTED_MODULE_2__);
+/* harmony import */ var core_js_modules_es_array_slice__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! core-js/modules/es.array.slice */ "./node_modules/core-js/modules/es.array.slice.js");
+/* harmony import */ var core_js_modules_es_array_slice__WEBPACK_IMPORTED_MODULE_1___default = /*#__PURE__*/__webpack_require__.n(core_js_modules_es_array_slice__WEBPACK_IMPORTED_MODULE_1__);
+/* harmony import */ var core_js_modules_es_function_name__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! core-js/modules/es.function.name */ "./node_modules/core-js/modules/es.function.name.js");
+/* harmony import */ var core_js_modules_es_function_name__WEBPACK_IMPORTED_MODULE_2___default = /*#__PURE__*/__webpack_require__.n(core_js_modules_es_function_name__WEBPACK_IMPORTED_MODULE_2__);
+/* harmony import */ var vue2_flip_countdown__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! vue2-flip-countdown */ "./node_modules/vue2-flip-countdown/dist/vue2-flip-countdown.js");
+/* harmony import */ var vue2_flip_countdown__WEBPACK_IMPORTED_MODULE_3___default = /*#__PURE__*/__webpack_require__.n(vue2_flip_countdown__WEBPACK_IMPORTED_MODULE_3__);
 
 
+
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
 //
 //
 //
@@ -2707,7 +2748,7 @@ __webpack_require__.r(__webpack_exports__);
 
 /* harmony default export */ __webpack_exports__["default"] = ({
   components: {
-    FlipCountdown: vue2_flip_countdown__WEBPACK_IMPORTED_MODULE_2___default.a
+    FlipCountdown: vue2_flip_countdown__WEBPACK_IMPORTED_MODULE_3___default.a
   },
   data: function data() {
     return {
@@ -2718,6 +2759,10 @@ __webpack_require__.r(__webpack_exports__);
       amount: {
         naira: '',
         bitcoin: ''
+      },
+      amount_much: {
+        naira: false,
+        bitcoin: false
       },
       amount_enough: {
         naira: false,
@@ -2741,43 +2786,94 @@ __webpack_require__.r(__webpack_exports__);
       amount_top_pay: [],
       success_msg: '',
       error_msg: '',
-      is_loading: false
+      is_loading: false,
+      timer_appear: '',
+      timer_disappear: '',
+      no_list: true,
+      next_list_time: '',
+      time_text: '',
+      empty_list: false,
+      empty_listb: false
     };
   },
   methods: {
-    BuildList: function BuildList() {
+    timerToggle: function timerToggle() {
       var _this = this;
+
+      this.is_loading = true;
+      axios.get('/dashboard/api/timer').then(function (response) {
+        var py_time_start = response.data.list_appear;
+        var py_time_end = response.data.list_disappear;
+        var ymd = py_time_start.slice(0, 10);
+        var tt = py_time_start.slice(11, 19);
+        _this.timer_appear = ymd + " " + tt;
+        var ymd = py_time_end.slice(0, 10);
+        var tt = py_time_end.slice(11, 19);
+        _this.timer_disappear = ymd + " " + tt;
+        var py_time = response.data.list_next_time;
+        var ymd = py_time.slice(0, 10);
+        var tt = py_time.slice(11, 19);
+        _this.next_list_time = ymd + ' ' + tt;
+        _this.time_text = response.data.text;
+
+        if (new Date() > new Date(response.data.list_appear) && new Date() < new Date(response.data.list_disappear)) {
+          _this.BuildList();
+
+          _this.BuildList2();
+
+          _this.no_list = false;
+        } else {
+          _this.no_list = true;
+        }
+
+        _this.is_loading = false;
+      })["catch"](function (err) {
+        console.log('got an errir');
+        _this.is_loading = false;
+        console.log(err);
+      });
+    },
+    BuildList: function BuildList() {
+      var _this2 = this;
 
       this.is_loading = true;
       axios.get('/dashboard/api/money').then(function (response) {
         console.log(response);
-        _this.money_receivers = response.data.content;
+        _this2.money_receivers = response.data.content;
 
         if (response.data.remnant == 'True') {
-          _this.money.payer_remnant_bal = true;
+          _this2.money.payer_remnant_bal = true;
         }
 
-        _this.is_loading = false;
-        console.log('receivers: ' + _this.money_receivers);
+        if (response.data.stat == 'empty') {
+          _this2.empty_list = true;
+        }
+
+        _this2.is_loading = false;
+        console.log('receivers: ' + _this2.money_receivers);
       })["catch"](function (err) {
-        _this.is_loading = false;
+        _this2.is_loading = false;
         console.log('error: ' + err);
       });
     },
     BuildList2: function BuildList2() {
-      var _this2 = this;
+      var _this3 = this;
 
       this.is_loading = true;
       axios.get('/dashboard/api/bitcoin').then(function (response) {
         console.log(response);
-        _this2.bitcoin_receivers = response.data.content;
+        _this3.bitcoin_receivers = response.data.content;
 
         if (response.data.remnant == 'True') {
-          _this2.bitcoin.payer_remnant_bal = true;
+          _this3.bitcoin.payer_remnant_bal = true;
         }
 
-        _this2.is_loading = false;
-        console.log('receivers: ' + _this2.bitcoin_receivers);
+        if (response.data.stat == 'empty') {
+          _this3.empty_listb = true;
+        }
+
+        _this3.is_loading = false;
+        console.log('receivers: ' + _this3.bitcoin_receivers);
       })["catch"](function (err) {
         console.log('berror: ' + err);
       });
@@ -2787,34 +2883,44 @@ __webpack_require__.r(__webpack_exports__);
       this.donation_mode.use_bitcoin = !this.donation_mode.use_bitcoin;
     },
     check_naira_amount: function check_naira_amount() {
-      if (this.amount.naira >= 10000 || this.money.payer_remnant_bal && this.amount.naira > 1) {
+      if (this.amount.naira >= 10000 && this.amount.naira > 1 && this.amount.naira <= 500000 || this.money.payer_remnant_bal) {
         this.amount_enough.naira = true;
+        this.amount_much.naira = false;
+      } else if (this.amount.naira > 500000) {
+        this.amount_enough.naira = false;
+        this.amount_much.naira = true;
       } else {
         this.amount_enough.naira = false;
+        this.amount_much.naira = false;
       }
     },
     check_bitcoin_amount: function check_bitcoin_amount() {
-      if (this.amount.bitcoin >= 0.0026 || this.bitcoin.payer_remnant_bal && this.amount.bitcoin != null) {
+      if (this.amount.bitcoin >= 0.0026 && this.amount.bitcoin != null && this.amount.bitcoin <= 0.13 || this.bitcoin.payer_remnant_bal) {
         this.amount_enough.bitcoin = true;
+        this.amount_much.bitcoin = false;
+      } else if (this.amount.bitcoin > 0.13) {
+        this.amount_enough.bitcoin = false;
+        this.amount_much.bitcoin = true;
       } else {
         this.amount_enough.bitcoin = false;
+        this.amount_much.bitcoin = false;
       }
     },
     alert_low_naira: function alert_low_naira() {
-      alert('Please enter a donation amount that is greater than or equal to NGN10,000');
+      alert('Please enter a donation amount that is greater than or equal to NGN10,000 and less than NGN500,000');
     },
     alert_low_bitcoin: function alert_low_bitcoin() {
-      alert('Please enter a donation amount that is greater than or equal to 0.0026BTC');
+      alert('Please enter a donation amount that is greater than or equal to 0.0026BTC and less than 0.13');
     },
     reserve: function reserve(index) {
-      var _this3 = this;
+      var _this4 = this;
 
       var check = confirm("Are you sure you want to donate NGN".concat(this.amount.naira, " to ").concat(this.money_receivers[index].name));
 
       if (check) {
         this.is_loading = true;
 
-        if (this.amount.naira >= 10000 || this.money.payer_remnant_bal && this.amount.naira > 1) {
+        if (this.amount.naira >= 10000 && this.amount.naira > 1 && this.amount.naira <= 500000 || this.money.payer_remnant_bal) {
           if (this.money_receivers[index].amount > this.amount.naira) {
             this.money.receiver_remnant = this.money_receivers[index].amount - this.amount.naira;
             this.money.user_pay = this.amount.naira;
@@ -2844,18 +2950,26 @@ __webpack_require__.r(__webpack_exports__);
             p_remnant: this.money.payer_remnant,
             receiver: this.money_receivers[index].name
           }).then(function (response) {
-            _this3.BuildList();
+            _this4.BuildList();
 
             if (response.data.stat == 'good') {
-              _this3.success_msg = "You have successfully pledged to donate NGN".concat(_this3.money.user_pay, " to ").concat(_this3.money_receivers[index].name, ", you have NGN").concat(_this3.money.payer_remnant, " left to donate, go to your dashboard to get ").concat(_this3.money_receivers[index].name, "'s bank details and make payment");
+              _this4.success_msg = "You have successfully pledged to donate NGN".concat(_this4.money.user_pay, " to ").concat(_this4.money_receivers[index].name, ", you have NGN").concat(_this4.money.payer_remnant, " left to donate, go to your dashboard to get ").concat(_this4.money_receivers[index].name, "'s bank details and make payment");
             } else if (response.data.stat == "taken") {
-              _this3.error_msg = "".concat(_this3.money_receivers[index].name, " has already been reserved, pick another one");
+              _this4.error_msg = "".concat(_this4.money_receivers[index].name, " has already been reserved and is no longer on the list, pick another member");
             } else if (response.data.stat == "still_on_list") {
-              _this3.error_msg = "You cannot reserve a member if you still have pending transactions";
+              _this4.error_msg = "You cannot reserve a member if you still have pending transactions";
+            } else if (response.data.stat == "amount_changed") {
+              _this4.error_msg = "This members receiving amount has been updated, try and make the reservation again";
+            } else if (response.data.stat == "mod2") {
+              _this4.error_msg = "This members receiving amount has been updated, try and make the reservation again";
+            } else if (response.data.stat == "no_testimony") {
+              _this4.error_msg = "You are required to write a testimony after receiving your ROI before making another donation!";
             } else if (response.data.stat == "reserved_in_bit") {
-              _this3.error_msg = "You cannot reserve a member with Naira and Bitcoin at the same time";
+              _this4.error_msg = "You cannot reserve a member with Naira and Bitcoin at the same time";
+            } else if (response.data.stat == "mod") {
+              _this4.error_msg = "".concat(_this4.money_receivers[index].name, " has already been reserved and is no longer on the list, pick another member");
             } else if (response.data.stat == "no_account_details") {
-              _this3.error_msg = "Please add your bank details and phone number in the profile page section before you reserve a member";
+              _this4.error_msg = "Please add your bank details and phone number in the profile page section before you reserve a member";
             }
           })["catch"](function (err) {
             console.log('error: ' + err);
@@ -2866,7 +2980,7 @@ __webpack_require__.r(__webpack_exports__);
       }
     },
     reserveb: function reserveb(index) {
-      var _this4 = this;
+      var _this5 = this;
 
       var check = confirm("Are you sure you want to donate ".concat(this.amount.bitcoin, "btc to ").concat(this.bitcoin_receivers[index].name));
 
@@ -2903,18 +3017,24 @@ __webpack_require__.r(__webpack_exports__);
             p_remnant: this.bitcoin.payer_remnant,
             receiver: this.bitcoin_receivers[index].name
           }).then(function (response) {
-            _this4.BuildList2();
+            _this5.BuildList2();
 
             if (response.data.stat == 'good') {
-              _this4.success_msg = "You have successfully pledged to donate ".concat(_this4.bitcoin.user_pay, "btc to ").concat(_this4.bitcoin_receivers[index].name, " successfully, you have ").concat(_this4.bitcoin.payer_remnant, "BTC left to donate, go to your dashboard to get ").concat(_this4.bitcoin_receivers[index].name, "'s wallet details and make payment");
+              _this5.success_msg = "You have successfully pledged to donate ".concat(_this5.bitcoin.user_pay, "btc to ").concat(_this5.bitcoin_receivers[index].name, " successfully, you have ").concat(_this5.bitcoin.payer_remnant, "BTC left to donate, go to your dashboard to get ").concat(_this5.bitcoin_receivers[index].name, "'s wallet details and make payment");
             } else if (response.data.stat == "taken") {
-              _this4.error_msg = "".concat(_this4.bitcoin_receivers[index].name, " has already been reserved, pick another one");
+              _this5.error_msg = "".concat(_this5.bitcoin_receivers[index].name, " has already been reserved and is no longer on the list, pick another member");
             } else if (response.data.stat == "still_on_list") {
-              _this4.error_msg = "You cannot reserve a member if you still have pending transactions";
+              _this5.error_msg = "You cannot reserve a member if you still have pending transactions";
+            } else if (response.data.stat == "amount_changed") {
+              _this5.error_msg = "This members receiving amount has been updated, try and make the reservation again";
+            } else if (response.data.stat == "no_testimony") {
+              _this5.error_msg = "You are required to write a testimony after receiving your ROI before making another donation!";
+            } else if (response.data.stat == "mod") {
+              _this5.error_msg = "".concat(_this5.bitcoin_receivers[index].name, " has already been reserved and is no longer on the list, pick another member");
             } else if (response.data.stat == "reserved_in_naira") {
-              _this4.error_msg = "You cannot reserve a member with Naira and Bitcoin at the same time";
+              _this5.error_msg = "You cannot reserve a member with Naira and Bitcoin at the same time";
             } else if (response.data.stat == "no_account_details") {
-              _this4.error_msg = "Please add your bitcoin wallet address and phone number in the profile page section before you reserve a member";
+              _this5.error_msg = "Please add your bitcoin wallet address and phone number in the profile page section before you reserve a member";
             }
           })["catch"](function (err) {
             console.log('bberror: ' + err);
@@ -2926,8 +3046,7 @@ __webpack_require__.r(__webpack_exports__);
     }
   },
   created: function created() {
-    this.BuildList();
-    this.BuildList2();
+    this.timerToggle();
   }
 });
 
@@ -41474,20 +41593,21 @@ var render = function() {
                       "div",
                       {
                         staticStyle: {
-                          background: "gold",
+                          background: "green",
+                          color: "#ffffff",
                           padding: "10px 14px",
                           "margin-bottom": "20px",
-                          "border-radius": "5px"
+                          "box-shadow": "5px 5px 5px gray"
                         }
                       },
                       [
-                        _c("p", [
+                        _c("p", { staticStyle: { color: "white" } }, [
                           _vm._v(
                             "You have completed your payment and your Return on Investment is "
                           ),
                           _vm.msg_type[index] == 1
                             ? _c("span", [_vm._v("₦")])
-                            : _c("span", [_vm._v("BTC")]),
+                            : _c("span", [_vm._v("BTC ")]),
                           _vm._v(
                             _vm._s(msg.r_amount) +
                               ". Your name will enter the receiver's list between " +
@@ -41631,11 +41751,13 @@ var render = function() {
                       _vm.pending_payment || _vm.pending_payment_b
                         ? _c("p", { staticClass: "info-area" }, [
                             _vm._v(
-                              "Please make payment before the countdown runs out to avoid getting blocked"
+                              "Please make payment before the countdown runs out to avoid getting blocked, as soon as you pay and get confirmed you will be in line to enter the receiver's list. "
                             )
                           ])
                         : _c("p", { staticClass: "info-area" }, [
-                            _vm._v("You have no pending payments")
+                            _vm._v(
+                              "You have no pending payments, to see your completed transactions go to Transactions under the Account section"
+                            )
                           ]),
                       _vm._v(" "),
                       _vm._l(_vm.money_pending_payments, function(
@@ -41645,28 +41767,45 @@ var render = function() {
                         return _vm.money_pending_payments
                           ? _c("div", { staticClass: "col-md-4 list" }, [
                               _c("ul", [
-                                _vm.expired
-                                  ? _c(
-                                      "li",
-                                      { staticStyle: { color: "#000000" } },
-                                      [_vm._v(_vm._s(_vm.expired))]
-                                    )
-                                  : _c(
-                                      "li",
+                                _c(
+                                  "span",
+                                  {
+                                    directives: [
                                       {
-                                        staticStyle: { width: "5px:height:5px" }
-                                      },
-                                      [
-                                        _c("flip-countdown", {
-                                          attrs: {
-                                            deadline:
-                                              _vm.timer_list[index]
-                                                .converted_time
-                                          }
-                                        })
-                                      ],
-                                      1
-                                    ),
+                                        name: "show",
+                                        rawName: "v-show",
+                                        value: !pending.pop,
+                                        expression: "!pending.pop"
+                                      }
+                                    ]
+                                  },
+                                  [
+                                    _vm.expired
+                                      ? _c(
+                                          "li",
+                                          { staticStyle: { color: "#000000" } },
+                                          [_vm._v(_vm._s(_vm.expired))]
+                                        )
+                                      : _c(
+                                          "li",
+                                          {
+                                            staticStyle: {
+                                              width: "5px:height:5px"
+                                            }
+                                          },
+                                          [
+                                            _c("flip-countdown", {
+                                              attrs: {
+                                                deadline:
+                                                  _vm.timer_list[index]
+                                                    .converted_time
+                                              }
+                                            })
+                                          ],
+                                          1
+                                        )
+                                  ]
+                                ),
                                 _vm._v(" "),
                                 _c("li", [
                                   _vm._v(
@@ -41821,9 +41960,9 @@ var render = function() {
                                 _vm._v(" "),
                                 _c("li", [
                                   _vm._v(
-                                    "Amount:" +
+                                    "Amount: " +
                                       _vm._s(pending.receiving_amount) +
-                                      "btc"
+                                      "BTC"
                                   )
                                 ]),
                                 _vm._v(" "),
@@ -41927,7 +42066,9 @@ var render = function() {
                             )
                           ])
                         : _c("p", { staticClass: "info-area" }, [
-                            _vm._v("You have no pending withdrawal")
+                            _vm._v(
+                              "You have no pending withdrawal, to see your completed transactions go to Transactions under the Account section"
+                            )
                           ]),
                       _vm._v(" "),
                       _vm._l(_vm.money_pending_receiving, function(
@@ -41943,7 +42084,7 @@ var render = function() {
                                       {
                                         staticStyle: {
                                           "text-align": "center",
-                                          color: "green"
+                                          color: "#000000"
                                         }
                                       },
                                       [_vm._v("Member has made payment")]
@@ -42001,20 +42142,44 @@ var render = function() {
                                 ]),
                                 _vm._v(" "),
                                 pending.pop
-                                  ? _c("li", [
+                                  ? _c(
+                                      "button",
+                                      {
+                                        staticClass:
+                                          "btn btn-warning btn-block",
+                                        attrs: { type: "button" },
+                                        on: {
+                                          click: function($event) {
+                                            return _vm.viewPop(index)
+                                          }
+                                        }
+                                      },
+                                      [_vm._v("View Proof of payment")]
+                                    )
+                                  : _vm._e(),
+                                _vm._v(" "),
+                                _c(
+                                  "div",
+                                  {
+                                    staticClass: "proofm",
+                                    staticStyle: { display: "none" }
+                                  },
+                                  [
+                                    _c("div", [
                                       _c("img", {
                                         attrs: {
                                           src: pending.pop,
-                                          height: "100px",
-                                          width: "100px"
+                                          height: "300px",
+                                          width: "100%"
                                         }
                                       })
                                     ])
-                                  : _vm._e()
+                                  ]
+                                )
                               ]),
                               _c("br"),
                               _vm._v(" "),
-                              _vm.block[index].block_btn
+                              _vm.block[index].block_btn && !pending.pop
                                 ? _c("div", { staticClass: "apply_btn" }, [
                                     _c(
                                       "button",
@@ -42066,7 +42231,7 @@ var render = function() {
                                       {
                                         staticStyle: {
                                           "text-align": "center",
-                                          color: "green"
+                                          color: "#000000"
                                         }
                                       },
                                       [_vm._v("Member has made payment")]
@@ -42114,7 +42279,7 @@ var render = function() {
                                   _vm._v(
                                     "Amount: " +
                                       _vm._s(pending.receiving_amount) +
-                                      "btc"
+                                      "BTC"
                                   )
                                 ]),
                                 _vm._v(" "),
@@ -42240,7 +42405,21 @@ var render = function() {
             _vm._v(" "),
             _c(
               "div",
-              [_c("flip-countdown", { attrs: { deadline: _vm.timer } })],
+              {
+                directives: [
+                  {
+                    name: "show",
+                    rawName: "v-show",
+                    value: !_vm.no_list,
+                    expression: "!no_list"
+                  }
+                ]
+              },
+              [
+                _c("flip-countdown", {
+                  attrs: { deadline: _vm.timer_disappear }
+                })
+              ],
               1
             ),
             _vm._v(" "),
@@ -42294,18 +42473,33 @@ var render = function() {
                             )
                           ]
                         )
-                      : _c(
-                          "i",
-                          {
-                            staticClass: "info-msg",
-                            staticStyle: { "font-size": "12px" }
-                          },
-                          [
-                            _vm._v(
-                              "Please enter an amount not less than ₦10,000 before reserving a user"
-                            )
-                          ]
-                        )
+                      : _c("span", [
+                          _vm.amount_much.naira
+                            ? _c(
+                                "i",
+                                {
+                                  staticClass: "info-msg",
+                                  staticStyle: { "font-size": "12px" }
+                                },
+                                [
+                                  _vm._v(
+                                    "Please enter an amount less than ₦500,000 before reserving a user"
+                                  )
+                                ]
+                              )
+                            : _c(
+                                "i",
+                                {
+                                  staticClass: "info-msg",
+                                  staticStyle: { "font-size": "12px" }
+                                },
+                                [
+                                  _vm._v(
+                                    "Please enter an amount not less than ₦10,000 before reserving a user"
+                                  )
+                                ]
+                              )
+                        ])
                   ])
                 : _c("div", [
                     _c("div", { staticClass: "input-group mb-3" }, [
@@ -42352,18 +42546,33 @@ var render = function() {
                             )
                           ]
                         )
-                      : _c(
-                          "i",
-                          {
-                            staticClass: "info-msg",
-                            staticStyle: { "font-size": "12px" }
-                          },
-                          [
-                            _vm._v(
-                              "Please enter an amount not less than 0.0026BTC before reserving a user"
-                            )
-                          ]
-                        )
+                      : _c("span", [
+                          _vm.amount_much.bitcoin
+                            ? _c(
+                                "i",
+                                {
+                                  staticClass: "info-msg",
+                                  staticStyle: { "font-size": "12px" }
+                                },
+                                [
+                                  _vm._v(
+                                    "Please enter an amount less than 0.13 BTC before reserving a user"
+                                  )
+                                ]
+                              )
+                            : _c(
+                                "i",
+                                {
+                                  staticClass: "info-msg",
+                                  staticStyle: { "font-size": "12px" }
+                                },
+                                [
+                                  _vm._v(
+                                    "Please enter an amount not less than 0.0026 BTC before reserving a user"
+                                  )
+                                ]
+                              )
+                        ])
                   ]),
               _vm._v(" "),
               _vm._m(4),
@@ -42478,149 +42687,247 @@ var render = function() {
           _c("br"),
           _c("br"),
           _vm._v(" "),
-          _c(
-            "div",
-            {
-              directives: [
+          _vm.no_list
+            ? _c(
+                "div",
                 {
-                  name: "show",
-                  rawName: "v-show",
-                  value: _vm.donation_mode.use_naira,
-                  expression: "donation_mode.use_naira"
-                }
-              ],
-              staticClass: "table-responsive cash-table"
-            },
-            [
-              _c("table", { staticClass: "table" }, [
-                _c("thead", { staticClass: "thead-dark" }),
-                _vm._v(" "),
-                _vm._m(5),
+                  staticStyle: {
+                    "text-align": "center",
+                    "font-weight": "bold",
+                    color: "#000000"
+                  }
+                },
+                [
+                  _c("flip-countdown", {
+                    attrs: { deadline: _vm.next_list_time }
+                  }),
+                  _vm._v(" "),
+                  _c("p", [
+                    _vm._v(
+                      "The receiver's list will appear as soon as the countdown runs out which is by " +
+                        _vm._s(_vm.time_text) +
+                        ". "
+                    )
+                  ]),
+                  _vm._v(" "),
+                  _c("p", [
+                    _vm._v(
+                      "While you wait for the list, ensure you have entered your phone number and bank account details in the profile section. For more information on how to donate please go to the FAQ section"
+                    )
+                  ])
+                ],
+                1
+              )
+            : _c("div", [
+                _c(
+                  "div",
+                  {
+                    directives: [
+                      {
+                        name: "show",
+                        rawName: "v-show",
+                        value: _vm.donation_mode.use_naira,
+                        expression: "donation_mode.use_naira"
+                      }
+                    ],
+                    staticClass: "table-responsive cash-table"
+                  },
+                  [
+                    _c("table", { staticClass: "table" }, [
+                      _c("thead", { staticClass: "thead-dark" }),
+                      _vm._v(" "),
+                      _vm._m(5),
+                      _vm._v(" "),
+                      _c(
+                        "tbody",
+                        [
+                          _vm._l(_vm.money_receivers, function(
+                            receiver,
+                            index
+                          ) {
+                            return _c("tr", [
+                              _c("th", { attrs: { scope: "row" } }, [
+                                _vm._v(_vm._s(index + 1))
+                              ]),
+                              _vm._v(" "),
+                              _c("td", [_vm._v(_vm._s(receiver.name))]),
+                              _vm._v(" "),
+                              _c("td", [_vm._v("₦")]),
+                              _vm._v(" "),
+                              _c("td", [_vm._v(_vm._s(receiver.amount))]),
+                              _vm._v(" "),
+                              _c("td", [
+                                _vm.amount_enough.naira
+                                  ? _c(
+                                      "button",
+                                      {
+                                        staticClass: "btn btn-danger",
+                                        attrs: { type: "button" },
+                                        on: {
+                                          click: function($event) {
+                                            $event.preventDefault()
+                                            return _vm.reserve(index)
+                                          }
+                                        }
+                                      },
+                                      [_vm._v("Reserve\n                    ")]
+                                    )
+                                  : _c(
+                                      "button",
+                                      {
+                                        staticClass: "btn btn-danger",
+                                        attrs: { type: "button" },
+                                        on: {
+                                          click: function($event) {
+                                            $event.preventDefault()
+                                            return _vm.alert_low_naira($event)
+                                          }
+                                        }
+                                      },
+                                      [_vm._v("Reserve\n                    ")]
+                                    )
+                              ])
+                            ])
+                          }),
+                          _vm._v(" "),
+                          _c(
+                            "tr",
+                            {
+                              directives: [
+                                {
+                                  name: "show",
+                                  rawName: "v-show",
+                                  value: _vm.empty_list,
+                                  expression: "empty_list"
+                                }
+                              ]
+                            },
+                            [
+                              _c(
+                                "td",
+                                {
+                                  staticClass: "text-center",
+                                  attrs: { colspan: "100%" }
+                                },
+                                [
+                                  _vm._v(
+                                    "All available Naira receivers on the list have been reserved, please look out for the next list by " +
+                                      _vm._s(_vm.time_text) +
+                                      "."
+                                  )
+                                ]
+                              )
+                            ]
+                          )
+                        ],
+                        2
+                      )
+                    ])
+                  ]
+                ),
                 _vm._v(" "),
                 _c(
-                  "tbody",
-                  _vm._l(_vm.money_receivers, function(receiver, index) {
-                    return _c("tr", [
-                      _c("th", { attrs: { scope: "row" } }, [
-                        _vm._v(_vm._s(index + 1))
-                      ]),
+                  "div",
+                  {
+                    directives: [
+                      {
+                        name: "show",
+                        rawName: "v-show",
+                        value: _vm.donation_mode.use_bitcoin,
+                        expression: "donation_mode.use_bitcoin"
+                      }
+                    ],
+                    staticClass: "table-responsive bitcoin-table"
+                  },
+                  [
+                    _c("table", { staticClass: "table" }, [
+                      _c("thead", { staticClass: "thead-dark" }),
                       _vm._v(" "),
-                      _c("td", [_vm._v(_vm._s(receiver.name))]),
+                      _vm._m(6),
                       _vm._v(" "),
-                      _c("td", [_vm._v("₦")]),
-                      _vm._v(" "),
-                      _c("td", [_vm._v(_vm._s(receiver.amount))]),
-                      _vm._v(" "),
-                      _c("td", [
-                        _vm.amount_enough.naira
-                          ? _c(
-                              "button",
+                      _c(
+                        "tbody",
+                        [
+                          _vm._l(_vm.bitcoin_receivers, function(
+                            receiver,
+                            index
+                          ) {
+                            return _c("tr", [
+                              _c("th", { attrs: { scope: "row" } }, [
+                                _vm._v(_vm._s(index + 1))
+                              ]),
+                              _vm._v(" "),
+                              _c("td", [_vm._v(_vm._s(receiver.name))]),
+                              _vm._v(" "),
+                              _vm._m(7, true),
+                              _vm._v(" "),
+                              _c("td", [_vm._v(_vm._s(receiver.amount))]),
+                              _vm._v(" "),
+                              _c("td", [
+                                _vm.amount_enough.bitcoin
+                                  ? _c(
+                                      "button",
+                                      {
+                                        staticClass: "btn btn-danger",
+                                        attrs: { type: "button" },
+                                        on: {
+                                          click: function($event) {
+                                            $event.preventDefault()
+                                            return _vm.reserveb(index)
+                                          }
+                                        }
+                                      },
+                                      [_vm._v("Reserve\n                  ")]
+                                    )
+                                  : _c(
+                                      "button",
+                                      {
+                                        staticClass: "btn btn-danger",
+                                        attrs: { type: "button" },
+                                        on: {
+                                          click: function($event) {
+                                            $event.preventDefault()
+                                            return _vm.alert_low_bitcoin($event)
+                                          }
+                                        }
+                                      },
+                                      [_vm._v("Reserve\n                    ")]
+                                    )
+                              ])
+                            ])
+                          }),
+                          _vm._v(" "),
+                          _c("tr", [
+                            _c(
+                              "td",
                               {
-                                staticClass: "btn btn-danger",
-                                attrs: { type: "button" },
-                                on: {
-                                  click: function($event) {
-                                    $event.preventDefault()
-                                    return _vm.reserve(index)
+                                directives: [
+                                  {
+                                    name: "show",
+                                    rawName: "v-show",
+                                    value: _vm.empty_listb,
+                                    expression: "empty_listb"
                                   }
-                                }
+                                ],
+                                staticClass: "text-center",
+                                attrs: { colspan: "100%" }
                               },
-                              [_vm._v("Reserve\n                    ")]
+                              [
+                                _vm._v(
+                                  "All available Bitcoin receivers on the list have been reserved, please look out for the next list by " +
+                                    _vm._s(_vm.time_text) +
+                                    "."
+                                )
+                              ]
                             )
-                          : _c(
-                              "button",
-                              {
-                                staticClass: "btn btn-danger",
-                                attrs: { type: "button" },
-                                on: {
-                                  click: function($event) {
-                                    $event.preventDefault()
-                                    return _vm.alert_low_naira($event)
-                                  }
-                                }
-                              },
-                              [_vm._v("Reserve\n                    ")]
-                            )
-                      ])
+                          ])
+                        ],
+                        2
+                      )
                     ])
-                  }),
-                  0
+                  ]
                 )
               ])
-            ]
-          ),
-          _vm._v(" "),
-          _c(
-            "div",
-            {
-              directives: [
-                {
-                  name: "show",
-                  rawName: "v-show",
-                  value: _vm.donation_mode.use_bitcoin,
-                  expression: "donation_mode.use_bitcoin"
-                }
-              ],
-              staticClass: "table-responsive bitcoin-table"
-            },
-            [
-              _c("table", { staticClass: "table" }, [
-                _c("thead", { staticClass: "thead-dark" }),
-                _vm._v(" "),
-                _vm._m(6),
-                _vm._v(" "),
-                _c(
-                  "tbody",
-                  _vm._l(_vm.bitcoin_receivers, function(receiver, index) {
-                    return _c("tr", [
-                      _c("th", { attrs: { scope: "row" } }, [
-                        _vm._v(_vm._s(index + 1))
-                      ]),
-                      _vm._v(" "),
-                      _c("td", [_vm._v(_vm._s(receiver.name))]),
-                      _vm._v(" "),
-                      _vm._m(7, true),
-                      _vm._v(" "),
-                      _c("td", [_vm._v(_vm._s(receiver.amount))]),
-                      _vm._v(" "),
-                      _c("td", [
-                        _vm.amount_enough.bitcoin
-                          ? _c(
-                              "button",
-                              {
-                                staticClass: "btn btn-danger",
-                                attrs: { type: "button" },
-                                on: {
-                                  click: function($event) {
-                                    $event.preventDefault()
-                                    return _vm.reserveb(index)
-                                  }
-                                }
-                              },
-                              [_vm._v("Reserve\n                  ")]
-                            )
-                          : _c(
-                              "button",
-                              {
-                                staticClass: "btn btn-danger",
-                                attrs: { type: "button" },
-                                on: {
-                                  click: function($event) {
-                                    $event.preventDefault()
-                                    return _vm.alert_low_bitcoin($event)
-                                  }
-                                }
-                              },
-                              [_vm._v("Reserve\n                    ")]
-                            )
-                      ])
-                    ])
-                  }),
-                  0
-                )
-              ])
-            ]
-          )
         ])
   ])
 }
@@ -42631,7 +42938,7 @@ var staticRenderFns = [
     var _c = _vm._self._c || _h
     return _c("p", { staticClass: "info-area" }, [
       _vm._v(
-        "Please type in the amount you want to donate and proceed to reserve a member. "
+        "Please type in the amount you want to donate and proceed to reserve a member on the receiver's list. "
       ),
       _c("a", { staticStyle: { color: "#0a8cff" }, attrs: { href: "#" } }, [
         _vm._v("learn more")
@@ -42783,7 +43090,7 @@ var render = function() {
                       _c("ul", [
                         _c("li", [
                           _vm._v(
-                            " Username: " + _vm._s(transact.receivers_name)
+                            " Receiver: " + _vm._s(transact.receivers_name)
                           )
                         ]),
                         _c("li", [
@@ -42809,7 +43116,8 @@ var render = function() {
                                 _vm._v(" "),
                                 _c("li", [
                                   _vm._v(
-                                    "Amount: ₦" + _vm._s(_vm.receiving_amount)
+                                    "Amount: ₦" +
+                                      _vm._s(transact.receiving_amount)
                                   )
                                 ])
                               ])
@@ -42823,8 +43131,9 @@ var render = function() {
                                 _vm._v(" "),
                                 _c("li", [
                                   _vm._v(
-                                    "Amount: BTC " +
-                                      _vm._s(transact.receiving_amount)
+                                    "Amount: " +
+                                      _vm._s(transact.receiving_amount) +
+                                      "BTC"
                                   )
                                 ])
                               ])
@@ -42857,7 +43166,7 @@ var render = function() {
                     return _c("div", { staticClass: "col-md-4 list" }, [
                       _c("ul", [
                         _c("li", [
-                          _vm._v("Username: " + _vm._s(transact.givers_name))
+                          _vm._v("Giver: " + _vm._s(transact.givers_name))
                         ]),
                         _vm._v(" "),
                         transact.transaction_type == 1
@@ -42868,8 +43177,9 @@ var render = function() {
                             ])
                           : _c("li", [
                               _vm._v(
-                                "Amount: BTC " +
-                                  _vm._s(transact.receiving_amount)
+                                "Amount: " +
+                                  _vm._s(transact.receiving_amount) +
+                                  "BTC"
                               )
                             ]),
                         _vm._v(" "),

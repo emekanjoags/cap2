@@ -1,5 +1,5 @@
 from rest_framework import serializers
-from .models import Receivers, ReservedReceivers
+from .models import Receivers, ReservedReceivers, Timer
 
 class MakeDonationSerializer(serializers.ModelSerializer):
     class Meta:
@@ -14,4 +14,9 @@ class MakeDonationBSerializer(serializers.ModelSerializer):
 class ReservedReceiversSerializer(serializers.ModelSerializer):
     class Meta:
         model = ReservedReceivers
+        fields = '__all__'
+
+class TimerSerializer(serializers.ModelSerializer):
+    class  Meta:
+        model = Timer
         fields = '__all__'

@@ -31,6 +31,7 @@ class ReservedReceivers(models.Model):
 
 class Receivers(models.Model):
     user = models.ForeignKey(User, on_delete=models.CASCADE, null=True, blank=True)
+    is_mod = models.IntegerField(default=0)
     name = models.CharField(max_length=100, null=True, blank=True)
     amount = models.FloatField(null=True, blank=True)
     receiving_type = models.IntegerField(null=True, blank=True)
@@ -42,6 +43,7 @@ class Receivers(models.Model):
     has_entered_list = models.BooleanField(default=False, null=True, blank=True)
     blocked = models.BooleanField(default=False)
     display_msg = models.BooleanField(default=True)
+    has_testified = models.BooleanField(default=False)
 
 
     def __str__(self):
@@ -74,3 +76,12 @@ class AmountDonated(models.Model):
     class Meta:
         verbose_name_plural = 'Amount Donated'
 
+class Timer(models.Model):
+    list_appear = models.DateTimeField(auto_now_add=False)
+    list_disappear = models.DateTimeField(auto_now_add=False)
+    text = models.CharField(max_length=300, blank=True, null=True)
+    list_next_time = models.DateTimeField(auto_now_add=False, null=True)
+    def __str__(self):
+        return 'last _disappear time  is {}'.format(self.list_disappear)
+    class Meta:
+        verbose_name_plural = 'Timer'

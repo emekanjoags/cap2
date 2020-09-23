@@ -7,12 +7,18 @@
             <div class="col-12">
                 <br>
                 <h4 class="side-stick">Referrals</h4>
+                {% for message in messages%}
+					
+                        <div  {% if message.tags %} class="alert alert-{{ message.tags }}" {% endif %}>
+                            {{message}}
+                        </div>
+                        {%endfor%}
                 <div class="info-area" style="margin-bottom:20px;">
                     <h4>Referral Bonus Balance:</h4>
                     <form class="form-wrap" method="POST" action="">
                         {%csrf_token%}
-                        <h4 ><b style="color:red">&#8358;{{profile.referral_balance}}</b></h4>
-                        <input type="submit" value="withdraw" class="btn btn-primary" {%if withdraw_btn == 0 %} disabled{%endif%}>
+                        <h4 ><b {%if withdraw_btn == 0 %} style="color:red;" {%else%} style="color:green;" {%endif%}>&#8358;{{profile.referral_balance}}</b></h4>
+                        <input type="submit" value="withdraw"  {%if withdraw_btn == 0 %}class="btn btn-primary" disabled {%else%} class="btn btn-success"{%endif%}>
                     </form>
                     <div>
                       <i>referral bonus balance must be up to <i style="color:green">&#8358;10,000</i> before you are eligible to withdraw </i>
@@ -38,6 +44,10 @@
                             <td>&#8358;2000</td>
                             {% if ref.is_settled%}<td style='color:green'>active</td>{%else%}<td style='color:red'> not active</td>{%endif%}
                             <td>{{ref.created_at}}</td>
+                            {% empty %}
+                            <tr>
+                                <td colspan="100%" class="text-center">You have no referrals yet.</td>
+                            </tr>
                           </tr>
                           {%endfor%}
       
