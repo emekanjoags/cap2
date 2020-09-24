@@ -376,7 +376,12 @@ class ConfirmUser(APIView):
                         i.receiver_created = True
                         i.save()
                     print('amt: ', total_amt)
-                    if total_amt >= 10000:
+                    process_ref = 0
+                    if trans_type == 1 and total_amt >= 10000:
+                        process_ref = 1
+                    if trans_type == 2 and total_amt >= 0.0026:
+                        process_ref = 1
+                    if process_ref:
                         is_referred = 0
                         try:
                             is_referred = Referral.objects.get(user=payer, is_settled=False)
@@ -473,20 +478,6 @@ def adminConfirmUser(request):
         if donated_amount:
             donated_amount.completed = True
             donated_amount.save()
-        is_referred = 0
-        try:
-            is_referred = Referral.objects.get(user=payer, is_settled=False)
-        except Referral.DoesNotExist:
-            pass
-        if is_referred:
-            is_referred.is_settled = True
-            is_referred.save()
-            referrer = is_referred.referrer
-            referrer_wallet = Profile.objects.get(user=referrer.pk)
-            referrer_wallet.referral_balance += 2000
-            referrer_wallet.referred_active += 1
-            referrer_wallet.save()
-
         check_receiver_stat = ReservedReceivers.objects.filter(receiving_user=receiving_user, have_received=False, blocked=False)
         if not check_receiver_stat:
             is_receiver_on_list = Receivers.objects.filter(user=receiving_user, enter_list=True)
@@ -507,6 +498,25 @@ def adminConfirmUser(request):
                         i.receiver_created = True
                         i.save()
                     print('amt: ', total_amt)
+                    process_ref = 0
+                    if trans_type == 1 and total_amt >= 10000:
+                        process_ref = 1
+                    if trans_type == 2 and total_amt >= 0.0026:
+                        process_ref = 1
+                    if process_ref:
+                        is_referred = 0
+                        try:
+                            is_referred = Referral.objects.get(user=payer, is_settled=False)
+                        except Referral.DoesNotExist:
+                            pass
+                        if is_referred:
+                            is_referred.is_settled = True
+                            is_referred.save()
+                            referrer = is_referred.referrer
+                            referrer_wallet = Profile.objects.get(user=referrer.pk)
+                            referrer_wallet.referral_balance += 2000
+                            referrer_wallet.referred_active += 1
+                            referrer_wallet.save()
                     mode = profile.mode_of_receiving
                     ref_bal = 0
                     ref_bal_obj = 0

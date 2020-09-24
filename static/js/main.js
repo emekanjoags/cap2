@@ -41756,8 +41756,17 @@ var render = function() {
                           ])
                         : _c("p", { staticClass: "info-area" }, [
                             _vm._v(
-                              "You have no pending payments, to see your completed transactions go to Transactions under the Account section"
-                            )
+                              "You have no pending payments, to see your completed transactions go to  "
+                            ),
+                            _c(
+                              "a",
+                              {
+                                staticStyle: { color: "#ff4f2e" },
+                                attrs: { href: "/dashboard/transactions" }
+                              },
+                              [_vm._v("Transactions")]
+                            ),
+                            _vm._v(" under the Account section")
                           ]),
                       _vm._v(" "),
                       _vm._l(_vm.money_pending_payments, function(
@@ -42067,8 +42076,17 @@ var render = function() {
                           ])
                         : _c("p", { staticClass: "info-area" }, [
                             _vm._v(
-                              "You have no pending withdrawal, to see your completed transactions go to Transactions under the Account section"
-                            )
+                              "You have no pending withdrawal, to see your completed transactions go to  "
+                            ),
+                            _c(
+                              "a",
+                              {
+                                staticStyle: { color: "#ff4f2e" },
+                                attrs: { href: "/dashboard/transactions" }
+                              },
+                              [_vm._v("Transactions")]
+                            ),
+                            _vm._v(" under the Account section")
                           ]),
                       _vm._v(" "),
                       _vm._l(_vm.money_pending_receiving, function(

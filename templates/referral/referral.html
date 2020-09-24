@@ -13,15 +13,18 @@
                             {{message}}
                         </div>
                         {%endfor%}
+                <div style="text-align:right;">
+                  <h6>Referral code:<b> {{ref_code}}</b></h6>
+                </div>
                 <div class="info-area" style="margin-bottom:20px;">
-                    <h4>Referral Bonus Balance:</h4>
+                    <h6>Referral Bonus Balance:</h6>
                     <form class="form-wrap" method="POST" action="">
                         {%csrf_token%}
-                        <h4 ><b {%if withdraw_btn == 0 %} style="color:red;" {%else%} style="color:green;" {%endif%}>&#8358;{{profile.referral_balance}}</b></h4>
+                        <h6 ><b {%if withdraw_btn == 0 %} style="color:red;" {%else%} style="color:green;" {%endif%}>&#8358;{{profile.referral_balance}}</b></h6>
                         <input type="submit" value="withdraw"  {%if withdraw_btn == 0 %}class="btn btn-primary" disabled {%else%} class="btn btn-success"{%endif%}>
                     </form>
                     <div>
-                      <i>referral bonus balance must be up to <i style="color:green">&#8358;10,000</i> before you are eligible to withdraw </i>
+                      <p style="font-size:14px;"><i>referral bonus balance must be up to <i style="color:green">&#8358;10,000</i> before you are eligible to withdraw </i></p>
                     </div>
                 </div>
                

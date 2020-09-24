@@ -15,7 +15,7 @@ Including another URLconf
 """
 from django.contrib import admin
 from django.urls import path, include
-from .views import homePage, faq, referral
+from .views import homePage, faq, referral, tos
 from django.conf.urls.static import static
 from django.conf import settings
 from django.contrib.auth import views as auth_views
@@ -24,6 +24,7 @@ urlpatterns = [
     path('admin/', admin.site.urls),
     path('', homePage, name="home-page" ),
     path('faq', faq, name='faq'),
+    path('terms', tos, name='terms'),
     path('dashboard/', include('dashboard.urls')),
     path('auth/', include('authentication.urls')),
     path('account', include('account.urls')),

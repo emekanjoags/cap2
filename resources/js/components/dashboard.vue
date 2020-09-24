@@ -40,7 +40,7 @@
         <div v-if="donation_view">
            <div class="col-lg-12">
                <p v-if="pending_payment || pending_payment_b" class="info-area">Please make payment before the countdown runs out to avoid getting blocked, as soon as you pay and get confirmed you will be in line to enter the receiver's list. </p>
-               <p v-else class="info-area">You have no pending payments, to see your completed transactions go to Transactions under the Account section</p>
+               <p v-else class="info-area">You have no pending payments, to see your completed transactions go to  <a style="color:#ff4f2e;" href="/dashboard/transactions">Transactions</a> under the Account section</p>
                <div class="col-md-4 list" v-if="money_pending_payments" v-for="(pending, index) in money_pending_payments">
                     <ul><span v-show="!pending.pop"><li v-if='expired' style="color:#000000;">{{expired}}</li><li v-else style="width:5px:height:5px;"><flip-countdown v-bind:deadline="timer_list[index].converted_time"></flip-countdown></li></span>
                         <li>Account Name: {{pending.account_name}}</li>
@@ -80,7 +80,7 @@
            <!-- WITHDRAWALS -->
            <div class="col-lg-12">
                 <p v-if="pending_withdrawal || pending_withdrawal_b" class="info-area">This member has reserved you and will make payment to you shortly</p>
-                <p v-else class="info-area">You have no pending withdrawal, to see your completed transactions go to Transactions under the Account section</p>
+                <p v-else class="info-area">You have no pending withdrawal, to see your completed transactions go to  <a style="color:#ff4f2e;" href="/dashboard/transactions">Transactions</a> under the Account section</p>
                 <div class="col-md-4 list" v-if="money_pending_receiving" v-for="(pending, index) in money_pending_receiving">
                      <ul><span v-if="pending.pop" style="text-align:center;color:#000000;">Member has made payment</span>
                      <span v-else><li v-if='block[index].block_btn' style="color:#000000;">This member's time has expired, please block this member so that you can go back into the receiving list</li><li v-else style="width:5px:height:5px;"><flip-countdown v-bind:deadline="r_timer_list[index].converted_time"></flip-countdown></li></span>

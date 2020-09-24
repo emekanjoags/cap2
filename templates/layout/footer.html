@@ -12,8 +12,7 @@
                             </a>
                         </div>
                         <p>
-                            Leveragecapital@support.com <br> <br>
-                            Plot 34 Abule close, Surulere
+                            support@Leveragecapital.com <br> <br>
                         </p>
                         <div class="socail_links">
                             <ul>
@@ -52,6 +51,7 @@
                             {% if request.user.is_authenticated%}
                             <li><a href="{% url 'dashboard:donate' %}">Make Donations </a></li>
                             <li><a href="{% url 'dashboard:dashboard' %}">Dashboard </a></li>
+                            <li><a href="{% url 'dashboard:transactions' %}">Transactions </a></li>
                             {%else%}
                             <li><a href="{% url 'authentication:registration' %}">Register</a></li>
                             <li><a href="{% url 'authentication:login-page' %}">Login </a></li>
@@ -73,6 +73,8 @@
                             {%endif%}
                             <li><a href="{% url 'testimony:testimony' %}">Testimonies</a></li>
                             <li><a href="#"> Contact</a></li>
+                            <li><a href="{% url 'terms' %}">Terms of service</a></li>
+                            <li><a href="#">Support</a></li>
                         </ul>
                     </div>
                 </div>

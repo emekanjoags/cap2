@@ -8,7 +8,7 @@ from django.http import HttpResponseRedirect
 from django.urls import reverse
 
 def homePage(request):
-    content = Testimony.objects.all().order_by("-time")[:3]
+    content = Testimony.objects.all().order_by("-time")[:6]
     contex = {
         'content':content
     }
@@ -21,6 +21,7 @@ def faq(request):
 def referral(request):
     profile = Profile.objects.get(user=request.user)
     referral = Referral.objects.filter(referrer=request.user)
+    ref_code = profile.referral_code
     withdraw_btn = 0
     if profile.referred_active % 5 == 0 and profile.referral_balance != 0:
         withdraw_btn = 1
@@ -42,6 +43,9 @@ def referral(request):
     context = {
         'referral':referral,
         'profile':profile,
+        'ref_code':ref_code,
         'withdraw_btn':withdraw_btn
     }
     return render(request, 'referral/referral.html', context)
+def tos(request):
+    return render(request, 'tos.html')

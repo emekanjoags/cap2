@@ -8,7 +8,22 @@
     <title>Leverage Capital | {%block title%}{%endblock%}</title>
     <meta name="description" content="">
     <meta name="viewport" content="width=device-width, initial-scale=1">
-
+    <meta name="keywords"
+          content="Investment, Money, trade bitcoin, return on investment, donation, provide help, make money online">
+    <meta name="description"
+          content="Make safe investments now and get 50% of your investments within 24 hours. No hassle no fuss.">
+    <meta name="author" content="Leverage Capital">
+    <meta name="robot" content="index, follow">
+    <meta name="copyright" content="Copyright © 2020 Leverage Capital. All Rights Reserved.">
+    <meta name="language" content="English">
+    <meta name="revisit-after" content="1 days">
+    <meta property="og:image" content="{% static 'img/logo2.png' %}"/>
+    <meta property="og:image:type" content="image/png"/>
+    <meta property="og:url"
+    content="{% if request.is_secure %}https://{% else %}http://{% endif %}{{ request.get_host }}{{ request.get_absolute_url }}"/>
+    <meta property="og:description"
+        content="Make safe investments now and get 50% of your investments within 24 hours. No hassle no fuss."/>
+    <meta property="og:title" content="Your wise investment choice"/>
     <!-- <link rel="manifest" href="site.webmanifest"> -->
     <link rel="shortcut icon" type="image/x-icon" href="{% static 'img/levefavicon.ico' %}">
     <!-- Place favicon.ico in the root directory -->
@@ -99,7 +114,7 @@
                                             {%endif%}
                                             <li><a href="support">Support</a></li>
                                             
-                                            <li><a href="{% url 'faq' %}">FAQ</a></li>
+                                            <li><a href="{% url 'faq' %}">Frequently Asked Questions</a></li>
                                             {% if request.user.is_authenticated%}
                                             <li><a href="{% url 'authentication:logout-user' %}">Logout</a></li>
                                             {%endif%}

@@ -6,8 +6,8 @@ from authentication.models import Profile
 
 class TestimonyView(View):
     def get(self, request):
-        content = Testimony.objects.all()
-        paginator = Paginator(content, 2)
+        content = Testimony.objects.all().order_by('-id')
+        paginator = Paginator(content, 7)
         page = request.GET.get('page')
 
         try:
