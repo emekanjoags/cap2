@@ -24,18 +24,14 @@ from utilities.general_middleware import AdminCheckMiddleware
 class TimerDisplay(APIView):
     def get(self, request):
         timer = Timer.objects.get(id=1)
-        print('time: ', timer)
         serializer = TimerSerializer(timer)
-        print('data ', serializer.data)
         return Response(data=serializer.data, status=status.HTTP_200_OK)
 
 class MakeDonation(APIView):
     def get(self, request):
         remnant = 'False'
         receivers_list = Receivers.objects.filter(enter_list=True, has_received=False, receiving_type=1)
-        print('receivers: ', receivers_list)
         serializer =  MakeDonationSerializer(receivers_list, many=True)
-        print('serializer: ', serializer.data)
         payer_remnant = PayerRemnant.objects.filter(user=request.user, has_remnant=True)
         if payer_remnant:
             remnant = 'True'
@@ -49,8 +45,7 @@ class MakeDonation(APIView):
         payer_remnant = data.get('p_remnant')
         user_will_pay = data.get('user_pay')
         receiver = data.get('receiver')
-        print('type: ', type(receiver))
-        print('receiver: ', receiver)
+
 
         current_user_still_on_list = False
         profile = Profile.objects.get(user=request.user)
@@ -99,11 +94,8 @@ class MakeDonation(APIView):
             active_receiver.amount = receiver_remnat
         else:
             active_receiver.enter_list = False
-        print('receiver:', active_receiver)
         active_receiver.save()
         receiving_profile = Profile.objects.get(user=active_receiver.user)
-        print('prof:', receiving_profile)
-        print('acct: ', receiving_profile.account_name)
         expiry_date = timezone.localtime() + timedelta(1)
         ReservedReceivers.objects.create(user=request.user, receiving_amount=user_will_pay, receivers_name=active_receiver.name,
             receiving_user=active_receiver.user, transaction_type=1, phone=receiving_profile.phone,
@@ -119,9 +111,7 @@ class MakeDonationB(APIView):
     def get(self, request):
         remnant = False
         receivers_list = Receivers.objects.filter(enter_list=True, has_received=False, receiving_type=2)
-        print('receivers: ', receivers_list)
         serializer =  MakeDonationBSerializer(receivers_list, many=True)
-        print('serializer: ', serializer)
         payer_remnant = PayerRemnant.objects.filter(user=request.user, has_remnant=True)
         if payer_remnant:
             remnant = 'True'
@@ -135,8 +125,7 @@ class MakeDonationB(APIView):
         payer_remnant = data.get('p_remnant')
         user_will_pay = data.get('user_pay')
         receiver = data.get('receiver')
-        print('type: ', type(receiver))
-        print('receiver: ', receiver)
+
 
         current_user_still_on_list = False
         profile = Profile.objects.get(user=request.user)
@@ -178,11 +167,8 @@ class MakeDonationB(APIView):
             active_receiver.amount = receiver_remnat
         else:
             active_receiver.enter_list = False
-        print('receiver:', active_receiver)
         active_receiver.save()
         receiving_profile = Profile.objects.get(user=active_receiver.user)
-        print('prof:', receiving_profile)
-        print('acct: ', receiving_profile.account_name)
         expiry_date = timezone.localtime() + timedelta(1)
         ReservedReceivers.objects.create(user=request.user, receiving_amount=user_will_pay, receivers_name=active_receiver.name,
             receiving_user=active_receiver.user, transaction_type=2, phone=receiving_profile.phone,
@@ -242,7 +228,6 @@ class DisplayMsg(APIView):
 class PendingCashDonations(APIView):
     def get(self, request):
         reservedreceivers = ReservedReceivers.objects.filter(user=request.user, transaction_type=1, have_paid=False, blocked=False)
-        print('reseved: ', reservedreceivers)
         if reservedreceivers.count() < 1:
             return Response(data={'stat':'no_pay_money'}, status=status.HTTP_200_OK)
         serializer =  ReservedReceiversSerializer(reservedreceivers, many=True)
@@ -254,8 +239,6 @@ class PendingCashDonations(APIView):
         acct_name = data.get('acct_name')
         phone = data.get('phone')
         receiving_amount = data.get('amount')
-        print('pic: ', picture)
-        print('acct_name: ', acct_name)
         reservedreceivers = ReservedReceivers.objects.filter(user=request.user, transaction_type=1, 
         phone=phone, receiving_amount=receiving_amount, have_paid=False).first()
         reservedreceivers.pop = picture
@@ -266,7 +249,6 @@ class PendingCashDonations(APIView):
 class PendingBitcoinDonations(APIView):
     def get(self, request):
         reservedreceivers = ReservedReceivers.objects.filter(user=request.user, transaction_type=2, have_paid=False, blocked=False)
-        print('reseved: ', reservedreceivers)
         if reservedreceivers.count() < 1:
             return Response(data={'stat':'no_pay_money'}, status=status.HTTP_200_OK)
         serializer =  ReservedReceiversSerializer(reservedreceivers, many=True)
@@ -278,8 +260,6 @@ class PendingBitcoinDonations(APIView):
         wallet = data.get('wallet')
         phone = data.get('phone')
         receiving_amount = data.get('amount')
-        print('pic: ', picture)
-        print('wallet: ', wallet)
         reservedreceivers = ReservedReceivers.objects.filter(user=request.user, transaction_type=2, 
         phone=phone, receiving_amount=receiving_amount, have_paid=False).first()
         reservedreceivers.pop = picture
@@ -317,7 +297,6 @@ class BlockMemberView(APIView):
         have_paid=False).first()
         if reserved_receivers:
             if timezone.now() > reserved_receivers.expiry_date and reserved_receivers.pop is None:
-                print('user: ', blocked_user)
                 user = User.objects.get(id=int(blocked_user))
                 user.is_active = False
                 user.save()
@@ -343,7 +322,6 @@ class ConfirmUser(APIView):
         data = request.data
         paying_user = data.get('payer')
         amount = data.get('amount')
-        print('type: ', data.get('type'))
         trans_type = int(data.get('type'))
         payer = User.objects.get(id=int(paying_user))
         profile = Profile.objects.get(user=payer)
@@ -375,7 +353,6 @@ class ConfirmUser(APIView):
                         total_amt += i.amount
                         i.receiver_created = True
                         i.save()
-                    print('amt: ', total_amt)
                     process_ref = 0
                     if trans_type == 1 and total_amt >= 10000:
                         process_ref = 1
@@ -450,25 +427,20 @@ def adminConfirmUser(request):
         data = request.POST
         paying_user = data.get('payer')
         amount = data.get('amount')
-        print('amount',type(amount))
-        print('type: ', data.get('type'))
         trans_type = int(data.get('type'))
         receiver_p = data.get('receiver')
         try:
             payer = User.objects.get(username=paying_user)
-            print('payer: ', payer)
         except User.DoesNotExist:
             messages.warning(request, 'No user like this')
             return HttpResponseRedirect(reverse('dashboard:admin-confirm'))
         try:
             receiving_user = User.objects.get(username=receiver_p)
-            print('receiver: ', receiving_user)
         except User.DoesNotExist:
             messages.warning(request, 'No user like this')
             return HttpResponseRedirect(reverse('dashboard:admin-confirm'))
         profile = Profile.objects.get(user=payer)
         receiver = ReservedReceivers.objects.filter(user=payer, receiving_user=receiving_user, receiving_amount=amount, have_paid=True, have_received=False).first()
-        print('obj: ', receiver)
         if not receiver:
             messages.warning(request, 'this receiver does not exist or already confirmed')
             return HttpResponseRedirect(reverse('dashboard:admin-confirm'))
@@ -497,7 +469,6 @@ def adminConfirmUser(request):
                         total_amt += i.amount
                         i.receiver_created = True
                         i.save()
-                    print('amt: ', total_amt)
                     process_ref = 0
                     if trans_type == 1 and total_amt >= 10000:
                         process_ref = 1

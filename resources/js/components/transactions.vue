@@ -74,7 +74,7 @@ export default {
             .then(response=>{
                 if(response.data.stat == 'empty'){
                     this.no_transact = true
-                    console.log('empty')
+                    
                 }
                 else if(response.data.stat == 'good'){
                     this.donations = response.data.content
@@ -84,15 +84,15 @@ export default {
                     var time = ymd
                     this.donations[i].date_reserved = time
                     this.timer_list.push({converted_time:time})
-                    console.log('jvt: ' + time)
-                    console.log('good')
+                
+                
                     }
                 }
                 this.is_loading = false
             })
             .catch(err=>{
                 this.is_loading = false
-                console.log(err)
+                
             })
         },
         GetWithdrawal(){
@@ -101,7 +101,7 @@ export default {
             .then(response=>{
                 if(response.data.stat == 'empty'){
                     this.no_withdraw = true
-                    console.log('empty')
+                    
                 }
                 else if(response.data.stat == 'good'){
                     this.withdrawals = response.data.content
@@ -111,18 +111,18 @@ export default {
                     var time = ymd
                     this.withdrawals[i].date_reserved = time
                     this.timer_list.push({converted_time:time})
-                    console.log('jvt: ' + time)
-                    console.log('good')
+                    
+                    
                     }
-                    console.log(response.data.content)
-                    console.log(new Date())
-                    console.log('good')
+                    
+                    
+    
                 }
                 this.is_loading = false
             })
             .catch(err=>{
                 this.is_loading = false
-                console.log(err)
+                
             })
         }
     },

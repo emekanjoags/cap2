@@ -2123,13 +2123,9 @@ __webpack_require__.r(__webpack_exports__);
 
       this.is_loading = true;
       axios.get('/dashboard/api/money-donate').then(function (response) {
-        console.log('pending: ' + response.data.content);
-        console.log('response: ' + response.data.stat);
-
         if (response.data.stat == 'no_pay_money') {
           _this.pending_payment = false;
         } else if (response.data.stat == 'good') {
-          console.log('pending: ' + response.data.content);
           _this.money_pending_payments = response.data.content;
 
           for (var i = 0; i < _this.money_pending_payments.length; i++) {
@@ -2138,15 +2134,11 @@ __webpack_require__.r(__webpack_exports__);
             });
           }
 
-          console.log('pop' + _this.pop.length);
-
           for (var i = 0; i < _this.money_pending_payments.length; i++) {
             _this.selected_files.push({
               selected_file: null
             });
           }
-
-          console.log('file' + _this.selected_files.length);
 
           for (var i = 0; i < _this.money_pending_payments.length; i++) {
             var py_time = _this.money_pending_payments[i].expiry_date;
@@ -2158,16 +2150,12 @@ __webpack_require__.r(__webpack_exports__);
               converted_time: time
             });
 
-            console.log('jvt: ' + time);
             var date = new Date();
             var adjusted_date = date.setHours(date.getHours() + 1);
-            console.log('nd ' + new Date(_this.money_pending_payments[i].expiry_date));
-            console.log('newd: ' + new Date(adjusted_date));
             var current_time = new Date(adjusted_date);
 
             if (current_time > new Date(_this.money_pending_payments[i].expiry_date)) {
               _this.expired = "Time expired your account will be blocked";
-              console.log('time expired');
             }
           }
         }
@@ -2175,7 +2163,6 @@ __webpack_require__.r(__webpack_exports__);
         _this.is_loading = false;
       })["catch"](function (err) {
         _this.is_loading = false;
-        console.log('error: ' + err);
       });
     },
     BuildTransactB: function BuildTransactB() {
@@ -2186,7 +2173,6 @@ __webpack_require__.r(__webpack_exports__);
         if (response.data.stat == 'no_pay_money') {
           _this2.pending_payment_b = false;
         } else if (response.data.stat == 'good') {
-          console.log('pending: ' + response.data.content);
           _this2.bitcoin_pending_payments = response.data.content;
 
           for (var i = 0; i < _this2.bitcoin_pending_payments.length; i++) {
@@ -2195,15 +2181,11 @@ __webpack_require__.r(__webpack_exports__);
             });
           }
 
-          console.log('pop' + _this2.popb.length);
-
           for (var i = 0; i < _this2.bitcoin_pending_payments.length; i++) {
             _this2.selected_filesb.push({
               selected_file: null
             });
           }
-
-          console.log('file' + _this2.selected_filesb.length);
 
           for (var i = 0; i < _this2.bitcoin_pending_payments.length; i++) {
             var py_time = _this2.bitcoin_pending_payments[i].expiry_date;
@@ -2215,20 +2197,18 @@ __webpack_require__.r(__webpack_exports__);
               converted_time: time
             });
 
-            console.log('jvt: ' + time);
             var date = new Date();
             var adjusted_date = date.setHours(date.getHours() + 1);
-            console.log('nd ' + new Date(_this2.bitcoin_pending_payments[i].expiry_date));
-            console.log('newd: ' + new Date(adjusted_date));
             var current_time = new Date(adjusted_date);
 
             if (current_time > new Date(_this2.bitcoin_pending_payments[i].expiry_date)) {
               _this2.expired = "Time expired your account will be blocked";
-              console.log('time expired');
             }
           }
         }
 
+        _this2.is_loading = false;
+      })["catch"](function (err) {
         _this2.is_loading = false;
       });
     },
@@ -2240,7 +2220,6 @@ __webpack_require__.r(__webpack_exports__);
         if (response.data.stat == 'no_receive_money') {
           _this3.pending_withdrawal = false;
         } else if (response.data.stat == 'good') {
-          console.log('receive: ' + response.data.content);
           _this3.money_pending_receiving = response.data.content;
         }
 
@@ -2260,11 +2239,8 @@ __webpack_require__.r(__webpack_exports__);
             converted_time: time
           });
 
-          console.log('jvt: ' + time);
           var date = new Date();
           var adjusted_date = date.setHours(date.getHours() + 1);
-          console.log('nd ' + new Date(_this3.money_pending_receiving[i].expiry_date));
-          console.log('newd: ' + new Date(adjusted_date));
           var current_time = new Date(adjusted_date);
 
           if (current_time > new Date(_this3.money_pending_receiving[i].expiry_date)) {
@@ -2274,20 +2250,17 @@ __webpack_require__.r(__webpack_exports__);
 
         _this3.is_loading = false;
       })["catch"](function (err) {
-        console.log('error:' + err);
+        _this3.is_loading = false;
       });
     },
     BuildReceiversB: function BuildReceiversB() {
       var _this4 = this;
 
       this.is_loading = true;
-      console.log('entered bit receive');
       axios.get('/dashboard/api/bitcoin-withdraw').then(function (response) {
         if (response.data.stat == 'no_receive_money') {
           _this4.pending_withdrawal_b = false;
-          console.log('no bitcoins to receive');
         } else if (response.data.stat == 'good') {
-          console.log('receiveb: ' + response.data.content);
           _this4.bitcoin_pending_receiving = response.data.content;
         }
 
@@ -2307,11 +2280,8 @@ __webpack_require__.r(__webpack_exports__);
             converted_time: time
           });
 
-          console.log('jvt: ' + time);
           var date = new Date();
           var adjusted_date = date.setHours(date.getHours() + 1);
-          console.log('nd ' + new Date(_this4.bitcoin_pending_receiving[i].expiry_date));
-          console.log('newd: ' + new Date(adjusted_date));
           var current_time = new Date(adjusted_date);
 
           if (current_time > new Date(_this4.bitcoin_pending_receiving[i].expiry_date)) {
@@ -2321,12 +2291,12 @@ __webpack_require__.r(__webpack_exports__);
 
         _this4.is_loading = false;
       })["catch"](function (err) {
-        console.log('error:' + err);
+        _this4.is_loading = false;
+        console.log('error:');
       });
     },
     viewPop: function viewPop(index) {
       this.closem = !this.closem;
-      console.log('button was trigggered');
       var el = document.getElementsByClassName('proofm')[index];
 
       if (this.closem == true) {
@@ -2334,12 +2304,9 @@ __webpack_require__.r(__webpack_exports__);
       } else if (this.closem == false) {
         el.style.display = 'none';
       }
-
-      console.log('finsihed');
     },
     viewPopb: function viewPopb(index) {
       this.close = !this.close;
-      console.log('button was trigggered');
       var el = document.getElementsByClassName('proof')[index];
 
       if (this.close == true) {
@@ -2347,8 +2314,6 @@ __webpack_require__.r(__webpack_exports__);
       } else if (this.close == false) {
         el.style.display = 'none';
       }
-
-      console.log('finsihed');
     },
     displayMsg: function displayMsg() {
       var _this5 = this;
@@ -2362,16 +2327,11 @@ __webpack_require__.r(__webpack_exports__);
         } else if (response.data.stat == 'receiver') {
           var content;
           content = response.data.content;
-          console.log(content);
-          console.log('b4 loop');
 
           for (var obj = 0; obj < content.length; obj++) {
-            console.log('in loop');
             var r_amount = content[obj].amount;
             var ld_amount = content[obj].amount / 1.5;
             var d_amount = String(ld_amount).slice(0, 8);
-            console.log(d_amount);
-            console.log(r_amount);
 
             _this5.msg_type.push(content[obj].receiving_type);
 
@@ -2387,15 +2347,11 @@ __webpack_require__.r(__webpack_exports__);
               end: ed
             });
           }
-
-          console.log(_this5.receiver_msg);
-          console.log('rr' + response.data.content[0]);
         }
 
         _this5.is_loading = false;
       })["catch"](function (err) {
         _this5.is_loading = false;
-        console.log(err);
       });
     },
     displayPop: function displayPop(index) {
@@ -2432,10 +2388,8 @@ __webpack_require__.r(__webpack_exports__);
             window.location.reload();
           }, 2000);
         }
-
-        console.log('res: ' + response);
       })["catch"](function (err) {
-        console.log('err: ' + err);
+        _this6.is_loading = false;
       });
     },
     havePaidb: function havePaidb(index) {
@@ -2460,10 +2414,8 @@ __webpack_require__.r(__webpack_exports__);
             window.location.reload();
           }, 2000);
         }
-
-        console.log('res: ' + response);
       })["catch"](function (err) {
-        console.log('err: ' + err);
+        _this7.is_loading = false;
       });
     },
     blockUser: function blockUser(index) {
@@ -2486,12 +2438,9 @@ __webpack_require__.r(__webpack_exports__);
         } else if (response.data.stat == "still_time") {
           _this8.error_msg = 'Cannot block user because the time has not expired';
         }
-
-        console.log(response);
       })["catch"](function (err) {
         _this8.is_loading = false;
         _this8.error_msg = 'something went wrong, please try again later';
-        console.log(err);
       });
     },
     blockUserb: function blockUserb(index) {
@@ -2514,12 +2463,9 @@ __webpack_require__.r(__webpack_exports__);
         } else if (response.data.stat == "still_time") {
           _this9.error_msg = 'Cannot block this user ';
         }
-
-        console.log(response);
       })["catch"](function (err) {
         _this9.is_loading = false;
         _this9.error_msg = 'something went wrong, please try again later';
-        console.log(err);
       });
     },
     confirmUser: function confirmUser(index) {
@@ -2542,10 +2488,8 @@ __webpack_require__.r(__webpack_exports__);
         setTimeout(function () {
           window.location.reload();
         }, 2000);
-        console.log(response.data.stat);
       })["catch"](function (err) {
         _this10.is_loading = false;
-        console.log('err: ' + err);
       });
     },
     confirmUserb: function confirmUserb(index) {
@@ -2568,10 +2512,8 @@ __webpack_require__.r(__webpack_exports__);
         setTimeout(function () {
           window.location.reload();
         }, 2000);
-        console.log(response.data.stat);
       })["catch"](function (err) {
         _this11.is_loading = false;
-        console.log('err: ' + err);
       });
     }
   },
@@ -2828,9 +2770,8 @@ __webpack_require__.r(__webpack_exports__);
 
         _this.is_loading = false;
       })["catch"](function (err) {
-        console.log('got an errir');
+        console.log('err');
         _this.is_loading = false;
-        console.log(err);
       });
     },
     BuildList: function BuildList() {
@@ -2838,7 +2779,6 @@ __webpack_require__.r(__webpack_exports__);
 
       this.is_loading = true;
       axios.get('/dashboard/api/money').then(function (response) {
-        console.log(response);
         _this2.money_receivers = response.data.content;
 
         if (response.data.remnant == 'True') {
@@ -2850,10 +2790,9 @@ __webpack_require__.r(__webpack_exports__);
         }
 
         _this2.is_loading = false;
-        console.log('receivers: ' + _this2.money_receivers);
       })["catch"](function (err) {
         _this2.is_loading = false;
-        console.log('error: ' + err);
+        console.log('err');
       });
     },
     BuildList2: function BuildList2() {
@@ -2861,7 +2800,6 @@ __webpack_require__.r(__webpack_exports__);
 
       this.is_loading = true;
       axios.get('/dashboard/api/bitcoin').then(function (response) {
-        console.log(response);
         _this3.bitcoin_receivers = response.data.content;
 
         if (response.data.remnant == 'True') {
@@ -2873,9 +2811,8 @@ __webpack_require__.r(__webpack_exports__);
         }
 
         _this3.is_loading = false;
-        console.log('receivers: ' + _this3.bitcoin_receivers);
       })["catch"](function (err) {
-        console.log('berror: ' + err);
+        console.log('err');
       });
     },
     toggle_donation_mode: function toggle_donation_mode() {
@@ -2939,11 +2876,6 @@ __webpack_require__.r(__webpack_exports__);
             this.amount.naira = 0;
           }
 
-          console.log('r_remnat ' + this.money.receiver_remnant);
-          console.log('p_remnat ' + this.money.payer_remnant);
-          console.log('user_pay ' + this.money.user_pay);
-          console.log('id ' + this.money_receivers[index].id);
-          console.log('id ' + this.money_receivers[index].name);
           axios.post('/dashboard/api/money', {
             r_remnant: this.money.receiver_remnant,
             user_pay: this.money.user_pay,
@@ -2972,7 +2904,7 @@ __webpack_require__.r(__webpack_exports__);
               _this4.error_msg = "Please add your bank details and phone number in the profile page section before you reserve a member";
             }
           })["catch"](function (err) {
-            console.log('error: ' + err);
+            console.log('err');
           });
         } else {
           this.alert_low_naira();
@@ -3006,11 +2938,6 @@ __webpack_require__.r(__webpack_exports__);
             this.amount.bitcoin = 0;
           }
 
-          console.log('r_remnat ' + this.bitcoin.receiver_remnant);
-          console.log('p_remnat ' + this.bitcoin.payer_remnant);
-          console.log('user_pay ' + this.bitcoin.user_pay);
-          console.log('id ' + this.bitcoin_receivers[index].id);
-          console.log('id ' + this.bitcoin_receivers[index].name);
           axios.post('/dashboard/api/bitcoin', {
             r_remnant: this.bitcoin.receiver_remnant,
             user_pay: this.bitcoin.user_pay,
@@ -3037,7 +2964,7 @@ __webpack_require__.r(__webpack_exports__);
               _this5.error_msg = "Please add your bitcoin wallet address and phone number in the profile page section before you reserve a member";
             }
           })["catch"](function (err) {
-            console.log('bberror: ' + err);
+            console.log('bberror');
           });
         } else {
           this.alert_low_naira();
@@ -3139,7 +3066,6 @@ __webpack_require__.r(__webpack_exports__);
       axios.get('/dashboard/api/transact').then(function (response) {
         if (response.data.stat == 'empty') {
           _this.no_transact = true;
-          console.log('empty');
         } else if (response.data.stat == 'good') {
           _this.donations = response.data.content;
 
@@ -3152,16 +3078,12 @@ __webpack_require__.r(__webpack_exports__);
             _this.timer_list.push({
               converted_time: time
             });
-
-            console.log('jvt: ' + time);
-            console.log('good');
           }
         }
 
         _this.is_loading = false;
       })["catch"](function (err) {
         _this.is_loading = false;
-        console.log(err);
       });
     },
     GetWithdrawal: function GetWithdrawal() {
@@ -3171,7 +3093,6 @@ __webpack_require__.r(__webpack_exports__);
       axios.get('/dashboard/api/transactw').then(function (response) {
         if (response.data.stat == 'empty') {
           _this2.no_withdraw = true;
-          console.log('empty');
         } else if (response.data.stat == 'good') {
           _this2.withdrawals = response.data.content;
 
@@ -3184,20 +3105,12 @@ __webpack_require__.r(__webpack_exports__);
             _this2.timer_list.push({
               converted_time: time
             });
-
-            console.log('jvt: ' + time);
-            console.log('good');
           }
-
-          console.log(response.data.content);
-          console.log(new Date());
-          console.log('good');
         }
 
         _this2.is_loading = false;
       })["catch"](function (err) {
         _this2.is_loading = false;
-        console.log(err);
       });
     }
   },

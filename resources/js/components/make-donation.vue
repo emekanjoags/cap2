@@ -217,16 +217,16 @@ export default {
                 this.is_loading = false
             })
             .catch(err=>{
-                console.log('got an errir')
+                console.log('err')
                 this.is_loading = false
-                console.log(err)
+        
             })
         },
         BuildList(){
             this.is_loading  = true
             axios.get('/dashboard/api/money')
             .then(response=>{
-                console.log(response)
+            
                 this.money_receivers = response.data.content
                 if (response.data.remnant == 'True'){
                     this.money.payer_remnant_bal = true
@@ -235,18 +235,18 @@ export default {
                     this.empty_list = true
                 }
                 this.is_loading = false
-                console.log('receivers: ' + this.money_receivers)
+                
             })
             .catch(err=>{
                 this.is_loading = false
-                console.log('error: ' + err)
+                console.log('err')
             })
         },
         BuildList2(){
             this.is_loading  = true
             axios.get('/dashboard/api/bitcoin')
             .then(response=>{
-                console.log(response)
+                
                 this.bitcoin_receivers = response.data.content
                 if (response.data.remnant == 'True'){
                     this.bitcoin.payer_remnant_bal = true
@@ -255,10 +255,10 @@ export default {
                     this.empty_listb = true
                 }
                 this.is_loading = false
-                console.log('receivers: ' + this.bitcoin_receivers)
+                
             })
             .catch(err=>{
-                console.log('berror: ' + err)
+                console.log('err')
             })
         },
         toggle_donation_mode(){
@@ -331,11 +331,10 @@ export default {
                     this.amount.naira = 0
 
                 }
-                console.log('r_remnat ' + this.money.receiver_remnant)
-                console.log('p_remnat ' + this.money.payer_remnant)
-                console.log('user_pay ' + this.money.user_pay)
-                console.log('id ' + this.money_receivers[index].id)
-                console.log('id ' + this.money_receivers[index].name)
+                
+        
+        
+                
                 axios.post('/dashboard/api/money', {
                     r_remnant : this.money.receiver_remnant,
                     user_pay : this.money.user_pay,
@@ -374,7 +373,7 @@ export default {
                     
                 })
                 .catch(err=>{
-                    console.log('error: ' + err)
+                    console.log('err')
                 })
 
                 
@@ -413,11 +412,10 @@ export default {
                     this.amount.bitcoin = 0
 
                 }
-                console.log('r_remnat ' + this.bitcoin.receiver_remnant)
-                console.log('p_remnat ' + this.bitcoin.payer_remnant)
-                console.log('user_pay ' + this.bitcoin.user_pay)
-                console.log('id ' + this.bitcoin_receivers[index].id)
-                console.log('id ' + this.bitcoin_receivers[index].name)
+                
+        
+        
+                
                 axios.post('/dashboard/api/bitcoin', {
                     r_remnant : this.bitcoin.receiver_remnant,
                     user_pay : this.bitcoin.user_pay,
@@ -453,7 +451,7 @@ export default {
                     
                 })
                 .catch(err=>{
-                    console.log('bberror: ' + err)
+                    console.log('bberror')
                 })
 
                 

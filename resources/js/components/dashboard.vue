@@ -180,22 +180,18 @@ export default {
         this.is_loading = true
         axios.get('/dashboard/api/money-donate')
         .then(response=>{
-            console.log('pending: ' + response.data.content)
-            console.log('response: ' + response.data.stat)
             if(response.data.stat == 'no_pay_money'){
                 this.pending_payment = false
             }
             else if(response.data.stat == 'good'){
-                console.log('pending: ' + response.data.content)
                 this.money_pending_payments = response.data.content
                 for(var i = 0; i < this.money_pending_payments.length;i++){
                     this.pop.push({popbtn:false})
                 }
-                console.log('pop' + this.pop.length)
                 for(var i = 0; i < this.money_pending_payments.length;i++){
                     this.selected_files.push({selected_file:null})
                 }
-                console.log('file' + this.selected_files.length)
+                
                 
                 for(var i = 0; i < this.money_pending_payments.length;i++){
                     var py_time = this.money_pending_payments[i].expiry_date
@@ -203,15 +199,11 @@ export default {
                     var tt = py_time.slice(11, 19)
                     var time = ymd + ' ' + tt
                     this.timer_list.push({converted_time:time})
-                    console.log('jvt: ' + time)
                     var date = new Date()
                     var adjusted_date = date.setHours(date.getHours() + 1)
-                    console.log('nd ' + new Date(this.money_pending_payments[i].expiry_date))
-                    console.log('newd: ' + new Date(adjusted_date))
                     var current_time = new Date(adjusted_date);
                     if( current_time > new Date(this.money_pending_payments[i].expiry_date)){
                         this.expired= "Time expired your account will be blocked"
-                        console.log('time expired')
                     }
                 }
         
@@ -220,7 +212,6 @@ export default {
         })
         .catch(err=>{
             this.is_loading = false
-            console.log('error: ' + err)
         })
     },
     BuildTransactB(){
@@ -231,16 +222,13 @@ export default {
                 this.pending_payment_b = false
             }
             else if(response.data.stat == 'good'){
-                console.log('pending: ' + response.data.content)
                 this.bitcoin_pending_payments = response.data.content
                 for(var i = 0; i < this.bitcoin_pending_payments.length;i++){
                     this.popb.push({popbtn:false})
                 }
-                console.log('pop' + this.popb.length)
                 for(var i = 0; i < this.bitcoin_pending_payments.length;i++){
                     this.selected_filesb.push({selected_file:null})
                 }
-                console.log('file' + this.selected_filesb.length)
                 
                 for(var i = 0; i < this.bitcoin_pending_payments.length;i++){
                     var py_time = this.bitcoin_pending_payments[i].expiry_date
@@ -248,19 +236,22 @@ export default {
                     var tt = py_time.slice(11, 19)
                     var time = ymd + ' ' + tt
                     this.timer_listb.push({converted_time:time})
-                    console.log('jvt: ' + time)
+                    
                     var date = new Date()
                     var adjusted_date = date.setHours(date.getHours() + 1)
-                    console.log('nd ' + new Date(this.bitcoin_pending_payments[i].expiry_date))
-                    console.log('newd: ' + new Date(adjusted_date))
+                    
+                    
                     var current_time = new Date(adjusted_date);
                     if( current_time > new Date(this.bitcoin_pending_payments[i].expiry_date)){
                         this.expired= "Time expired your account will be blocked"
-                        console.log('time expired')
+                        
                     }
                 }
         
             }
+            this.is_loading = false
+        })
+        .catch(err=>{
             this.is_loading = false
         })
     },
@@ -272,7 +263,7 @@ export default {
                 this.pending_withdrawal = false
             }
             else if(response.data.stat == 'good'){
-                console.log('receive: ' + response.data.content)
+                
                 this.money_pending_receiving = response.data.content
             }
             
@@ -285,11 +276,8 @@ export default {
                     var tt = py_time.slice(11, 19)
                     var time = ymd + ' ' + tt
                     this.r_timer_list.push({converted_time:time})
-                    console.log('jvt: ' + time)
                     var date = new Date()
                     var adjusted_date = date.setHours(date.getHours() + 1)
-                    console.log('nd ' + new Date(this.money_pending_receiving[i].expiry_date))
-                    console.log('newd: ' + new Date(adjusted_date))
                     var current_time = new Date(adjusted_date);
                     if( current_time > new Date(this.money_pending_receiving[i].expiry_date)){
                         this.block[i].block_btn = true
@@ -299,21 +287,21 @@ export default {
             this.is_loading = false
         })
         .catch(err=>{
-            console.log('error:' + err)
+            this.is_loading = false
         })
     },
     BuildReceiversB(){
         this.is_loading = true
-        console.log('entered bit receive')
+    
         axios.get('/dashboard/api/bitcoin-withdraw')
         .then(response=>{
             if(response.data.stat == 'no_receive_money'){
                 this.pending_withdrawal_b = false
-                console.log('no bitcoins to receive')
+                
             }
             else if(response.data.stat == 'good'){
                 
-                console.log('receiveb: ' + response.data.content)
+                
                 this.bitcoin_pending_receiving = response.data.content
             }
             
@@ -326,11 +314,11 @@ export default {
                     var tt = py_time.slice(11, 19)
                     var time = ymd + ' ' + tt
                     this.r_timer_listb.push({converted_time:time})
-                    console.log('jvt: ' + time)
+                    
                     var date = new Date()
                     var adjusted_date = date.setHours(date.getHours() + 1)
-                    console.log('nd ' + new Date(this.bitcoin_pending_receiving[i].expiry_date))
-                    console.log('newd: ' + new Date(adjusted_date))
+
+
                     var current_time = new Date(adjusted_date);
                     if( current_time > new Date(this.bitcoin_pending_receiving[i].expiry_date)){
                         this.blockb[i].block_btn = true
@@ -341,12 +329,13 @@ export default {
             
         })
         .catch(err=>{
-            console.log('error:' + err)
+            this.is_loading = false
+            console.log('error:')
         })
     },
     viewPop(index){
         this.closem = !this.closem
-        console.log('button was trigggered')
+        
         var el = document.getElementsByClassName('proofm')[index]
         if(this.closem == true){
             el.style.display = 'block'
@@ -355,12 +344,12 @@ export default {
             el.style.display = 'none'
         }
         
-        console.log('finsihed')
+        
     
     },
     viewPopb(index){
         this.close = !this.close
-        console.log('button was trigggered')
+        
         var el = document.getElementsByClassName('proof')[index]
         if(this.close == true){
             el.style.display = 'block'
@@ -369,7 +358,7 @@ export default {
             el.style.display = 'none'
         }
         
-        console.log('finsihed')
+        
     
     },
     displayMsg(){
@@ -385,15 +374,15 @@ export default {
             else if(response.data.stat == 'receiver'){
                 var content;
                 content = response.data.content
-                console.log(content)
-                console.log('b4 loop')
+                
+                
                 for(var obj = 0; obj < content.length;obj++){
-                    console.log('in loop')
+                
                     var r_amount = content[obj].amount
                     var ld_amount = content[obj].amount / 1.5
                     var d_amount = String(ld_amount).slice(0, 8)
-                    console.log(d_amount)
-                    console.log(r_amount)
+                    
+                    
                     this.msg_type.push(content[obj].receiving_type)
                     var py_time = content[obj].date_start
                     var py_time2 = content[obj].date_end
@@ -405,14 +394,14 @@ export default {
 
 
                 }
-                console.log(this.receiver_msg)
-                console.log('rr' + response.data.content[0])
+
+
             }
             this.is_loading = false
         })
         .catch(err=>{
             this.is_loading = false
-            console.log(err)
+            
         })
     },
     displayPop(index){
@@ -447,10 +436,10 @@ export default {
                             window.location.reload()
                         }, 2000)
             }
-            console.log('res: ' + response)
+            
         })
         .catch(err=>{
-            console.log('err: ' + err)
+            this.is_loading = false
         })
     },
     havePaidb(index){
@@ -473,10 +462,10 @@ export default {
                             window.location.reload()
                         }, 2000)
             }
-            console.log('res: ' + response)
+            
         })
         .catch(err=>{
-            console.log('err: ' + err)
+            this.is_loading = false
         })
     },
     blockUser(index){
@@ -499,12 +488,12 @@ export default {
                 this.error_msg = 'Cannot block user because the time has not expired'
             }
             
-            console.log(response)
+            
         })
         .catch(err=>{
             this.is_loading = false
             this.error_msg = 'something went wrong, please try again later'
-            console.log(err)
+            
         })
 
         
@@ -530,12 +519,10 @@ export default {
                 this.error_msg = 'Cannot block this user '
             }
             
-            console.log(response)
         })
         .catch(err=>{
             this.is_loading = false
             this.error_msg = 'something went wrong, please try again later'
-            console.log(err)
         })
 
         
@@ -560,11 +547,11 @@ export default {
             setTimeout(() => {
                             window.location.reload()
                         }, 2000)
-            console.log(response.data.stat)
+            
         })
         .catch(err=>{
             this.is_loading = false
-            console.log('err: ' + err)
+            
         })
     },
     confirmUserb(index){
@@ -586,11 +573,11 @@ export default {
             setTimeout(() => {
                             window.location.reload()
                         }, 2000)
-            console.log(response.data.stat)
+            
         })
         .catch(err=>{
             this.is_loading = false
-            console.log('err: ' + err)
+            
         })
     }
 
