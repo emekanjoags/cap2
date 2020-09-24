@@ -111,11 +111,14 @@
                                             {%else%}
                                             <li><a href="{% url 'authentication:registration' %}">Register</a></li>
                                             <li><a href="{% url 'authentication:login-page' %}">Login </a></li>
+                                            
                                             {%endif%}
-                                            <li><a href="support">Support</a></li>
+                                            
                                             
                                             <li><a href="{% url 'faq' %}">Frequently Asked Questions</a></li>
+                                            <li><a href="{% url 'support:support' %}">Support</a></li>
                                             {% if request.user.is_authenticated%}
+                                            
                                             <li><a href="{% url 'authentication:logout-user' %}">Logout</a></li>
                                             {%endif%}
                                             {% if request.user.is_staff %}

@@ -416,7 +416,7 @@ class ConfirmUser(APIView):
                             conv_amt = math.floor(total_amt / rate)
                     if mode == 2:
                         ref_bal = ref_bal * rate
-                    roi = conv_amt * 1.5
+                    roi = conv_amt * 1.3
                     roi += ref_bal
                     date_start = timezone.localtime() + timedelta(days=1)
                     date_end = timezone.localtime() + timedelta(days=8)
@@ -538,7 +538,7 @@ def adminConfirmUser(request):
                             conv_amt = math.floor(total_amt / rate)
                     if mode == 2:
                         ref_bal = ref_bal * rate
-                    roi = conv_amt * 1.5
+                    roi = conv_amt * 1.3
                     roi += ref_bal
                     date_start = timezone.localtime() + timedelta(days=1)
                     date_end = timezone.localtime() + timedelta(days=8)

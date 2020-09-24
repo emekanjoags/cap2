@@ -52,6 +52,7 @@
                             <li><a href="{% url 'dashboard:donate' %}">Make Donations </a></li>
                             <li><a href="{% url 'dashboard:dashboard' %}">Dashboard </a></li>
                             <li><a href="{% url 'dashboard:transactions' %}">Transactions </a></li>
+                            <li><a href="{% url 'referral' %}">Referrals</a></li>
                             {%else%}
                             <li><a href="{% url 'authentication:registration' %}">Register</a></li>
                             <li><a href="{% url 'authentication:login-page' %}">Login </a></li>
@@ -69,12 +70,13 @@
                         </h3>
                         <ul>
                             {% if request.user.is_authenticated%}
-                            <li><a href="{% url 'referral' %}">Referrals</a></li>
+                            
+                            
                             {%endif%}
                             <li><a href="{% url 'testimony:testimony' %}">Testimonies</a></li>
-                            <li><a href="#"> Contact</a></li>
+                            <li><a href="{% url 'support:support' %}"> Contact</a></li>
                             <li><a href="{% url 'terms' %}">Terms of service</a></li>
-                            <li><a href="#">Support</a></li>
+                            <li><a href="{% url 'support:support' %}">Support</a></li>
                         </ul>
                     </div>
                 </div>

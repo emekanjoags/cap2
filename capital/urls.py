@@ -30,6 +30,7 @@ urlpatterns = [
     path('account', include('account.urls')),
     path('referral', referral, name='referral'),
     path('testimony', include('testimony.urls')),
+    path('support', include('support.urls')),
 
     #PASSWORD RESET URLS
     path('reset_password/', auth_views.PasswordResetView.as_view(template_name='auth/password/reset_password.html'), name='reset_view'),
