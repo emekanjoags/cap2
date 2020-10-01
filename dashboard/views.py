@@ -155,7 +155,7 @@ class MakeDonationB(APIView):
         except Receivers.DoesNotExist:
             return Response(data={'stat':'taken'}, status=status.HTTP_200_OK)
         check_receiving_amt = Receivers.objects.filter(name=receiver, enter_list=True, has_received=False).first()
-        if int(user_will_pay) > check_receiving_amt.amount:
+        if float(user_will_pay) > check_receiving_amt.amount:
             return Response(data={'stat':'amount_changed'}, status=status.HTTP_200_OK)
         try:
             current_user_still_on_list = Receivers.objects.get(has_received=False, user=request.user)
@@ -179,7 +179,7 @@ class MakeDonationB(APIView):
             PayerRemnant.objects.create(user=request.user, has_remnant=True)
         return Response(data={'stat':'good'}, status=status.HTTP_200_OK)
 
-@login_required(login_url='login-page')
+@login_required(login_url='authentication:login-page')
 def donationPage(request):
     return render(request, 'donation/make-donation.html')
 
@@ -194,7 +194,7 @@ class DashBoard(View):
             'not_testified':not_testified
         }
         return render(request, 'donation/dashboard.html', context)
-@login_required(login_url='login-page')
+@login_required(login_url='authentication:login-page')
 def testify(request):
     if request.method == "POST":
         profile = Profile.objects.get(user=request.user)
@@ -203,11 +203,13 @@ def testify(request):
             messages.warning(request, 'Text too short')
             return render(request, 'donation/testify.html')
             #return HttpResponseRedirect(reverse('dashboard:testify'))
-        Testimony.objects.create(user=request.user, profile=profile, content=text)
-        receiver = Receivers.objects.filter(user=request.user, has_received=True, has_testified=False).first()
+        time = timezone.now()
+        Testimony.objects.create(user=request.user, profile=profile, content=text, name=request.user.username, time=time)
+        receiver = Receivers.objects.filter(user=request.user, has_received=True, has_testified=False)
         if receiver:
-            receiver.has_testified = True
-            receiver.save()
+            for obj in receiver:
+                obj.has_testified = True
+                obj.save()
             messages.success(request, 'Thank you for sharing your testimony, you can now make new donations')
             return HttpResponseRedirect(reverse('dashboard:dashboard'))
     return render(request, 'donation/testify.html')
@@ -296,7 +298,7 @@ class BlockMemberView(APIView):
         reserved_receivers = ReservedReceivers.objects.filter(user=blocked_user, receiving_amount=unpaid_amount, receiving_user=request.user,
         have_paid=False).first()
         if reserved_receivers:
-            if timezone.now() > reserved_receivers.expiry_date and reserved_receivers.pop is None:
+            if timezone.now() > reserved_receivers.expiry_date and not reserved_receivers.pop:
                 user = User.objects.get(id=int(blocked_user))
                 user.is_active = False
                 user.save()
@@ -305,7 +307,7 @@ class BlockMemberView(APIView):
                 reserved_receivers.save()
                 check_active_receivers = Receivers.objects.filter(enter_list=True, has_received=False, user=request.user, receiving_type=int(transaction_type)).first()
                 if not check_active_receivers:
-                    Receivers.objects.create(user=request.user, name=request.user.username, amount=unpaid_amount, enter_list=True, receiving_type=int(transaction_type))
+                    Receivers.objects.create(user=request.user, name=request.user.username, amount=unpaid_amount, has_entered_list=True, enter_list=True, receiving_type=int(transaction_type))
                 if check_active_receivers:
                     check_active_receivers.amount += unpaid_amount
                     check_active_receivers.save()
@@ -402,7 +404,7 @@ class ConfirmUser(APIView):
 
 
 
-@login_required(login_url='login-page')
+@login_required(login_url='authentication:login-page')
 def transactions(request):
     return render(request, 'donation/transactions.html')
 

@@ -3,7 +3,7 @@ from .models import Testimony
 
 class TestimonyAdmin(admin.ModelAdmin):
     list_display = ('user', 'time')
-    search = ('user',)
+    search_fields = ('user',)
     ordering = ('-time',)
 
 admin.site.register(Testimony, TestimonyAdmin)

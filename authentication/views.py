@@ -47,19 +47,27 @@ def registration(request):
     return render(request, 'auth/register.html', context)
 
 def loginPage(request):
+    num = 0
     if request.user.is_authenticated:
         return redirect('/')
     if request.method=='POST':
         username = request.POST['username']
         password = request.POST['password']
         user = authenticate(request, username=username, password=password)
+        msg = 'Welcome {}, please complete your registration process by adding your phone number to your profile page'.format(username)
         
+        if num:
+            msg = 'Welcome {}'.format(username)
         if user is not None:
             login(request, user)
             if request.user.is_staff:
                 return redirect ('/admin')
             else:
-                messages.success(request, 'Welcome ' + username)
+                profile = Profile.objects.get(user=request.user)
+                num = profile.phone
+                if num:
+                    msg = 'Welcome {}'.format(username)
+                messages.success(request, msg)
                 return redirect('/')
         else:
             messages.warning(request, 'username or password incorrect, username and password are case sensitive')

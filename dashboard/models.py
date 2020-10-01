@@ -17,7 +17,7 @@ class ReservedReceivers(models.Model):
     receivers_name = models.CharField( max_length=200, blank=True, null=True)
     givers_name = models.CharField( max_length=200, blank=True, null=True)
     account_name = models.CharField(max_length=300, blank=True, null=True)
-    account_number= models.IntegerField(blank=True, null=True)
+    account_number= models.CharField(max_length=300, blank=True, null=True)
     bank = models.CharField(max_length=300, blank=True, null=True)
     bitcoin_wallet = models.CharField(max_length=300, blank=True, null=True)
     pop = models.ImageField(upload_to="uploads/pop", blank=True, null=True)

@@ -17,7 +17,7 @@ def homePage(request):
 def faq(request):
     return render(request, 'faq.html')
 
-@login_required(login_url='login-page')
+@login_required(login_url='authentication:login-page')
 def referral(request):
     profile = Profile.objects.get(user=request.user)
     referral = Referral.objects.filter(referrer=request.user)

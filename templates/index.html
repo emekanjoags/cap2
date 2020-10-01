@@ -28,7 +28,7 @@
                     <div class="single_service wow fadeInLeft" data-wow-duration="1.2s" data-wow-delay=".5s">
                         <div class="service_icon_wrap text-center">
                             <div class="service_icon ">
-                                <img src="{% static 'img/svg_icon/service_1.png' %}" alt="">
+                                <img loading="lazy" src="{% static 'img/svg_icon/service_1.png' %}" alt="">
                             </div>
                         </div>
                         <div class="info text-center">
@@ -38,7 +38,7 @@
                         <div class="service_content">
                             <ul>
                                 <li> Donate a minimum of &#8358;10,000 and maximum of &#8358;500,000</li>
-                                <li> Interest rate - 50%</li>
+                                <li> Interest rate - 30%</li>
                                 <li>Duration - 24hrs to 7days</li>
                             </ul>
                             <div class="apply_btn" style="text-align:center">
@@ -51,7 +51,7 @@
                     <div class="single_service wow fadeInLeft" data-wow-duration="1.2s" data-wow-delay=".5s">
                         <div class="service_icon_wrap text-center">
                             <div class="service_icon ">
-                                <img src="{% static 'img/svg_icon/service_1.png' %}" alt="">
+                                <img loading="lazy" src="{% static 'img/svg_icon/service_1.png' %}" alt="">
                             </div>
                         </div>
                         <div class="info text-center">
@@ -61,7 +61,7 @@
                         <div class="service_content">
                             <ul>
                                 <li> Donate a minimum of 0.0026 BTC and maximum of 0.13 BTC</li>
-                                <li> Interest rate - 50%</li>
+                                <li> Interest rate - 30%</li>
                                 <li>Duration - 24hrs to 7days</li>
                             </ul>
                             <div class="apply_btn" style="text-align:center">
@@ -74,7 +74,7 @@
                     <div class="single_service wow fadeInUp" data-wow-duration="1s" data-wow-delay=".3s">
                         <div class="service_icon_wrap text-center">
                             <div class="service_icon ">
-                                <img src="{% static 'img/step.png' %}" alt="" height='70px' width='70px'>
+                                <img loading="lazy" src="{% static 'img/step.png' %}" alt="" height='70px' width='70px'>
                             </div>
                         </div>
                         <div class="info text-center">
@@ -99,7 +99,7 @@
                     <div class="single_service wow fadeInRight" data-wow-duration="1.2s" data-wow-delay=".5s">
                         <div class="service_icon_wrap text-center">
                             <div class="service_icon ">
-                                <img src="{% static 'img/referral.png' %}" alt="referral" height='70px' width='90px'>
+                                <img loading="lazy" src="{% static 'img/referral.png' %}" alt="referral" height='70px' width='90px'>
                             </div>
                         </div>
                         <div class="info text-center">
@@ -240,7 +240,9 @@
                                             (if you wish to donate in bitcoin)</li>
                                         <li><b>3. </b>Select any member from the receiver's list and click on reserve.</li>
                                         <li><b>4. </b>After reserving a name, you have to make payment within 24hours to avoid getting blocked from the system</li>
-                                        </ol>
+                                        <li><b>5. </b>The donation list comes out twice a day and will stay for one hour till the countdown runs out and disappears, to come out again
+                                            at the next stipulated time.</li>
+                                    </ol>
                                       </div>
                                     </div>
                                   </div>
@@ -292,14 +294,13 @@
                                 <div class="col-lg-11">
                                     <div class="single_testmonial d-flex align-items-center">
                                         <div class="thumb">
-                                            <img src="{{testimony.profile.profile_pic.url}}" alt="" height='100px' >
                                             <div class="quote_icon">
                                                 <i class="Flaticon flaticon-quote"></i>
                                             </div>
                                         </div>
                                         <div class="info">
                                             <p>{{testimony.content}}</p>
-                                            <span>-{{testimony.user.username}}</span>
+                                            <span>- <b>{{testimony.user.username}}</b></span><img src="{{testimony.profile.profile_pic.url}}" alt="" height='50px' width='50px' style="border-radius:50%;">
                                         </div>
                                     </div>
                                 </div>

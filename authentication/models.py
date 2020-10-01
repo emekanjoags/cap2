@@ -9,7 +9,7 @@ class Profile(models.Model):
     phone = models.CharField( max_length=20, blank=True, null=True)
     profile_pic = models.ImageField(default='uploads/profile_pic/default_pic.jpg', upload_to="uploads/profile_pic", blank=True, null=True)
     account_name = models.CharField(max_length=300, blank=True, null=True)
-    account_number= models.IntegerField(blank=True, null=True)
+    account_number= models.CharField(max_length=100, blank=True, null=True)
     bank = models.CharField(max_length=300, blank=True, null=True)
     bitcoin_wallet = models.CharField(max_length=300, blank=True, null=True)
     is_referred = models.BooleanField(default=False, null=True, blank=True)

@@ -5,7 +5,9 @@
             <div>
                     <h4 class="side-stick">Donation Page</h4>
                     <div v-show="!no_list">
+                        <p style="text-align:center"><b>Note: </b>The list will  close as soon as the timer runs out and will appear again by {{time_text}}. </p>
                         <flip-countdown v-bind:deadline="timer_disappear"></flip-countdown>
+                        
                     </div>
                     <!-- <p class="info-area"><b>Note: you can only reserve a user whose receiving amount is equal to or greater than the amount you want to donate.</b></p> -->
                     <p class="info-area">Please type in the amount you want to donate and proceed to reserve a member on the receiver's list.&nbsp;<a href="#" style="color:#0a8cff">learn more</a></p>
@@ -15,7 +17,7 @@
                             <div class="input-group-prepend">
                               <span class="input-group-text" >&#8358;</span>
                             </div>
-                            <input type="text" class="form-control" v-on:keyup="check_naira_amount" v-model="amount.naira" placeholder="Donate in Naira" aria-label="Amount (to the nearest dollar)">
+                            <input type="number" class="form-control" v-on:keyup="check_naira_amount" v-model="amount.naira" placeholder="Donate in Naira" aria-label="Amount (to the nearest dollar)">
                             <div class="input-group-append">
                               <span class="input-group-text" >.00</span>
                             </div>
@@ -30,7 +32,7 @@
                             <div class="input-group-prepend">
                               <span class="input-group-text"><i class="fa fa-bitcoin"></i></span>
                             </div>
-                            <input type="text" placeholder="Donate in bitcoins" v-on:keyup="check_bitcoin_amount" v-model="amount.bitcoin" class="form-control" aria-label="Amount (to the nearest dollar)">
+                            <input type="number" placeholder="Donate in bitcoins" v-on:keyup="check_bitcoin_amount" v-model="amount.bitcoin" class="form-control" aria-label="Amount (to the nearest dollar)">
 
                           </div>
                             <i v-if="amount_enough.bitcoin"  class="info-msg" style='color:green;font-size:12px;'>Good job, now reserve any user of your choice!</i>
@@ -53,45 +55,47 @@
                     <button type="button" class="close" data-dismiss="alert" aria-label="Close">
                     &times;
                 </button>
-                    {{success_msg}}
+                    <p><span style="color:green;">Success <i class="fa fa-check"></i></span>&nbsp;{{success_msg}}</p>
                 </div>
                 <div v-show="error_msg" class="alert alert-warning">
                     <button type="button" class="close" data-dismiss="alert" aria-label="Close">
                     &times;
                 </button>
-                    {{error_msg}}
+                    <p><b>Failed!</b>&nbsp; {{error_msg}}</p>
                 </div>
-                <br><br>
+                
             <div v-if="no_list" style="text-align:center;font-weight:bold;color:#000000">
                      <flip-countdown v-bind:deadline="next_list_time"></flip-countdown>
                     <p>The receiver's list will appear as soon as the countdown runs out which is by {{time_text}}. </p>
-                    <p>While you wait for the list, ensure you have entered your phone number and bank account details in the profile section. For more information on how to donate please go to the FAQ section</p> 
+                    <p>While you wait for the list, ensure you have entered your phone number and bank account details in the profile section. For more information on how to donate please go to the Frequently Asked Question (FAQ) section</p> 
             </div>
             <div v-else>
-                <div v-show="donation_mode.use_naira" class="table-responsive cash-table">
+                <div v-show="donation_mode.use_naira" class="table-responsive cash-table" style="font-size:12px;">
                     <table class="table">
                         <thead class="thead-dark"></thead>
                           <tr class="tableRow">
                             <th scope="col">S/N</th>
-                            <th scope="col">Username</th>
+                            <th scope="col">Action</th>
                             <th scope="col">Transaction type </th>
                             <th scope="col">Receiving Amount</th>
-                            <th scope="col">Action</th>
+                            <th scope="col">Username</th>
                           </tr>
 
                         <tbody>
                           <tr v-for="(receiver, index) in money_receivers">
                             <th scope="row">{{index+1}}</th>
-                            <td>{{receiver.name}}</td>
-                            <td>&#8358;</td>
-                            <td>{{receiver.amount}}</td>
                             <td><button v-if="amount_enough.naira" type="button"
                                 class="btn btn-danger" @click.prevent="reserve(index)">Reserve
-                        </button>
-                        <button v-else type="button"
-                                class="btn btn-danger" @click.prevent="alert_low_naira">Reserve
-                        </button>
-                        </td>
+                            </button>
+                            <button v-else type="button"
+                                    class="btn btn-danger" @click.prevent="alert_low_naira">Reserve
+                            </button>
+                            </td>
+                            
+                            <td>&#8358;</td>
+                            <td>{{receiver.amount}}</td>
+                            <td>{{receiver.name}}</td>
+                            
                           </tr>
                           <tr v-show="empty_list">
                             <td  colspan="100%" class="text-center">All available Naira receivers on the list have been reserved, please look out for the next list by {{time_text}}.</td>
@@ -100,23 +104,20 @@
                         </tbody>
                       </table>
                 </div>
-                <div v-show="donation_mode.use_bitcoin" class="table-responsive bitcoin-table">
+                <div v-show="donation_mode.use_bitcoin" class="table-responsive bitcoin-table" style="font-size:12px;">
                   <table class="table">
                       <thead class="thead-dark"></thead>
                         <tr style="background-color:#0a8cff;color:#ffffff">
                           <th scope="col">S/N</th>
-                          <th scope="col">Username</th>
+                          <th scope="col">Action</th>
                           <th scope="col">Transaction type </th>
                           <th scope="col">Receiving Amount</th>
-                          <th scope="col">Action</th>
+                          <th scope="col">Username</th>
                         </tr>
 
                       <tbody>
                         <tr v-for="(receiver, index) in bitcoin_receivers">
                           <th scope="row">{{index+1}}</th>
-                          <td>{{receiver.name}}</td>
-                          <td><i class="fa fa-bitcoin"></i></td>
-                          <td>{{receiver.amount}}</td>
                           <td><button v-if="amount_enough.bitcoin" type="button"
                               class="btn btn-danger" @click.prevent="reserveb(index)">Reserve
                       </button>
@@ -124,6 +125,10 @@
                                 class="btn btn-danger" @click.prevent="alert_low_bitcoin">Reserve
                         </button>
                         </td>
+                          
+                          <td><i class="fa fa-bitcoin"></i></td>
+                          <td>{{receiver.amount}}</td>
+                          <td>{{receiver.name}}</td>
                         </tr>
                         <tr>
                             <td v-show="empty_listb" colspan="100%" class="text-center">All available Bitcoin receivers on the list have been reserved, please look out for the next list by {{time_text}}.</td>
@@ -344,7 +349,7 @@ export default {
                 .then(response=>{
                     this.BuildList()
                     if(response.data.stat == 'good'){
-                        this.success_msg = `You have successfully pledged to donate NGN${this.money.user_pay} to ${this.money_receivers[index].name}, you have NGN${this.money.payer_remnant} left to donate, go to your dashboard to get ${this.money_receivers[index].name}'s bank details and make payment`
+                        this.success_msg = `You have pledged to donate NGN${this.money.user_pay} to ${this.money_receivers[index].name}, go to your dashboard to get ${this.money_receivers[index].name}'s bank details and make payment`
                     }
                     else if(response.data.stat == "taken"){
                         this.error_msg = `${this.money_receivers[index].name} has already been reserved and is no longer on the list, pick another member`
@@ -368,7 +373,7 @@ export default {
                         this.error_msg = `${this.money_receivers[index].name} has already been reserved and is no longer on the list, pick another member`
                     }
                     else if(response.data.stat == "no_account_details"){
-                        this.error_msg = `Please add your bank details and phone number in the profile page section before you reserve a member`
+                        this.error_msg = `You must add your bank details and phone number in the profile page section before you reserve a member`
                     }
                     
                 })
@@ -425,7 +430,7 @@ export default {
                 .then(response=>{
                     this.BuildList2()
                     if(response.data.stat == 'good'){
-                        this.success_msg = `You have successfully pledged to donate ${this.bitcoin.user_pay}btc to ${this.bitcoin_receivers[index].name} successfully, you have ${this.bitcoin.payer_remnant}BTC left to donate, go to your dashboard to get ${this.bitcoin_receivers[index].name}'s wallet details and make payment`
+                        this.success_msg = `You have pledged to donate ${this.bitcoin.user_pay}btc to ${this.bitcoin_receivers[index].name}, go to your dashboard to get ${this.bitcoin_receivers[index].name}'s wallet details and make payment`
                     }
                     else if(response.data.stat == "taken"){
                         this.error_msg = `${this.bitcoin_receivers[index].name} has already been reserved and is no longer on the list, pick another member`
@@ -446,7 +451,7 @@ export default {
                         this.error_msg = `You cannot reserve a member with Naira and Bitcoin at the same time`
                     }
                     else if(response.data.stat == "no_account_details"){
-                        this.error_msg = `Please add your bitcoin wallet address and phone number in the profile page section before you reserve a member`
+                        this.error_msg = `you must add your bitcoin wallet address and phone number in the profile page section before you reserve a member`
                     }
                     
                 })

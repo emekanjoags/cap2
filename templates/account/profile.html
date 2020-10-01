@@ -34,17 +34,7 @@
                     </div>
                     <form method="post" action="{% url 'account:profile' %}" enctype="multipart/form-data">
                         {% csrf_token %}
-                        <div class="form-group">
-                            <label>Phone Number</label>
-                            {% if profile.phone%}
-                            <input type="number" class="form-control"
-                                   value="{{profile.phone}}" readonly>
-                            {%else%}
-                            <input type="number" class="form-control"
-                            placeholder="Enter phone number" name="phone">
-                            <i style="color:red;font-size:12px;">Your phone number cannot be changed once it has been saved</i>
-                            {%endif%}
-                        </div>
+                        
                         <div class="form-group">
                             <label>Profile Image</label>
                             <img src="{{profile.profile_pic.url}}"
@@ -60,7 +50,18 @@
                             </div>
                         </div>
                         <div class="form-group">
-                            <button type="submit" class="btn btn-success">Update Personal Details</button>
+                            <label>Phone Number</label> {% if profile.phone %} {%else%}&nbsp;<i style="color:crimson;" class="fa fa-exclamation-triangle"></i><span style="font-size:12px">add a phone number</span>{%endif%}
+                            {% if profile.phone%}
+                            <input type="number" class="form-control"
+                                   value="{{profile.phone}}" readonly>
+                            {%else%}
+                            <input type="number" class="form-control"
+                            placeholder="Enter phone number" name="phone">
+                            <i style="color:red;font-size:12px;">Your phone number cannot be changed once it has been saved</i>
+                            {%endif%}
+                        </div>
+                        <div class="form-group">
+                            <button type="submit" class="btn btn-success">Save Personal Details</button>
                         </div>
                     </form>
                 </div>
@@ -117,7 +118,7 @@
                     </div>
                     
                     <div class="form-group">
-                        <button type="submit" class="btn btn-danger">Update Account</button>
+                        <button type="submit" class="btn btn-danger">Update Account Details</button>
                     </div>
                 </form>
             </div>
