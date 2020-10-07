@@ -17,19 +17,19 @@ def homePage(request):
 def faq(request):
     return render(request, 'faq.html')
 
-@login_required(login_url='authentication:login-page')
+@login_required(login_url='login-page')
 def referral(request):
     profile = Profile.objects.get(user=request.user)
     referral = Referral.objects.filter(referrer=request.user)
     ref_code = profile.referral_code
     withdraw_btn = 0
-    if profile.referred_active % 5 == 0 and profile.referral_balance != 0:
+    if profile.referral_balance >= 10000:
         withdraw_btn = 1
 
     if profile.referred_active == 0:
         withdraw_btn = 0
     if request.method == "POST":
-        if profile.referred_active % 5 == 0 and profile.referral_balance != 0:
+        if profile.referral_balance >= 10000:
             ref_bal = profile.referral_balance
             WithrawRefBal.objects.create(user=request.user, balance=ref_bal)
             profile.referral_balance = 0
@@ -49,3 +49,6 @@ def referral(request):
     return render(request, 'referral/referral.html', context)
 def tos(request):
     return render(request, 'tos.html')
+
+def dash(request):
+    return render(request, 'mails/matched.html')

@@ -2075,6 +2075,7 @@ __webpack_require__.r(__webpack_exports__);
 //
 //
 //
+//
 
 /* harmony default export */ __webpack_exports__["default"] = ({
   components: {
@@ -2111,6 +2112,7 @@ __webpack_require__.r(__webpack_exports__);
       selected_filesb: [],
       close: false,
       msg_type: [],
+      is_priority: [],
       closem: false
     };
   },
@@ -2248,6 +2250,8 @@ __webpack_require__.r(__webpack_exports__);
           }
         }
 
+        _this3.check_stat();
+
         _this3.is_loading = false;
       })["catch"](function (err) {
         _this3.is_loading = false;
@@ -2295,25 +2299,22 @@ __webpack_require__.r(__webpack_exports__);
         console.log('error:');
       });
     },
+    check_stat: function check_stat() {
+      if (!this.pending_payment && !this.pending_payment_b) {
+        if (this.pending_withdrawal || this.pending_withdrawal_b) {
+          this.donation_view = false;
+        }
+      }
+    },
     viewPop: function viewPop(index) {
       this.closem = !this.closem;
       var el = document.getElementsByClassName('proofm')[index];
-
-      if (this.closem == true) {
-        el.style.display = 'block';
-      } else if (this.closem == false) {
-        el.style.display = 'none';
-      }
+      el.style.display = this.closem ? 'block' : 'none';
     },
     viewPopb: function viewPopb(index) {
       this.close = !this.close;
       var el = document.getElementsByClassName('proof')[index];
-
-      if (this.close == true) {
-        el.style.display = 'block';
-      } else if (this.close == false) {
-        el.style.display = 'none';
-      }
+      el.style.display = this.close ? 'block' : 'none';
     },
     displayMsg: function displayMsg() {
       var _this5 = this;
@@ -2322,32 +2323,35 @@ __webpack_require__.r(__webpack_exports__);
       axios.get('/dashboard/api/display_msg').then(function (response) {
         if (response.data.stat == 'not_receiver') {
           _this5.receiver_msg = [];
-        } else if (response.data.stat == 'on_list') {
-          _this5.on_list_msg = 'Your name is currently on the receivers list';
-        } else if (response.data.stat == 'receiver') {
-          var content;
-          content = response.data.content;
+        } // else if(response.data.stat == 'on_list'){
+        //     this.on_list_msg = 'Your name is currently on the receivers list'
+        // }
+        else if (response.data.stat == 'receiver') {
+            var content;
+            content = response.data.content;
 
-          for (var obj = 0; obj < content.length; obj++) {
-            var r_amount = content[obj].amount;
-            var ld_amount = content[obj].amount / 1.5;
-            var d_amount = String(ld_amount).slice(0, 8);
+            for (var obj = 0; obj < content.length; obj++) {
+              var r_amount = content[obj].amount; // var ld_amount = content[obj].amount / 1.5
+              // var d_amount = String(ld_amount).slice(0, 8)
 
-            _this5.msg_type.push(content[obj].receiving_type);
+              _this5.msg_type.push(content[obj].receiving_type);
 
-            var py_time = content[obj].date_start;
-            var py_time2 = content[obj].date_end;
-            var sd = py_time.slice(0, 10);
-            var ed = py_time2.slice(0, 10);
+              if (content[obj].is_priority) {
+                _this5.is_priority.push('true');
+              }
 
-            _this5.receiver_msg.push({
-              d_amount: d_amount,
-              r_amount: r_amount,
-              start: sd,
-              end: ed
-            });
+              var py_time = content[obj].date_start;
+              var py_time2 = content[obj].date_end;
+              var sd = py_time.slice(0, 10);
+              var ed = py_time2.slice(0, 10);
+
+              _this5.receiver_msg.push({
+                r_amount: r_amount,
+                start: sd,
+                end: ed
+              });
+            }
           }
-        }
 
         _this5.is_loading = false;
       })["catch"](function (err) {
@@ -2383,7 +2387,7 @@ __webpack_require__.r(__webpack_exports__);
         _this6.is_loading = false;
 
         if (response.data.status = 'alright') {
-          _this6.success_msg = "Thank you for making this donation, your name will be in line to enter the receiver's list as soon as all your payments are confirmed";
+          _this6.success_msg = "Your investment process will be complete as soon as your are confirmed";
           setTimeout(function () {
             window.location.reload();
           }, 2000);
@@ -2409,7 +2413,7 @@ __webpack_require__.r(__webpack_exports__);
         _this7.is_loading = false;
 
         if (response.data.status = 'alright') {
-          _this7.success_msg = "Thank you for making this donation, your name will be in line to enter the receiver's list as soon as all your payments are confirmed";
+          _this7.success_msg = "Your investment process will be complete as soon as your are confirmed";
           setTimeout(function () {
             window.location.reload();
           }, 2000);
@@ -2431,7 +2435,7 @@ __webpack_require__.r(__webpack_exports__);
         _this8.is_loading = false;
 
         if (response.data.stat == 'user_blocked') {
-          _this8.success_msg = 'Operation successful, your name is in line to enter the next receivers list';
+          _this8.success_msg = 'you will be matched to another member shortly';
           setTimeout(function () {
             window.location.reload();
           }, 2000);
@@ -2456,7 +2460,7 @@ __webpack_require__.r(__webpack_exports__);
         _this9.is_loading = false;
 
         if (response.data.stat == 'user_blocked') {
-          _this9.success_msg = 'Operation successful, your name is in line to enter the next receivers list';
+          _this9.success_msg = 'you will be matched to another member shortly';
           setTimeout(function () {
             window.location.reload();
           }, 2000);
@@ -2521,8 +2525,8 @@ __webpack_require__.r(__webpack_exports__);
     this.BuildTransact();
     this.BuildTransactB();
     this.BuildReceiversB();
-    this.BuildReceivers();
     this.displayMsg();
+    this.BuildReceivers();
   }
 });
 
@@ -2532,6 +2536,284 @@ __webpack_require__.r(__webpack_exports__);
 /*!************************************************************************************************************************************************************************!*\
   !*** ./node_modules/babel-loader/lib??ref--4-0!./node_modules/vue-loader/lib??vue-loader-options!./resources/js/components/make-donation.vue?vue&type=script&lang=js& ***!
   \************************************************************************************************************************************************************************/
+/*! exports provided: default */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony import */ var core_js_modules_es_object_to_string__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! core-js/modules/es.object.to-string */ "./node_modules/core-js/modules/es.object.to-string.js");
+/* harmony import */ var core_js_modules_es_object_to_string__WEBPACK_IMPORTED_MODULE_0___default = /*#__PURE__*/__webpack_require__.n(core_js_modules_es_object_to_string__WEBPACK_IMPORTED_MODULE_0__);
+
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+/* harmony default export */ __webpack_exports__["default"] = ({
+  data: function data() {
+    return {
+      investors: [],
+      is_loading: false,
+      success_msg: '',
+      error_msg: '',
+      donation_mode: {
+        use_naira: true,
+        use_bitcoin: false
+      },
+      amount: {
+        naira: ''
+      },
+      naira_amount_stat: {
+        low: true,
+        standard: false,
+        premium: false,
+        high: false
+      },
+      bitcoin_amount_stat: {
+        low: true,
+        standard: false,
+        premium: false,
+        high: false
+      }
+    };
+  },
+  methods: {
+    getInvestors: function getInvestors() {
+      var _this = this;
+
+      this.loading = true;
+      axios.get('/dashboard/api/get-investors').then(function (response) {
+        if (response.data.stat == 'good') {
+          _this.investors = response.data.content;
+        } else if (response.data.stat == 'none') {
+          _this.investors = false;
+        }
+
+        console.log('resp: ' + response.data.stat);
+      })["catch"](function (err) {
+        console.log(err);
+      })["finally"](function () {
+        _this.is_loading = false;
+      });
+    },
+    check_naira_amount: function check_naira_amount() {
+      if (this.amount.naira < 2000) {
+        this.naira_amount_stat.low = true;
+        this.naira_amount_stat.standard = false;
+        this.naira_amount_stat.premium = false;
+        this.naira_amount_stat.high = false;
+      } else if (this.amount.naira >= 2000 && this.amount.naira < 50000) {
+        this.naira_amount_stat.low = false;
+        this.naira_amount_stat.standard = true;
+        this.naira_amount_stat.premium = false;
+        this.naira_amount_stat.high = false;
+      } else if (this.amount.naira >= 50000 && this.amount.naira <= 500000) {
+        this.naira_amount_stat.low = false;
+        this.naira_amount_stat.standard = false;
+        this.naira_amount_stat.premium = true;
+        this.naira_amount_stat.high = false;
+      } else if (this.amount.naira > 500000) {
+        this.naira_amount_stat.low = false;
+        this.naira_amount_stat.standard = false;
+        this.naira_amount_stat.premium = false;
+        this.naira_amount_stat.high = true;
+      }
+    },
+    check_bitcoin_amount: function check_bitcoin_amount() {
+      if (this.amount.bitcoin < 0.00049) {
+        this.bitcoin_amount_stat.low = true;
+        this.bitcoin_amount_stat.standard = false;
+        this.bitcoin_amount_stat.premium = false;
+        this.bitcoin_amount_stat.high = false;
+      } else if (this.amount.bitcoin >= 0.00049 && this.amount.bitcoin < 0.012) {
+        this.bitcoin_amount_stat.low = false;
+        this.bitcoin_amount_stat.standard = true;
+        this.bitcoin_amount_stat.premium = false;
+        this.bitcoin_amount_stat.high = false;
+      } else if (this.amount.bitcoin >= 0.012 && this.amount.bitcoin <= 0.13) {
+        this.bitcoin_amount_stat.low = false;
+        this.bitcoin_amount_stat.standard = false;
+        this.bitcoin_amount_stat.premium = true;
+        this.bitcoin_amount_stat.high = false;
+      } else if (this.amount.bitcoin > 0.13) {
+        this.bitcoin_amount_stat.low = false;
+        this.bitcoin_amount_stat.standard = false;
+        this.bitcoin_amount_stat.premium = false;
+        this.bitcoin_amount_stat.high = true;
+      }
+    },
+    toggle_donation_mode: function toggle_donation_mode() {
+      this.donation_mode.use_naira = !this.donation_mode.use_naira;
+      this.donation_mode.use_bitcoin = !this.donation_mode.use_bitcoin;
+    },
+    low_naira: function low_naira() {
+      alert('enter an amount between 2,000 and 500,000 NGN');
+    },
+    low_bitcoin: function low_bitcoin() {
+      alert('enter an amount between 0.0049 and 0.13 BTC');
+    },
+    investNaira: function investNaira() {
+      var _this2 = this;
+
+      var check = confirm("Are you sure you want to invest NGN".concat(this.amount.naira));
+
+      if (check) {
+        this.is_loading = true;
+        axios.post('/dashboard/api/invest', {
+          amount: this.amount.naira
+        }).then(function (response) {
+          if (response.data.stat == 'good') {
+            _this2.success_msg = "you have pledged to invest NGN".concat(_this2.amount.naira, " and will soon be matched");
+          } else if (response.data.stat == 'no_account_details') {
+            _this2.error_msg = 'you must fill in your bank account details and phone number in the profile section before making an investment';
+          } else if (response.data.stat == 'no_testimony') {
+            _this2.error_msg = 'you need to write a testimony for the recent return on investment you received before making a new investment';
+          } else if (response.data.stat == 'already_invested') {
+            _this2.error_msg = 'you can only make one investment at a time';
+          }
+        })["catch"](function (err) {
+          console.log(err);
+        })["finally"](function () {
+          _this2.is_loading = false;
+        });
+      }
+    },
+    investBitcoin: function investBitcoin() {
+      var _this3 = this;
+
+      var check = confirm("Are you sure you want to invest BTC ".concat(this.amount.bitcoin));
+
+      if (check) {
+        this.is_loading = true;
+        axios.post('/dashboard/api/investb', {
+          amount: this.amount.bitcoin
+        }).then(function (response) {
+          if (response.data.stat == 'good') {
+            _this3.success_msg = "you have pledged to invest BTC".concat(_this3.amount.bitcoin, " and will soon be matched");
+          } else if (response.data.stat == 'no_account_details') {
+            _this3.error_msg = 'you must fill in a bitcoin wallet address and phone number in the profile section before making an investment';
+          } else if (response.data.stat == 'no_testimony') {
+            _this3.error_msg = 'you need to write a testimony for the recent return on investment you received before making a new investment';
+          } else if (response.data.stat == 'already_invested') {
+            _this3.error_msg = 'you can only make one investment at a time';
+          }
+        })["catch"](function (err) {
+          console.log(err);
+        })["finally"](function () {
+          _this3.is_loading = false;
+        });
+      }
+    }
+  },
+  created: function created() {
+    this.getInvestors();
+  }
+});
+
+/***/ }),
+
+/***/ "./node_modules/babel-loader/lib/index.js?!./node_modules/vue-loader/lib/index.js?!./resources/js/components/make.vue?vue&type=script&lang=js&":
+/*!***************************************************************************************************************************************************************!*\
+  !*** ./node_modules/babel-loader/lib??ref--4-0!./node_modules/vue-loader/lib??vue-loader-options!./resources/js/components/make.vue?vue&type=script&lang=js& ***!
+  \***************************************************************************************************************************************************************/
 /*! exports provided: default */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
@@ -2979,6 +3261,384 @@ __webpack_require__.r(__webpack_exports__);
   },
   created: function created() {
     this.timerToggle();
+  }
+});
+
+/***/ }),
+
+/***/ "./node_modules/babel-loader/lib/index.js?!./node_modules/vue-loader/lib/index.js?!./resources/js/components/match.vue?vue&type=script&lang=js&":
+/*!****************************************************************************************************************************************************************!*\
+  !*** ./node_modules/babel-loader/lib??ref--4-0!./node_modules/vue-loader/lib??vue-loader-options!./resources/js/components/match.vue?vue&type=script&lang=js& ***!
+  \****************************************************************************************************************************************************************/
+/*! exports provided: default */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony import */ var core_js_modules_es_array_concat__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! core-js/modules/es.array.concat */ "./node_modules/core-js/modules/es.array.concat.js");
+/* harmony import */ var core_js_modules_es_array_concat__WEBPACK_IMPORTED_MODULE_0___default = /*#__PURE__*/__webpack_require__.n(core_js_modules_es_array_concat__WEBPACK_IMPORTED_MODULE_0__);
+/* harmony import */ var core_js_modules_es_function_name__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! core-js/modules/es.function.name */ "./node_modules/core-js/modules/es.function.name.js");
+/* harmony import */ var core_js_modules_es_function_name__WEBPACK_IMPORTED_MODULE_1___default = /*#__PURE__*/__webpack_require__.n(core_js_modules_es_function_name__WEBPACK_IMPORTED_MODULE_1__);
+/* harmony import */ var core_js_modules_es_object_to_string__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! core-js/modules/es.object.to-string */ "./node_modules/core-js/modules/es.object.to-string.js");
+/* harmony import */ var core_js_modules_es_object_to_string__WEBPACK_IMPORTED_MODULE_2___default = /*#__PURE__*/__webpack_require__.n(core_js_modules_es_object_to_string__WEBPACK_IMPORTED_MODULE_2__);
+
+
+
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+/* harmony default export */ __webpack_exports__["default"] = ({
+  data: function data() {
+    return {
+      naira_mode: true,
+      success_msg: '',
+      error_msg: '',
+      is_loading: false,
+      investors: [],
+      investorsb: [],
+      receiversb: [],
+      receivers: [],
+      naira: {
+        current_name_i: '',
+        current_amount_i: '',
+        current_name_r: '',
+        current_amount_r: '',
+        user_pay: '',
+        receiver_remnant: '',
+        payer_remnant: ''
+      },
+      bitcoin: {
+        current_name_i: '',
+        current_amount_i: '',
+        current_name_r: '',
+        current_amount_r: '',
+        user_pay: '',
+        receiver_remnant: '',
+        payer_remnant: ''
+      }
+    };
+  },
+  methods: {
+    toggle_view: function toggle_view() {
+      this.naira_mode = !this.naira_mode;
+    },
+    getInvestors: function getInvestors() {
+      var _this = this;
+
+      this.is_loading = true;
+      axios.get('/account/api/investors').then(function (response) {
+        _this.investors = response.data.content;
+      })["catch"](function (err) {
+        console.log(err);
+      })["finally"](function () {
+        _this.is_loading = false;
+      });
+    },
+    getReceivers: function getReceivers() {
+      var _this2 = this;
+
+      this.is_loading = true;
+      axios.get('/account/api/match-money').then(function (response) {
+        _this2.receivers = response.data.content;
+        var data = response.data.content;
+
+        if (new Date() > new Date(data.date_end)) {
+          alert('before');
+        }
+
+        for (var obj = 0; obj < data.length; obj++) {
+          if (new Date() > new Date(data[obj].date_end)) {
+            data[obj].mod = 1;
+            alert('hmm');
+          } else {
+            data[obj].mod = 0;
+          }
+        }
+      })["catch"](function (err) {
+        console.log(err);
+      })["finally"](function () {
+        _this2.is_loading = false;
+      });
+    },
+    getInvestorsb: function getInvestorsb() {
+      var _this3 = this;
+
+      this.is_loading = true;
+      axios.get('/account/api/investorsb').then(function (response) {
+        _this3.investorsb = response.data.content;
+      })["catch"](function (err) {})["finally"](function () {
+        _this3.is_loading = false;
+      });
+    },
+    getReceiversb: function getReceiversb() {
+      var _this4 = this;
+
+      this.is_loading = true;
+      axios.get('/account/api/match-bitcoin').then(function (response) {
+        _this4.receiversb = response.data.content;
+        var data = response.data.content;
+
+        if (new Date() > new Date(data.date_end)) {
+          alert('before');
+        }
+
+        for (var obj = 0; obj < data.length; obj++) {
+          if (new Date() > new Date(data[obj].date_end)) {
+            data[obj].mod = 1;
+            alert('hmm');
+          } else {
+            data[obj].mod = 0;
+          }
+        }
+      })["catch"](function (err) {
+        console.log(err);
+      })["finally"](function () {
+        _this4.is_loading = false;
+      });
+    },
+    current_investor_n: function current_investor_n(index) {
+      var investor = this.investors[index];
+      this.naira.current_name_i = investor.name;
+      this.naira.current_amount_i = investor.amount;
+    },
+    premature_receiver_n: function premature_receiver_n(index) {
+      var check = confirm('this receivers time has not yet reached, are you sure master?');
+
+      if (check) {
+        this.current_receiver_n(index);
+      }
+    },
+    current_receiver_n: function current_receiver_n(index) {
+      var receiver = this.receivers[index];
+      this.naira.current_name_r = receiver.name;
+      this.naira.current_amount_r = receiver.amount;
+    },
+    premature_receiver_b: function premature_receiver_b(index) {
+      var check = confirm('this receivers time has not yet reached, are you sure master?');
+
+      if (check) {
+        this.current_receiver_b(index);
+      }
+    },
+    current_investor_b: function current_investor_b(index) {
+      var investor = this.investorsb[index];
+      this.bitcoin.current_name_i = investor.name;
+      this.bitcoin.current_amount_i = investor.amount;
+    },
+    current_receiver_b: function current_receiver_b(index) {
+      var receiver = this.receiversb[index];
+      this.bitcoin.current_name_r = receiver.name;
+      this.bitcoin.current_amount_r = receiver.amount;
+    },
+    match_naira: function match_naira() {
+      var _this5 = this;
+
+      if (this.naira.current_amount_i && this.naira.current_amount_r) {
+        var check = confirm("Are you sure you want to match ".concat(this.naira.current_name_i, " to pay ").concat(this.naira.current_name_r));
+
+        if (check) {
+          this.is_loading = true;
+
+          if (this.naira.current_amount_i < this.naira.current_amount_r) {
+            this.naira.user_pay = this.naira.current_amount_i;
+            this.naira.receiver_remnant = this.naira.current_amount_r - this.naira.current_amount_i;
+            this.naira.payer_remnant = 0;
+          } else if (this.naira.current_amount_i > this.naira.current_amount_r) {
+            this.naira.user_pay = this.naira.current_amount_r;
+            this.naira.payer_remnant = this.naira.current_amount_i - this.naira.current_amount_r;
+            this.naira.receiver_remnant = 0;
+          } else if (this.naira.current_amount_i == this.naira.current_amount_r) {
+            this.naira.user_pay = this.naira.current_amount_r;
+            this.naira.payer_remnant = 0;
+            this.naira.receiver_remnant = 0;
+          } else {
+            this.error_msg = 'something went wrong';
+          }
+        }
+
+        axios.post('/account/api/investors', {
+          user_pay: this.naira.user_pay,
+          receiver_remnant: this.naira.receiver_remnant,
+          payer_remnant: this.naira.payer_remnant,
+          investor: this.naira.current_name_i,
+          receiver: this.naira.current_name_r
+        }).then(function (response) {
+          _this5.getReceivers();
+
+          _this5.getInvestors();
+
+          if (response.data.stat == 'good') {
+            _this5.success_msg = 'User matched!';
+            setTimeout(function () {
+              window.location.reload();
+            }, 3000);
+          }
+        })["catch"](function (err) {
+          console.log(err);
+        })["finally"](function () {
+          _this5.is_loading = false;
+        });
+      } else {
+        alert('please fill both investor and receiver fields');
+      }
+    },
+    match_bitcoin: function match_bitcoin() {
+      var _this6 = this;
+
+      if (this.bitcoin.current_amount_i && this.bitcoin.current_amount_r) {
+        var check = confirm("Are you sure you want to match ".concat(this.bitcoin.current_name_i, " to pay ").concat(this.bitcoin.current_name_r));
+
+        if (check) {
+          this.is_loading = true;
+
+          if (this.bitcoin.current_amount_i < this.bitcoin.current_amount_r) {
+            this.bitcoin.user_pay = this.bitcoin.current_amount_i;
+            this.bitcoin.receiver_remnant = this.bitcoin.current_amount_r - this.bitcoin.current_amount_i;
+            this.bitcoin.payer_remnant = 0;
+          } else if (this.bitcoin.current_amount_i > this.bitcoin.current_amount_r) {
+            this.bitcoin.user_pay = this.bitcoin.current_amount_r;
+            this.bitcoin.payer_remnant = this.bitcoin.current_amount_i - this.bitcoin.current_amount_r;
+            this.bitcoin.receiver_remnant = 0;
+          } else if (this.bitcoin.current_amount_i == this.bitcoin.current_amount_r) {
+            this.bitcoin.user_pay = this.bitcoin.current_amount_r;
+            this.bitcoin.payer_remnant = 0;
+            this.bitcoin.receiver_remnant = 0;
+          } else {
+            this.error_msg = 'something went wrong';
+          }
+        }
+
+        axios.post('/account/api/investorsb', {
+          user_pay: this.bitcoin.user_pay,
+          receiver_remnant: this.bitcoin.receiver_remnant,
+          payer_remnant: this.bitcoin.payer_remnant,
+          investor: this.bitcoin.current_name_i,
+          receiver: this.bitcoin.current_name_r
+        }).then(function (response) {
+          _this6.getReceivers();
+
+          _this6.getInvestors();
+
+          if (response.data.stat == 'good') {
+            _this6.success_msg = 'User matched!';
+            setTimeout(function () {
+              window.location.reload();
+            }, 3000);
+          }
+        })["catch"](function (err) {
+          console.log(err);
+        })["finally"](function () {
+          _this6.is_loading = false;
+        });
+      } else {
+        alert('please fill both investor and receiver fields');
+      }
+    }
+  },
+  created: function created() {
+    this.getInvestors();
+    this.getReceivers();
+    this.getInvestorsb();
+    this.getReceiversb();
   }
 });
 
@@ -7781,6 +8441,43 @@ module.exports = function (it) {
 
 /***/ }),
 
+/***/ "./node_modules/core-js/internals/classof.js":
+/*!***************************************************!*\
+  !*** ./node_modules/core-js/internals/classof.js ***!
+  \***************************************************/
+/*! no static exports found */
+/***/ (function(module, exports, __webpack_require__) {
+
+var TO_STRING_TAG_SUPPORT = __webpack_require__(/*! ../internals/to-string-tag-support */ "./node_modules/core-js/internals/to-string-tag-support.js");
+var classofRaw = __webpack_require__(/*! ../internals/classof-raw */ "./node_modules/core-js/internals/classof-raw.js");
+var wellKnownSymbol = __webpack_require__(/*! ../internals/well-known-symbol */ "./node_modules/core-js/internals/well-known-symbol.js");
+
+var TO_STRING_TAG = wellKnownSymbol('toStringTag');
+// ES3 wrong here
+var CORRECT_ARGUMENTS = classofRaw(function () { return arguments; }()) == 'Arguments';
+
+// fallback for IE11 Script Access Denied error
+var tryGet = function (it, key) {
+  try {
+    return it[key];
+  } catch (error) { /* empty */ }
+};
+
+// getting tag from ES6+ `Object.prototype.toString`
+module.exports = TO_STRING_TAG_SUPPORT ? classofRaw : function (it) {
+  var O, tag, result;
+  return it === undefined ? 'Undefined' : it === null ? 'Null'
+    // @@toStringTag case
+    : typeof (tag = tryGet(O = Object(it), TO_STRING_TAG)) == 'string' ? tag
+    // builtinTag case
+    : CORRECT_ARGUMENTS ? classofRaw(O)
+    // ES3 arguments fallback
+    : (result = classofRaw(O)) == 'Object' && typeof O.callee == 'function' ? 'Arguments' : result;
+};
+
+
+/***/ }),
+
 /***/ "./node_modules/core-js/internals/copy-constructor-properties.js":
 /*!***********************************************************************!*\
   !*** ./node_modules/core-js/internals/copy-constructor-properties.js ***!
@@ -8689,6 +9386,27 @@ exports.f = NASHORN_BUG ? function propertyIsEnumerable(V) {
 
 /***/ }),
 
+/***/ "./node_modules/core-js/internals/object-to-string.js":
+/*!************************************************************!*\
+  !*** ./node_modules/core-js/internals/object-to-string.js ***!
+  \************************************************************/
+/*! no static exports found */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+var TO_STRING_TAG_SUPPORT = __webpack_require__(/*! ../internals/to-string-tag-support */ "./node_modules/core-js/internals/to-string-tag-support.js");
+var classof = __webpack_require__(/*! ../internals/classof */ "./node_modules/core-js/internals/classof.js");
+
+// `Object.prototype.toString` method implementation
+// https://tc39.github.io/ecma262/#sec-object.prototype.tostring
+module.exports = TO_STRING_TAG_SUPPORT ? {}.toString : function toString() {
+  return '[object ' + classof(this) + ']';
+};
+
+
+/***/ }),
+
 /***/ "./node_modules/core-js/internals/own-keys.js":
 /*!****************************************************!*\
   !*** ./node_modules/core-js/internals/own-keys.js ***!
@@ -9246,6 +9964,25 @@ module.exports = function (input, PREFERRED_STRING) {
 
 /***/ }),
 
+/***/ "./node_modules/core-js/internals/to-string-tag-support.js":
+/*!*****************************************************************!*\
+  !*** ./node_modules/core-js/internals/to-string-tag-support.js ***!
+  \*****************************************************************/
+/*! no static exports found */
+/***/ (function(module, exports, __webpack_require__) {
+
+var wellKnownSymbol = __webpack_require__(/*! ../internals/well-known-symbol */ "./node_modules/core-js/internals/well-known-symbol.js");
+
+var TO_STRING_TAG = wellKnownSymbol('toStringTag');
+var test = {};
+
+test[TO_STRING_TAG] = 'z';
+
+module.exports = String(test) === '[object z]';
+
+
+/***/ }),
+
 /***/ "./node_modules/core-js/internals/uid.js":
 /*!***********************************************!*\
   !*** ./node_modules/core-js/internals/uid.js ***!
@@ -9509,6 +10246,26 @@ if (DESCRIPTORS && !(NAME in FunctionPrototype)) {
 
 /***/ }),
 
+/***/ "./node_modules/core-js/modules/es.object.to-string.js":
+/*!*************************************************************!*\
+  !*** ./node_modules/core-js/modules/es.object.to-string.js ***!
+  \*************************************************************/
+/*! no static exports found */
+/***/ (function(module, exports, __webpack_require__) {
+
+var TO_STRING_TAG_SUPPORT = __webpack_require__(/*! ../internals/to-string-tag-support */ "./node_modules/core-js/internals/to-string-tag-support.js");
+var redefine = __webpack_require__(/*! ../internals/redefine */ "./node_modules/core-js/internals/redefine.js");
+var toString = __webpack_require__(/*! ../internals/object-to-string */ "./node_modules/core-js/internals/object-to-string.js");
+
+// `Object.prototype.toString` method
+// https://tc39.github.io/ecma262/#sec-object.prototype.tostring
+if (!TO_STRING_TAG_SUPPORT) {
+  redefine(Object.prototype, 'toString', toString, { unsafe: true });
+}
+
+
+/***/ }),
+
 /***/ "./node_modules/core-js/modules/es.regexp.exec.js":
 /*!********************************************************!*\
   !*** ./node_modules/core-js/modules/es.regexp.exec.js ***!
@@ -9685,7 +10442,43 @@ fixRegExpWellKnownSymbolLogic('split', 2, function (SPLIT, nativeSplit, maybeCal
 var ___CSS_LOADER_API_IMPORT___ = __webpack_require__(/*! ../../../node_modules/css-loader/dist/runtime/api.js */ "./node_modules/css-loader/dist/runtime/api.js");
 exports = ___CSS_LOADER_API_IMPORT___(false);
 // Module
-exports.push([module.i, "\n.tableRow[data-v-a6440854]{\r\n    background:#0a8cff;\r\n    color:#ffffff\n}\n.white-text[data-v-a6440854]{\r\n    color:#ffffff\n}\n.info-msg[data-v-a6440854]{\r\n    color:red;\r\n    font-size:14px;\n}\r\n", ""]);
+exports.push([module.i, "\n.white-text[data-v-a6440854]{\r\n    color:#ffffff;\n}\n.info-msg[data-v-a6440854]{\r\n    color:red;\r\n    font-size:14px;\n}\n.package[data-v-a6440854]{\r\n    background: red;\r\n    color:#ffffff;\r\n    border-radius:10px;\r\n    padding:10px;\r\n    margin:10px;\r\n    max-width:50%;\r\n    text-align:center;\n}\n.package-area[data-v-a6440854]{\r\n    background:gainsboro;\r\n    box-shadow: 5px 5px 5px gray;\r\n    padding-left:15px;\r\n    padding-bottom:15px;\n}\n.dot[data-v-a6440854]{\r\n    background: grey;\r\n    border-radius:50%;\r\n    height:10px;\r\n    width:15px;\n}\r\n", ""]);
+// Exports
+module.exports = exports;
+
+
+/***/ }),
+
+/***/ "./node_modules/css-loader/dist/cjs.js?!./node_modules/vue-loader/lib/loaders/stylePostLoader.js!./node_modules/postcss-loader/src/index.js?!./node_modules/vue-loader/lib/index.js?!./resources/js/components/make.vue?vue&type=style&index=0&id=bba11c8e&scoped=true&lang=css&":
+/*!**********************************************************************************************************************************************************************************************************************************************************************************************************!*\
+  !*** ./node_modules/css-loader/dist/cjs.js??ref--6-1!./node_modules/vue-loader/lib/loaders/stylePostLoader.js!./node_modules/postcss-loader/src??ref--6-2!./node_modules/vue-loader/lib??vue-loader-options!./resources/js/components/make.vue?vue&type=style&index=0&id=bba11c8e&scoped=true&lang=css& ***!
+  \**********************************************************************************************************************************************************************************************************************************************************************************************************/
+/*! no static exports found */
+/***/ (function(module, exports, __webpack_require__) {
+
+// Imports
+var ___CSS_LOADER_API_IMPORT___ = __webpack_require__(/*! ../../../node_modules/css-loader/dist/runtime/api.js */ "./node_modules/css-loader/dist/runtime/api.js");
+exports = ___CSS_LOADER_API_IMPORT___(false);
+// Module
+exports.push([module.i, "\n.tableRow[data-v-bba11c8e]{\r\n    background:#0a8cff;\r\n    color:#ffffff\n}\n.white-text[data-v-bba11c8e]{\r\n    color:#ffffff\n}\n.info-msg[data-v-bba11c8e]{\r\n    color:red;\r\n    font-size:14px;\n}\r\n", ""]);
+// Exports
+module.exports = exports;
+
+
+/***/ }),
+
+/***/ "./node_modules/css-loader/dist/cjs.js?!./node_modules/vue-loader/lib/loaders/stylePostLoader.js!./node_modules/postcss-loader/src/index.js?!./node_modules/vue-loader/lib/index.js?!./resources/js/components/match.vue?vue&type=style&index=0&id=7f7dc80a&scoped=true&lang=css&":
+/*!***********************************************************************************************************************************************************************************************************************************************************************************************************!*\
+  !*** ./node_modules/css-loader/dist/cjs.js??ref--6-1!./node_modules/vue-loader/lib/loaders/stylePostLoader.js!./node_modules/postcss-loader/src??ref--6-2!./node_modules/vue-loader/lib??vue-loader-options!./resources/js/components/match.vue?vue&type=style&index=0&id=7f7dc80a&scoped=true&lang=css& ***!
+  \***********************************************************************************************************************************************************************************************************************************************************************************************************/
+/*! no static exports found */
+/***/ (function(module, exports, __webpack_require__) {
+
+// Imports
+var ___CSS_LOADER_API_IMPORT___ = __webpack_require__(/*! ../../../node_modules/css-loader/dist/runtime/api.js */ "./node_modules/css-loader/dist/runtime/api.js");
+exports = ___CSS_LOADER_API_IMPORT___(false);
+// Module
+exports.push([module.i, "\nol[data-v-7f7dc80a]{\r\n    display:flex;\n}\r\n", ""]);
 // Exports
 module.exports = exports;
 
@@ -40899,6 +41692,66 @@ if(false) {}
 
 /***/ }),
 
+/***/ "./node_modules/style-loader/index.js!./node_modules/css-loader/dist/cjs.js?!./node_modules/vue-loader/lib/loaders/stylePostLoader.js!./node_modules/postcss-loader/src/index.js?!./node_modules/vue-loader/lib/index.js?!./resources/js/components/make.vue?vue&type=style&index=0&id=bba11c8e&scoped=true&lang=css&":
+/*!**************************************************************************************************************************************************************************************************************************************************************************************************************************************!*\
+  !*** ./node_modules/style-loader!./node_modules/css-loader/dist/cjs.js??ref--6-1!./node_modules/vue-loader/lib/loaders/stylePostLoader.js!./node_modules/postcss-loader/src??ref--6-2!./node_modules/vue-loader/lib??vue-loader-options!./resources/js/components/make.vue?vue&type=style&index=0&id=bba11c8e&scoped=true&lang=css& ***!
+  \**************************************************************************************************************************************************************************************************************************************************************************************************************************************/
+/*! no static exports found */
+/***/ (function(module, exports, __webpack_require__) {
+
+
+var content = __webpack_require__(/*! !../../../node_modules/css-loader/dist/cjs.js??ref--6-1!../../../node_modules/vue-loader/lib/loaders/stylePostLoader.js!../../../node_modules/postcss-loader/src??ref--6-2!../../../node_modules/vue-loader/lib??vue-loader-options!./make.vue?vue&type=style&index=0&id=bba11c8e&scoped=true&lang=css& */ "./node_modules/css-loader/dist/cjs.js?!./node_modules/vue-loader/lib/loaders/stylePostLoader.js!./node_modules/postcss-loader/src/index.js?!./node_modules/vue-loader/lib/index.js?!./resources/js/components/make.vue?vue&type=style&index=0&id=bba11c8e&scoped=true&lang=css&");
+
+if(typeof content === 'string') content = [[module.i, content, '']];
+
+var transform;
+var insertInto;
+
+
+
+var options = {"hmr":true}
+
+options.transform = transform
+options.insertInto = undefined;
+
+var update = __webpack_require__(/*! ../../../node_modules/style-loader/lib/addStyles.js */ "./node_modules/style-loader/lib/addStyles.js")(content, options);
+
+if(content.locals) module.exports = content.locals;
+
+if(false) {}
+
+/***/ }),
+
+/***/ "./node_modules/style-loader/index.js!./node_modules/css-loader/dist/cjs.js?!./node_modules/vue-loader/lib/loaders/stylePostLoader.js!./node_modules/postcss-loader/src/index.js?!./node_modules/vue-loader/lib/index.js?!./resources/js/components/match.vue?vue&type=style&index=0&id=7f7dc80a&scoped=true&lang=css&":
+/*!***************************************************************************************************************************************************************************************************************************************************************************************************************************************!*\
+  !*** ./node_modules/style-loader!./node_modules/css-loader/dist/cjs.js??ref--6-1!./node_modules/vue-loader/lib/loaders/stylePostLoader.js!./node_modules/postcss-loader/src??ref--6-2!./node_modules/vue-loader/lib??vue-loader-options!./resources/js/components/match.vue?vue&type=style&index=0&id=7f7dc80a&scoped=true&lang=css& ***!
+  \***************************************************************************************************************************************************************************************************************************************************************************************************************************************/
+/*! no static exports found */
+/***/ (function(module, exports, __webpack_require__) {
+
+
+var content = __webpack_require__(/*! !../../../node_modules/css-loader/dist/cjs.js??ref--6-1!../../../node_modules/vue-loader/lib/loaders/stylePostLoader.js!../../../node_modules/postcss-loader/src??ref--6-2!../../../node_modules/vue-loader/lib??vue-loader-options!./match.vue?vue&type=style&index=0&id=7f7dc80a&scoped=true&lang=css& */ "./node_modules/css-loader/dist/cjs.js?!./node_modules/vue-loader/lib/loaders/stylePostLoader.js!./node_modules/postcss-loader/src/index.js?!./node_modules/vue-loader/lib/index.js?!./resources/js/components/match.vue?vue&type=style&index=0&id=7f7dc80a&scoped=true&lang=css&");
+
+if(typeof content === 'string') content = [[module.i, content, '']];
+
+var transform;
+var insertInto;
+
+
+
+var options = {"hmr":true}
+
+options.transform = transform
+options.insertInto = undefined;
+
+var update = __webpack_require__(/*! ../../../node_modules/style-loader/lib/addStyles.js */ "./node_modules/style-loader/lib/addStyles.js")(content, options);
+
+if(content.locals) module.exports = content.locals;
+
+if(false) {}
+
+/***/ }),
+
 /***/ "./node_modules/style-loader/lib/addStyles.js":
 /*!****************************************************!*\
   !*** ./node_modules/style-loader/lib/addStyles.js ***!
@@ -41519,44 +42372,36 @@ var render = function() {
                         }
                       },
                       [
-                        _c("p", { staticStyle: { color: "white" } }, [
-                          _vm._v(
-                            "You have completed your payment and your Return on Investment is "
-                          ),
-                          _vm.msg_type[index] == 1
-                            ? _c("span", [_vm._v("₦")])
-                            : _c("span", [_vm._v("BTC ")]),
-                          _vm._v(
-                            _vm._s(msg.r_amount) +
-                              ". Your name will enter the receiver's list between " +
-                              _vm._s(msg.start) +
-                              " and " +
-                              _vm._s(msg.end)
-                          )
-                        ])
+                        _vm.is_priority[index] == "true"
+                          ? _c("p", { staticStyle: { color: "white" } }, [
+                              _vm._v(
+                                " You will be matched with another member on " +
+                                  _vm._s(msg.end) +
+                                  " so that you can be paid your remaining ROI which is "
+                              ),
+                              _vm.msg_type[index] == 1
+                                ? _c("span", [_vm._v("₦")])
+                                : _c("span", [_vm._v("BTC ")]),
+                              _vm._v(_vm._s(msg.r_amount) + ".")
+                            ])
+                          : _c("p", { staticStyle: { color: "white" } }, [
+                              _vm._v(
+                                "You have completed your payment and your Return on Investment is "
+                              ),
+                              _vm.msg_type[index] == 1
+                                ? _c("span", [_vm._v("₦")])
+                                : _c("span", [_vm._v("BTC ")]),
+                              _vm._v(
+                                _vm._s(msg.r_amount) +
+                                  ". You will be matched on " +
+                                  _vm._s(msg.end)
+                              )
+                            ])
                       ]
                     )
                   ])
                 : _vm._e()
             }),
-            _vm._v(" "),
-            _c("div", { staticClass: "col-12" }, [
-              _c(
-                "div",
-                {
-                  directives: [
-                    {
-                      name: "show",
-                      rawName: "v-show",
-                      value: _vm.on_list_msg,
-                      expression: "on_list_msg"
-                    }
-                  ],
-                  staticClass: "alert alert-success"
-                },
-                [_c("p", [_vm._v(_vm._s(_vm.on_list_msg))])]
-              )
-            ]),
             _vm._v(" "),
             _c("div", { staticClass: "col-12" }, [
               _c(
@@ -41586,7 +42431,9 @@ var render = function() {
                     [_vm._v("\n                ×\n            ")]
                   ),
                   _vm._v(" "),
-                  _c("span", [_c("p", [_vm._v(_vm._s(_vm.success_msg))])])
+                  _c("span", [
+                    _c("p", [_vm._m(0), _vm._v(" " + _vm._s(_vm.success_msg))])
+                  ])
                 ]
               ),
               _vm._v(" "),
@@ -41617,7 +42464,12 @@ var render = function() {
                     [_vm._v("\n                ×\n            ")]
                   ),
                   _vm._v(" "),
-                  _c("span", [_c("p", [_vm._v(_vm._s(_vm.error_msg))])])
+                  _c("span", [
+                    _c("p", [
+                      _c("b", [_vm._v("Failed!")]),
+                      _vm._v("  " + _vm._s(_vm.error_msg))
+                    ])
+                  ])
                 ]
               ),
               _vm._v(" "),
@@ -41669,7 +42521,7 @@ var render = function() {
                       _vm.pending_payment || _vm.pending_payment_b
                         ? _c("p", { staticClass: "info-area" }, [
                             _vm._v(
-                              "Please make payment before the countdown runs out to avoid getting blocked, as soon as you pay and get confirmed you will be in line to enter the receiver's list. "
+                              "Please make payment before the countdown runs out to avoid getting blocked. As soon as you make payment and get confirmed you will receive your Return On Investment in 7 days"
                             )
                           ])
                         : _c("p", { staticClass: "info-area" }, [
@@ -41989,7 +42841,7 @@ var render = function() {
                       _vm.pending_withdrawal || _vm.pending_withdrawal_b
                         ? _c("p", { staticClass: "info-area" }, [
                             _vm._v(
-                              "This member has reserved you and will make payment to you shortly"
+                              "You have been matched with this member, payment will be made to you shortly"
                             )
                           ])
                         : _c("p", { staticClass: "info-area" }, [
@@ -42034,7 +42886,7 @@ var render = function() {
                                             },
                                             [
                                               _vm._v(
-                                                "This member's time has expired, please block this member so that you can go back into the receiving list"
+                                                "This member's time has expired, please block this member so that you can be matched with another member"
                                               )
                                             ]
                                           )
@@ -42181,7 +43033,7 @@ var render = function() {
                                             },
                                             [
                                               _vm._v(
-                                                "This member's time has expired, please block this member so that you can go back into the receiving list"
+                                                "This member's time has expired, please block this member so that you can be matched with another member"
                                               )
                                             ]
                                           )
@@ -42310,7 +43162,17 @@ var render = function() {
         )
   ])
 }
-var staticRenderFns = []
+var staticRenderFns = [
+  function() {
+    var _vm = this
+    var _h = _vm.$createElement
+    var _c = _vm._self._c || _h
+    return _c("span", { staticStyle: { color: "green" } }, [
+      _vm._v("Success "),
+      _c("i", { staticClass: "fa fa-check" })
+    ])
+  }
+]
 render._withStripped = true
 
 
@@ -42321,6 +43183,798 @@ render._withStripped = true
 /*!****************************************************************************************************************************************************************************************************************************!*\
   !*** ./node_modules/vue-loader/lib/loaders/templateLoader.js??vue-loader-options!./node_modules/vue-loader/lib??vue-loader-options!./resources/js/components/make-donation.vue?vue&type=template&id=a6440854&scoped=true& ***!
   \****************************************************************************************************************************************************************************************************************************/
+/*! exports provided: render, staticRenderFns */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "render", function() { return render; });
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "staticRenderFns", function() { return staticRenderFns; });
+var render = function() {
+  var _vm = this
+  var _h = _vm.$createElement
+  var _c = _vm._self._c || _h
+  return _c("div", [
+    _vm.is_loading
+      ? _c("div", { attrs: { id: "loader" } })
+      : _c("div", [
+          _vm.investors
+            ? _c(
+                "div",
+                [
+                  _vm._m(0),
+                  _vm._v(" "),
+                  _c("p", [_vm._v("Your current investment is:")]),
+                  _vm._v(" "),
+                  _vm._l(_vm.investors, function(investor) {
+                    return _c("div", { staticClass: "package-area" }, [
+                      _c("h6", { staticStyle: { "text-align": "center" } }, [
+                        investor.package == 1
+                          ? _c(
+                              "b",
+                              {
+                                staticClass: "package",
+                                staticStyle: { background: "#054680" }
+                              },
+                              [_vm._v("Standard Package")]
+                            )
+                          : _c(
+                              "b",
+                              {
+                                staticClass: "package",
+                                staticStyle: { background: "purple" }
+                              },
+                              [_vm._v("Standard Package")]
+                            )
+                      ]),
+                      _vm._v(" "),
+                      _c("br"),
+                      investor.transaction_type == 1
+                        ? _c("p", [
+                            _c("span", [
+                              _vm._v("Amount: ₦"),
+                              !investor.matched
+                                ? _c("span", [_vm._v(_vm._s(investor.amount))])
+                                : _c("span", [
+                                    _vm._v(_vm._s(investor.invested_amt))
+                                  ]),
+                              _vm._v(" - "),
+                              investor.package == 1
+                                ? _c("span", [_vm._v("(50% ROI in 7days)")])
+                                : _c("span", [_vm._v("(30% ROI in 7days)")])
+                            ])
+                          ])
+                        : _c("p", [
+                            _c("span", [
+                              _vm._v("Amount: "),
+                              _c("i", { staticClass: "fa fa-btc" }),
+                              _vm._v(" "),
+                              !investor.matched
+                                ? _c("span", [_vm._v(_vm._s(investor.amount))])
+                                : _c("span", [
+                                    _vm._v(_vm._s(investor.invested_amt))
+                                  ]),
+                              _vm._v(" - "),
+                              investor.package == 1
+                                ? _c("span", [_vm._v("(50% ROI in 7days)")])
+                                : _c("span", [_vm._v("(50% ROI in 7days)")])
+                            ])
+                          ]),
+                      _vm._v(" "),
+                      _c("p", [
+                        _vm._v("Status: "),
+                        !investor.matched
+                          ? _c("b", [_vm._v("Not Matched")])
+                          : _c("span", [
+                              investor.completed
+                                ? _c(
+                                    "span",
+                                    {
+                                      staticStyle: {
+                                        color: "green",
+                                        "font-weight": "bold"
+                                      }
+                                    },
+                                    [_vm._v("Invested(awaiting ROI)")]
+                                  )
+                                : _c(
+                                    "span",
+                                    {
+                                      staticStyle: {
+                                        color: "orange",
+                                        "font-weight": "bold"
+                                      }
+                                    },
+                                    [_vm._v("Matched")]
+                                  )
+                            ])
+                      ])
+                    ])
+                  }),
+                  _c("br"),
+                  _vm._v(" "),
+                  _c(
+                    "div",
+                    {
+                      directives: [
+                        {
+                          name: "show",
+                          rawName: "v-show",
+                          value: _vm.error_msg,
+                          expression: "error_msg"
+                        }
+                      ],
+                      staticClass: "alert alert-warning"
+                    },
+                    [
+                      _c(
+                        "button",
+                        {
+                          staticClass: "close",
+                          attrs: {
+                            type: "button",
+                            "data-dismiss": "alert",
+                            "aria-label": "Close"
+                          }
+                        },
+                        [_vm._v("\n                ×\n            ")]
+                      ),
+                      _vm._v(" "),
+                      _c("p", [
+                        _c("b", [_vm._v("Failed!")]),
+                        _vm._v("  " + _vm._s(_vm.error_msg))
+                      ])
+                    ]
+                  )
+                ],
+                2
+              )
+            : _vm._e(),
+          _vm._v(" "),
+          _c(
+            "div",
+            {
+              directives: [
+                {
+                  name: "show",
+                  rawName: "v-show",
+                  value: !_vm.investors,
+                  expression: "!investors"
+                }
+              ]
+            },
+            [
+              _vm._m(1),
+              _c("br"),
+              _c("hr"),
+              _vm._v(" "),
+              _c(
+                "div",
+                {
+                  directives: [
+                    {
+                      name: "show",
+                      rawName: "v-show",
+                      value: _vm.success_msg,
+                      expression: "success_msg"
+                    }
+                  ],
+                  staticClass: "alert alert-success"
+                },
+                [
+                  _c(
+                    "button",
+                    {
+                      staticClass: "close",
+                      attrs: {
+                        type: "button",
+                        "data-dismiss": "alert",
+                        "aria-label": "Close"
+                      }
+                    },
+                    [_vm._v("\n                ×\n            ")]
+                  ),
+                  _vm._v(" "),
+                  _c("p", [_vm._m(2), _vm._v(" " + _vm._s(_vm.success_msg))])
+                ]
+              ),
+              _vm._v(" "),
+              _c(
+                "div",
+                {
+                  directives: [
+                    {
+                      name: "show",
+                      rawName: "v-show",
+                      value: _vm.error_msg,
+                      expression: "error_msg"
+                    }
+                  ],
+                  staticClass: "alert alert-warning"
+                },
+                [
+                  _c(
+                    "button",
+                    {
+                      staticClass: "close",
+                      attrs: {
+                        type: "button",
+                        "data-dismiss": "alert",
+                        "aria-label": "Close"
+                      }
+                    },
+                    [_vm._v("\n                ×\n            ")]
+                  ),
+                  _vm._v(" "),
+                  _c("p", [
+                    _c("b", [_vm._v("Failed!")]),
+                    _vm._v("  " + _vm._s(_vm.error_msg))
+                  ])
+                ]
+              ),
+              _vm._v(" "),
+              _c("h6", [_vm._v("Current Package:")]),
+              _vm._v(" "),
+              _c(
+                "p",
+                {
+                  directives: [
+                    {
+                      name: "show",
+                      rawName: "v-show",
+                      value: _vm.naira_amount_stat.standard,
+                      expression: "naira_amount_stat.standard"
+                    }
+                  ]
+                },
+                [
+                  _vm._m(3),
+                  _vm._v(" "),
+                  _c("i", {
+                    staticClass: "fa fa-check",
+                    staticStyle: { color: "green" }
+                  })
+                ]
+              ),
+              _vm._v(" "),
+              _c(
+                "p",
+                {
+                  directives: [
+                    {
+                      name: "show",
+                      rawName: "v-show",
+                      value: _vm.naira_amount_stat.premium,
+                      expression: "naira_amount_stat.premium"
+                    }
+                  ]
+                },
+                [
+                  _vm._m(4),
+                  _vm._v(" "),
+                  _c("i", {
+                    staticClass: "fa fa-check",
+                    staticStyle: { color: "green" }
+                  })
+                ]
+              ),
+              _vm._v(" "),
+              _c(
+                "p",
+                {
+                  directives: [
+                    {
+                      name: "show",
+                      rawName: "v-show",
+                      value: _vm.bitcoin_amount_stat.standard,
+                      expression: "bitcoin_amount_stat.standard"
+                    }
+                  ]
+                },
+                [
+                  _vm._m(5),
+                  _vm._v(" "),
+                  _c("i", {
+                    staticClass: "fa fa-check",
+                    staticStyle: { color: "green" }
+                  })
+                ]
+              ),
+              _vm._v(" "),
+              _c(
+                "p",
+                {
+                  directives: [
+                    {
+                      name: "show",
+                      rawName: "v-show",
+                      value: _vm.bitcoin_amount_stat.premium,
+                      expression: "bitcoin_amount_stat.premium"
+                    }
+                  ]
+                },
+                [
+                  _vm._m(6),
+                  _vm._v(" "),
+                  _c("i", {
+                    staticClass: "fa fa-check",
+                    staticStyle: { color: "green" }
+                  })
+                ]
+              )
+            ]
+          ),
+          _vm._v(" "),
+          _c(
+            "form",
+            {
+              directives: [
+                {
+                  name: "show",
+                  rawName: "v-show",
+                  value: !_vm.investors,
+                  expression: "!investors"
+                }
+              ],
+              staticClass: "rd-form"
+            },
+            [
+              _vm.donation_mode.use_naira
+                ? _c("div", { staticClass: "input-group mb-3" }, [
+                    _vm._m(7),
+                    _vm._v(" "),
+                    _c("input", {
+                      directives: [
+                        {
+                          name: "model",
+                          rawName: "v-model",
+                          value: _vm.amount.naira,
+                          expression: "amount.naira"
+                        }
+                      ],
+                      staticClass: "form-control",
+                      attrs: {
+                        type: "number",
+                        placeholder: "Donate in Naira",
+                        "aria-label": "Amount (to the nearest dollar)"
+                      },
+                      domProps: { value: _vm.amount.naira },
+                      on: {
+                        keyup: _vm.check_naira_amount,
+                        input: function($event) {
+                          if ($event.target.composing) {
+                            return
+                          }
+                          _vm.$set(_vm.amount, "naira", $event.target.value)
+                        }
+                      }
+                    }),
+                    _vm._v(" "),
+                    _vm._m(8),
+                    _vm._v(" "),
+                    _c("br"),
+                    _vm.naira_amount_stat.standard ||
+                    _vm.naira_amount_stat.premium
+                      ? _c(
+                          "i",
+                          {
+                            staticClass: "info-msg",
+                            staticStyle: { color: "green" }
+                          },
+                          [_vm._v('Good job, now click "Make Investment"')]
+                        )
+                      : _c("span", [
+                          _vm.naira_amount_stat.low
+                            ? _c(
+                                "i",
+                                {
+                                  staticClass: "info-msg",
+                                  staticStyle: { "font-size": "12px" }
+                                },
+                                [
+                                  _vm._v(
+                                    "Please enter an amount not less than ₦2,000"
+                                  )
+                                ]
+                              )
+                            : _c(
+                                "i",
+                                {
+                                  staticClass: "info-msg",
+                                  staticStyle: { "font-size": "12px" }
+                                },
+                                [
+                                  _vm._v(
+                                    "Please enter an amount not greater than ₦500,000"
+                                  )
+                                ]
+                              )
+                        ])
+                  ])
+                : _c("div", [
+                    _c("div", { staticClass: "input-group mb-3" }, [
+                      _vm._m(9),
+                      _vm._v(" "),
+                      _c("input", {
+                        directives: [
+                          {
+                            name: "model",
+                            rawName: "v-model",
+                            value: _vm.amount.bitcoin,
+                            expression: "amount.bitcoin"
+                          }
+                        ],
+                        staticClass: "form-control",
+                        attrs: {
+                          type: "number",
+                          placeholder: "Donate in bitcoins",
+                          "aria-label": "Amount (to the nearest dollar)"
+                        },
+                        domProps: { value: _vm.amount.bitcoin },
+                        on: {
+                          keyup: _vm.check_bitcoin_amount,
+                          input: function($event) {
+                            if ($event.target.composing) {
+                              return
+                            }
+                            _vm.$set(_vm.amount, "bitcoin", $event.target.value)
+                          }
+                        }
+                      })
+                    ]),
+                    _vm._v(" "),
+                    _vm.bitcoin_amount_stat.standard ||
+                    _vm.bitcoin_amount_stat.premium
+                      ? _c(
+                          "i",
+                          {
+                            staticClass: "info-msg",
+                            staticStyle: { color: "green", "font-size": "12px" }
+                          },
+                          [_vm._v('Good job, now click "Make Investment"')]
+                        )
+                      : _c("span", [
+                          _vm.bitcoin_amount_stat.high
+                            ? _c(
+                                "i",
+                                {
+                                  staticClass: "info-msg",
+                                  staticStyle: { "font-size": "12px" }
+                                },
+                                [
+                                  _vm._v(
+                                    "Please enter an amount less than 0.13 BTC before reserving a user"
+                                  )
+                                ]
+                              )
+                            : _c(
+                                "i",
+                                {
+                                  staticClass: "info-msg",
+                                  staticStyle: { "font-size": "12px" }
+                                },
+                                [
+                                  _vm._v(
+                                    "Please enter an amount not less than 0.00049 BTC before reserving a user"
+                                  )
+                                ]
+                              )
+                        ])
+                  ]),
+              _vm._v(" "),
+              _vm.donation_mode.use_naira
+                ? _c("div", [
+                    _c(
+                      "button",
+                      {
+                        directives: [
+                          {
+                            name: "show",
+                            rawName: "v-show",
+                            value:
+                              _vm.naira_amount_stat.low ||
+                              _vm.naira_amount_stat.high,
+                            expression:
+                              "naira_amount_stat.low || naira_amount_stat.high"
+                          }
+                        ],
+                        staticClass: "btn btn-danger btn-block",
+                        on: {
+                          click: function($event) {
+                            $event.preventDefault()
+                            return _vm.low_naira()
+                          }
+                        }
+                      },
+                      [_vm._v(" Make Investment")]
+                    ),
+                    _c(
+                      "button",
+                      {
+                        directives: [
+                          {
+                            name: "show",
+                            rawName: "v-show",
+                            value:
+                              _vm.naira_amount_stat.standard ||
+                              _vm.naira_amount_stat.premium,
+                            expression:
+                              "naira_amount_stat.standard || naira_amount_stat.premium"
+                          }
+                        ],
+                        staticClass: "btn btn-success btn-block",
+                        on: {
+                          click: function($event) {
+                            $event.preventDefault()
+                            return _vm.investNaira()
+                          }
+                        }
+                      },
+                      [_vm._v(" Make Investment")]
+                    )
+                  ])
+                : _c("div", [
+                    _c(
+                      "button",
+                      {
+                        directives: [
+                          {
+                            name: "show",
+                            rawName: "v-show",
+                            value:
+                              _vm.bitcoin_amount_stat.low ||
+                              _vm.bitcoin_amount_stat.high,
+                            expression:
+                              "bitcoin_amount_stat.low || bitcoin_amount_stat.high"
+                          }
+                        ],
+                        staticClass: "btn btn-danger btn-block",
+                        on: {
+                          click: function($event) {
+                            $event.preventDefault()
+                            return _vm.low_bitcoin()
+                          }
+                        }
+                      },
+                      [_vm._v(" Make Investment")]
+                    ),
+                    _c(
+                      "button",
+                      {
+                        directives: [
+                          {
+                            name: "show",
+                            rawName: "v-show",
+                            value:
+                              _vm.bitcoin_amount_stat.standard ||
+                              _vm.bitcoin_amount_stat.premium,
+                            expression:
+                              "bitcoin_amount_stat.standard || bitcoin_amount_stat.premium"
+                          }
+                        ],
+                        staticClass: "btn btn-success btn-block",
+                        on: {
+                          click: function($event) {
+                            $event.preventDefault()
+                            return _vm.investBitcoin()
+                          }
+                        }
+                      },
+                      [_vm._v(" Make Investment")]
+                    )
+                  ]),
+              _vm._v(" "),
+              _c(
+                "div",
+                {
+                  staticStyle: { "margin-bottom": "10px", "margin-top": "20px" }
+                },
+                [
+                  _vm.donation_mode.use_naira
+                    ? _c(
+                        "button",
+                        {
+                          staticClass: "btn btn-dark white-text",
+                          on: {
+                            click: function($event) {
+                              $event.preventDefault()
+                              return _vm.toggle_donation_mode($event)
+                            }
+                          }
+                        },
+                        [_vm._v(" Invest with Bitcoin")]
+                      )
+                    : _c(
+                        "button",
+                        {
+                          staticClass: "btn btn-dark white-text",
+                          on: {
+                            click: function($event) {
+                              $event.preventDefault()
+                              return _vm.toggle_donation_mode($event)
+                            }
+                          }
+                        },
+                        [_vm._v(" Invest with Naira")]
+                      )
+                ]
+              )
+            ]
+          )
+        ])
+  ])
+}
+var staticRenderFns = [
+  function() {
+    var _vm = this
+    var _h = _vm.$createElement
+    var _c = _vm._self._c || _h
+    return _c("p", [
+      _c("b", [_vm._v("Note: ")]),
+      _vm._v("You cannot make more than one investment at the same time")
+    ])
+  },
+  function() {
+    var _vm = this
+    var _h = _vm.$createElement
+    var _c = _vm._self._c || _h
+    return _c("div", [
+      _c("h6", [_vm._v("Available Packages")]),
+      _vm._v(" "),
+      _c("div", { staticClass: "package-area" }, [
+        _c("h6", { staticStyle: { "text-align": "center" } }, [
+          _c(
+            "b",
+            { staticClass: "package", staticStyle: { background: "#054680" } },
+            [_vm._v("Standard Package")]
+          )
+        ]),
+        _vm._v(" "),
+        _c("br"),
+        _c("p", [_c("span", [_vm._v(" ₦2000 - ₦49,999 (50% ROI in 7days)")])]),
+        _vm._v(" "),
+        _c("p", [
+          _c("span", [
+            _c("i", { staticClass: "fa fa-btc" }),
+            _vm._v(" 0.0045 - 0.0035 (50% ROI in 7days)")
+          ])
+        ])
+      ]),
+      _c("br"),
+      _vm._v(" "),
+      _c("div", { staticClass: "package-area" }, [
+        _c("h6", { staticStyle: { "text-align": "center" } }, [
+          _c(
+            "b",
+            { staticClass: "package", staticStyle: { background: "purple" } },
+            [_vm._v("Premium Package")]
+          )
+        ]),
+        _vm._v(" "),
+        _c("br"),
+        _c("p", [
+          _c("span", [_vm._v("  ₦50,000 - ₦500,000 (30% ROI in 7days)")])
+        ]),
+        _vm._v(" "),
+        _c("p", [
+          _c("span", [
+            _c("i", { staticClass: "fa fa-btc" }),
+            _vm._v(" 0.0045 - 0.05 (30%  ROI in 7days)")
+          ])
+        ])
+      ])
+    ])
+  },
+  function() {
+    var _vm = this
+    var _h = _vm.$createElement
+    var _c = _vm._self._c || _h
+    return _c("span", { staticStyle: { color: "green" } }, [
+      _vm._v("Success "),
+      _c("i", { staticClass: "fa fa-check" })
+    ])
+  },
+  function() {
+    var _vm = this
+    var _h = _vm.$createElement
+    var _c = _vm._self._c || _h
+    return _c("span", [
+      _c(
+        "b",
+        {
+          staticClass: "package",
+          staticStyle: { background: "#054680", "font-size": "10px" }
+        },
+        [_vm._v("Standard Package")]
+      ),
+      _c("span", [_vm._v("₦2000 - 49,999")])
+    ])
+  },
+  function() {
+    var _vm = this
+    var _h = _vm.$createElement
+    var _c = _vm._self._c || _h
+    return _c("span", [
+      _c(
+        "b",
+        {
+          staticClass: "package",
+          staticStyle: { background: "purple", "font-size": "10px" }
+        },
+        [_vm._v("Premium Package")]
+      ),
+      _c("span", [_vm._v("₦50,000 - 500,000")])
+    ])
+  },
+  function() {
+    var _vm = this
+    var _h = _vm.$createElement
+    var _c = _vm._self._c || _h
+    return _c("span", [
+      _c(
+        "b",
+        {
+          staticClass: "package",
+          staticStyle: { background: "#054680", "font-size": "10px" }
+        },
+        [_vm._v("Standard Package")]
+      ),
+      _c("span", [_vm._v("BTC 000.49 - 0.0119")])
+    ])
+  },
+  function() {
+    var _vm = this
+    var _h = _vm.$createElement
+    var _c = _vm._self._c || _h
+    return _c("span", [
+      _c(
+        "b",
+        {
+          staticClass: "package",
+          staticStyle: { background: "purple", "font-size": "10px" }
+        },
+        [_vm._v("Premium Package")]
+      ),
+      _c("span", [_vm._v("BTC 0.012 - 0.13")])
+    ])
+  },
+  function() {
+    var _vm = this
+    var _h = _vm.$createElement
+    var _c = _vm._self._c || _h
+    return _c("div", { staticClass: "input-group-prepend" }, [
+      _c("span", { staticClass: "input-group-text" }, [_vm._v("₦")])
+    ])
+  },
+  function() {
+    var _vm = this
+    var _h = _vm.$createElement
+    var _c = _vm._self._c || _h
+    return _c("div", { staticClass: "input-group-append" }, [
+      _c("span", { staticClass: "input-group-text" }, [_vm._v(".00")])
+    ])
+  },
+  function() {
+    var _vm = this
+    var _h = _vm.$createElement
+    var _c = _vm._self._c || _h
+    return _c("div", { staticClass: "input-group-prepend" }, [
+      _c("span", { staticClass: "input-group-text" }, [
+        _c("i", { staticClass: "fa fa-bitcoin" })
+      ])
+    ])
+  }
+]
+render._withStripped = true
+
+
+
+/***/ }),
+
+/***/ "./node_modules/vue-loader/lib/loaders/templateLoader.js?!./node_modules/vue-loader/lib/index.js?!./resources/js/components/make.vue?vue&type=template&id=bba11c8e&scoped=true&":
+/*!*******************************************************************************************************************************************************************************************************************!*\
+  !*** ./node_modules/vue-loader/lib/loaders/templateLoader.js??vue-loader-options!./node_modules/vue-loader/lib??vue-loader-options!./resources/js/components/make.vue?vue&type=template&id=bba11c8e&scoped=true& ***!
+  \*******************************************************************************************************************************************************************************************************************/
 /*! exports provided: render, staticRenderFns */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
@@ -42980,6 +44634,591 @@ var staticRenderFns = [
     var _h = _vm.$createElement
     var _c = _vm._self._c || _h
     return _c("td", [_c("i", { staticClass: "fa fa-bitcoin" })])
+  }
+]
+render._withStripped = true
+
+
+
+/***/ }),
+
+/***/ "./node_modules/vue-loader/lib/loaders/templateLoader.js?!./node_modules/vue-loader/lib/index.js?!./resources/js/components/match.vue?vue&type=template&id=7f7dc80a&scoped=true&":
+/*!********************************************************************************************************************************************************************************************************************!*\
+  !*** ./node_modules/vue-loader/lib/loaders/templateLoader.js??vue-loader-options!./node_modules/vue-loader/lib??vue-loader-options!./resources/js/components/match.vue?vue&type=template&id=7f7dc80a&scoped=true& ***!
+  \********************************************************************************************************************************************************************************************************************/
+/*! exports provided: render, staticRenderFns */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "render", function() { return render; });
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "staticRenderFns", function() { return staticRenderFns; });
+var render = function() {
+  var _vm = this
+  var _h = _vm.$createElement
+  var _c = _vm._self._c || _h
+  return _c("div", [
+    _vm.is_loading
+      ? _c("div", { attrs: { id: "loader" } })
+      : _c("div", [
+          _c("div", { staticClass: "container" }, [
+            _c("div", { staticClass: "row" }, [
+              _c("div", { staticClass: "col-12" }, [
+                _c("div", { staticClass: "toggle" }, [
+                  _vm.naira_mode
+                    ? _c(
+                        "button",
+                        {
+                          staticClass: "btn btn-danger",
+                          on: { click: _vm.toggle_view }
+                        },
+                        [_vm._v("Naira")]
+                      )
+                    : _c(
+                        "button",
+                        {
+                          staticClass: "btn btn-outline-danger",
+                          on: { click: _vm.toggle_view }
+                        },
+                        [_vm._v("Naira")]
+                      ),
+                  _vm._v("\n                          "),
+                  _vm.naira_mode
+                    ? _c(
+                        "button",
+                        {
+                          staticClass: "btn btn-outline-danger",
+                          on: { click: _vm.toggle_view }
+                        },
+                        [_vm._v("Bitcoin")]
+                      )
+                    : _c(
+                        "button",
+                        {
+                          staticClass: "btn btn-danger",
+                          on: { click: _vm.toggle_view }
+                        },
+                        [_vm._v("Bitcoin")]
+                      )
+                ]),
+                _vm._v(" "),
+                _c(
+                  "div",
+                  {
+                    directives: [
+                      {
+                        name: "show",
+                        rawName: "v-show",
+                        value: _vm.success_msg,
+                        expression: "success_msg"
+                      }
+                    ],
+                    staticClass: "alert alert-success"
+                  },
+                  [
+                    _c(
+                      "button",
+                      {
+                        staticClass: "close",
+                        attrs: {
+                          type: "button",
+                          "data-dismiss": "alert",
+                          "aria-label": "Close"
+                        }
+                      },
+                      [_vm._v("\n                    ×\n                    ")]
+                    ),
+                    _vm._v(" "),
+                    _c("p", [_vm._m(0), _vm._v(" " + _vm._s(_vm.success_msg))])
+                  ]
+                ),
+                _vm._v(" "),
+                _c(
+                  "div",
+                  {
+                    directives: [
+                      {
+                        name: "show",
+                        rawName: "v-show",
+                        value: _vm.error_msg,
+                        expression: "error_msg"
+                      }
+                    ],
+                    staticClass: "alert alert-warning"
+                  },
+                  [
+                    _c(
+                      "button",
+                      {
+                        staticClass: "close",
+                        attrs: {
+                          type: "button",
+                          "data-dismiss": "alert",
+                          "aria-label": "Close"
+                        }
+                      },
+                      [
+                        _vm._v(
+                          "\n                            ×\n                        "
+                        )
+                      ]
+                    ),
+                    _vm._v(" "),
+                    _c("p", [
+                      _c("b", [_vm._v("Failed!")]),
+                      _vm._v("  " + _vm._s(_vm.error_msg))
+                    ])
+                  ]
+                )
+              ]),
+              _vm._v(" "),
+              _c(
+                "div",
+                {
+                  directives: [
+                    {
+                      name: "show",
+                      rawName: "v-show",
+                      value: _vm.naira_mode,
+                      expression: "naira_mode"
+                    }
+                  ],
+                  staticClass: "col-6"
+                },
+                [
+                  _c("h6", [_vm._v("Investor")]),
+                  _vm._v(" "),
+                  _c("p", [
+                    _vm._v("Name : " + _vm._s(_vm.naira.current_name_i))
+                  ]),
+                  _vm._v(" "),
+                  _c("p", [
+                    _vm._v("Amount: " + _vm._s(_vm.naira.current_amount_i))
+                  ])
+                ]
+              ),
+              _vm._v(" "),
+              _c(
+                "div",
+                {
+                  directives: [
+                    {
+                      name: "show",
+                      rawName: "v-show",
+                      value: _vm.naira_mode,
+                      expression: "naira_mode"
+                    }
+                  ],
+                  staticClass: "col-6"
+                },
+                [
+                  _c("h6", [_vm._v("Receiver")]),
+                  _vm._v(" "),
+                  _c("p", [
+                    _vm._v("Name : " + _vm._s(_vm.naira.current_name_r))
+                  ]),
+                  _vm._v(" "),
+                  _c("p", [
+                    _vm._v("Amount: " + _vm._s(_vm.naira.current_amount_r))
+                  ])
+                ]
+              ),
+              _vm._v(" "),
+              _c(
+                "div",
+                {
+                  directives: [
+                    {
+                      name: "show",
+                      rawName: "v-show",
+                      value: _vm.naira_mode,
+                      expression: "naira_mode"
+                    }
+                  ],
+                  staticClass: "col-12",
+                  staticStyle: { "text-align": "center" }
+                },
+                [
+                  _c(
+                    "button",
+                    {
+                      staticClass: "btn btn-success",
+                      on: {
+                        click: function($event) {
+                          $event.preventDefault()
+                          return _vm.match_naira()
+                        }
+                      }
+                    },
+                    [_vm._v("Match")]
+                  )
+                ]
+              ),
+              _vm._v(" "),
+              _c("br"),
+              _vm._v(" "),
+              _c(
+                "div",
+                {
+                  directives: [
+                    {
+                      name: "show",
+                      rawName: "v-show",
+                      value: _vm.naira_mode,
+                      expression: "naira_mode"
+                    }
+                  ],
+                  staticClass: "col-12"
+                },
+                [
+                  _c("h6", [_vm._v("Investors")]),
+                  _vm._v(" "),
+                  _c(
+                    "ol",
+                    [
+                      _vm._l(_vm.investors, function(investor, index) {
+                        return _c("li", [
+                          _c("span", [
+                            _c(
+                              "button",
+                              {
+                                staticClass: "btn btn-danger",
+                                on: {
+                                  click: function($event) {
+                                    $event.preventDefault()
+                                    return _vm.current_investor_n(index)
+                                  }
+                                }
+                              },
+                              [_vm._v(_vm._s(investor.name))]
+                            ),
+                            _vm._v(" - " + _vm._s(investor.amount))
+                          ]),
+                          _vm._v("  \n                            ")
+                        ])
+                      }),
+                      _c("br")
+                    ],
+                    2
+                  )
+                ]
+              ),
+              _c("br"),
+              _vm._v(" "),
+              _c(
+                "div",
+                {
+                  directives: [
+                    {
+                      name: "show",
+                      rawName: "v-show",
+                      value: _vm.naira_mode,
+                      expression: "naira_mode"
+                    }
+                  ],
+                  staticClass: "col-12"
+                },
+                [
+                  _c("h6", [_vm._v("Receivers")]),
+                  _vm._v(" "),
+                  _c(
+                    "ol",
+                    [
+                      _vm._l(_vm.receivers, function(receiver, index) {
+                        return _c("li", [
+                          _c(
+                            "span",
+                            {
+                              staticStyle: {
+                                "border-left": "solid 3px black",
+                                "margin-left": "10px"
+                              }
+                            },
+                            [
+                              _vm._v(" "),
+                              _c(
+                                "b",
+                                {
+                                  directives: [
+                                    {
+                                      name: "show",
+                                      rawName: "v-show",
+                                      value: receiver.is_priority,
+                                      expression: "receiver.is_priority"
+                                    }
+                                  ]
+                                },
+                                [_vm._v("Priority")]
+                              ),
+                              receiver.mod
+                                ? _c(
+                                    "button",
+                                    {
+                                      staticClass: "btn btn-primary",
+                                      on: {
+                                        click: function($event) {
+                                          $event.preventDefault()
+                                          return _vm.current_receiver_n(index)
+                                        }
+                                      }
+                                    },
+                                    [_vm._v(_vm._s(receiver.name))]
+                                  )
+                                : _c(
+                                    "button",
+                                    {
+                                      staticClass: "btn btn-warning",
+                                      on: {
+                                        click: function($event) {
+                                          $event.preventDefault()
+                                          return _vm.premature_receiver_n(index)
+                                        }
+                                      }
+                                    },
+                                    [_vm._v(_vm._s(receiver.name))]
+                                  ),
+                              _vm._v(" - " + _vm._s(receiver.amount))
+                            ]
+                          )
+                        ])
+                      }),
+                      _c("br")
+                    ],
+                    2
+                  )
+                ]
+              ),
+              _vm._v(" "),
+              _c(
+                "div",
+                {
+                  directives: [
+                    {
+                      name: "show",
+                      rawName: "v-show",
+                      value: !_vm.naira_mode,
+                      expression: "!naira_mode"
+                    }
+                  ],
+                  staticClass: "col-6"
+                },
+                [
+                  _c("h6", [_vm._v("Investor")]),
+                  _vm._v(" "),
+                  _c("p", [
+                    _vm._v("Name : " + _vm._s(_vm.bitcoin.current_name_i))
+                  ]),
+                  _vm._v(" "),
+                  _c("p", [
+                    _vm._v("Amount: " + _vm._s(_vm.bitcoin.current_amount_i))
+                  ])
+                ]
+              ),
+              _vm._v(" "),
+              _c(
+                "div",
+                {
+                  directives: [
+                    {
+                      name: "show",
+                      rawName: "v-show",
+                      value: !_vm.naira_mode,
+                      expression: "!naira_mode"
+                    }
+                  ],
+                  staticClass: "col-6"
+                },
+                [
+                  _c("h6", [_vm._v("Receiver")]),
+                  _vm._v(" "),
+                  _c("p", [
+                    _vm._v("Name : " + _vm._s(_vm.bitcoin.current_name_r))
+                  ]),
+                  _vm._v(" "),
+                  _c("p", [
+                    _vm._v("Amount: " + _vm._s(_vm.bitcoin.current_amount_r))
+                  ])
+                ]
+              ),
+              _vm._v(" "),
+              _c(
+                "div",
+                {
+                  directives: [
+                    {
+                      name: "show",
+                      rawName: "v-show",
+                      value: !_vm.naira_mode,
+                      expression: "!naira_mode"
+                    }
+                  ],
+                  staticClass: "col-12",
+                  staticStyle: { "text-align": "center" }
+                },
+                [
+                  _c(
+                    "button",
+                    {
+                      staticClass: "btn btn-success",
+                      on: {
+                        click: function($event) {
+                          $event.preventDefault()
+                          return _vm.match_bitcoin()
+                        }
+                      }
+                    },
+                    [_vm._v("Match")]
+                  )
+                ]
+              ),
+              _vm._v(" "),
+              _c("br"),
+              _vm._v(" "),
+              _c(
+                "div",
+                {
+                  directives: [
+                    {
+                      name: "show",
+                      rawName: "v-show",
+                      value: !_vm.naira_mode,
+                      expression: "!naira_mode"
+                    }
+                  ],
+                  staticClass: "col-12"
+                },
+                [
+                  _c("h6", [_vm._v("Investors")]),
+                  _vm._v(" "),
+                  _c(
+                    "ol",
+                    [
+                      _vm._l(_vm.investorsb, function(investor, index) {
+                        return _c("li", [
+                          _c("span", [
+                            _c(
+                              "button",
+                              {
+                                staticClass: "btn btn-danger",
+                                on: {
+                                  click: function($event) {
+                                    $event.preventDefault()
+                                    return _vm.current_investor_b(index)
+                                  }
+                                }
+                              },
+                              [_vm._v(_vm._s(investor.name))]
+                            ),
+                            _vm._v(" - " + _vm._s(investor.amount))
+                          ]),
+                          _vm._v("  \n                            ")
+                        ])
+                      }),
+                      _c("br")
+                    ],
+                    2
+                  )
+                ]
+              ),
+              _c("br"),
+              _vm._v(" "),
+              _c(
+                "div",
+                {
+                  directives: [
+                    {
+                      name: "show",
+                      rawName: "v-show",
+                      value: !_vm.naira_mode,
+                      expression: "!naira_mode"
+                    }
+                  ],
+                  staticClass: "col-12"
+                },
+                [
+                  _c("h6", [_vm._v("Receivers")]),
+                  _vm._v(" "),
+                  _c(
+                    "ol",
+                    [
+                      _vm._l(_vm.receiversb, function(receiver, index) {
+                        return _c("li", [
+                          _c(
+                            "span",
+                            {
+                              staticStyle: {
+                                "border-left": "solid 3px black",
+                                "margin-left": "10px"
+                              }
+                            },
+                            [
+                              _vm._v(" "),
+                              _c(
+                                "b",
+                                {
+                                  directives: [
+                                    {
+                                      name: "show",
+                                      rawName: "v-show",
+                                      value: receiver.is_priority,
+                                      expression: "receiver.is_priority"
+                                    }
+                                  ]
+                                },
+                                [_vm._v("Priority")]
+                              ),
+                              receiver.mod
+                                ? _c(
+                                    "button",
+                                    {
+                                      staticClass: "btn btn-primary",
+                                      on: {
+                                        click: function($event) {
+                                          $event.preventDefault()
+                                          return _vm.current_receiver_b(index)
+                                        }
+                                      }
+                                    },
+                                    [_vm._v(_vm._s(receiver.name))]
+                                  )
+                                : _c(
+                                    "button",
+                                    {
+                                      staticClass: "btn btn-warning",
+                                      on: {
+                                        click: function($event) {
+                                          $event.preventDefault()
+                                          return _vm.premature_receiver_b(index)
+                                        }
+                                      }
+                                    },
+                                    [_vm._v(_vm._s(receiver.name))]
+                                  ),
+                              _vm._v(" - " + _vm._s(receiver.amount))
+                            ]
+                          )
+                        ])
+                      }),
+                      _c("br")
+                    ],
+                    2
+                  )
+                ]
+              )
+            ])
+          ])
+        ])
+  ])
+}
+var staticRenderFns = [
+  function() {
+    var _vm = this
+    var _h = _vm.$createElement
+    var _c = _vm._self._c || _h
+    return _c("span", { staticStyle: { color: "green" } }, [
+      _vm._v("Success "),
+      _c("i", { staticClass: "fa fa-check" })
+    ])
   }
 ]
 render._withStripped = true
@@ -55603,6 +57842,180 @@ __webpack_require__.r(__webpack_exports__);
 
 /***/ }),
 
+/***/ "./resources/js/components/make.vue":
+/*!******************************************!*\
+  !*** ./resources/js/components/make.vue ***!
+  \******************************************/
+/*! exports provided: default */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony import */ var _make_vue_vue_type_template_id_bba11c8e_scoped_true___WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ./make.vue?vue&type=template&id=bba11c8e&scoped=true& */ "./resources/js/components/make.vue?vue&type=template&id=bba11c8e&scoped=true&");
+/* harmony import */ var _make_vue_vue_type_script_lang_js___WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ./make.vue?vue&type=script&lang=js& */ "./resources/js/components/make.vue?vue&type=script&lang=js&");
+/* empty/unused harmony star reexport *//* harmony import */ var _make_vue_vue_type_style_index_0_id_bba11c8e_scoped_true_lang_css___WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ./make.vue?vue&type=style&index=0&id=bba11c8e&scoped=true&lang=css& */ "./resources/js/components/make.vue?vue&type=style&index=0&id=bba11c8e&scoped=true&lang=css&");
+/* harmony import */ var _node_modules_vue_loader_lib_runtime_componentNormalizer_js__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! ../../../node_modules/vue-loader/lib/runtime/componentNormalizer.js */ "./node_modules/vue-loader/lib/runtime/componentNormalizer.js");
+
+
+
+
+
+
+/* normalize component */
+
+var component = Object(_node_modules_vue_loader_lib_runtime_componentNormalizer_js__WEBPACK_IMPORTED_MODULE_3__["default"])(
+  _make_vue_vue_type_script_lang_js___WEBPACK_IMPORTED_MODULE_1__["default"],
+  _make_vue_vue_type_template_id_bba11c8e_scoped_true___WEBPACK_IMPORTED_MODULE_0__["render"],
+  _make_vue_vue_type_template_id_bba11c8e_scoped_true___WEBPACK_IMPORTED_MODULE_0__["staticRenderFns"],
+  false,
+  null,
+  "bba11c8e",
+  null
+  
+)
+
+/* hot reload */
+if (false) { var api; }
+component.options.__file = "resources/js/components/make.vue"
+/* harmony default export */ __webpack_exports__["default"] = (component.exports);
+
+/***/ }),
+
+/***/ "./resources/js/components/make.vue?vue&type=script&lang=js&":
+/*!*******************************************************************!*\
+  !*** ./resources/js/components/make.vue?vue&type=script&lang=js& ***!
+  \*******************************************************************/
+/*! exports provided: default */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony import */ var _node_modules_babel_loader_lib_index_js_ref_4_0_node_modules_vue_loader_lib_index_js_vue_loader_options_make_vue_vue_type_script_lang_js___WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! -!../../../node_modules/babel-loader/lib??ref--4-0!../../../node_modules/vue-loader/lib??vue-loader-options!./make.vue?vue&type=script&lang=js& */ "./node_modules/babel-loader/lib/index.js?!./node_modules/vue-loader/lib/index.js?!./resources/js/components/make.vue?vue&type=script&lang=js&");
+/* empty/unused harmony star reexport */ /* harmony default export */ __webpack_exports__["default"] = (_node_modules_babel_loader_lib_index_js_ref_4_0_node_modules_vue_loader_lib_index_js_vue_loader_options_make_vue_vue_type_script_lang_js___WEBPACK_IMPORTED_MODULE_0__["default"]); 
+
+/***/ }),
+
+/***/ "./resources/js/components/make.vue?vue&type=style&index=0&id=bba11c8e&scoped=true&lang=css&":
+/*!***************************************************************************************************!*\
+  !*** ./resources/js/components/make.vue?vue&type=style&index=0&id=bba11c8e&scoped=true&lang=css& ***!
+  \***************************************************************************************************/
+/*! no static exports found */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony import */ var _node_modules_style_loader_index_js_node_modules_css_loader_dist_cjs_js_ref_6_1_node_modules_vue_loader_lib_loaders_stylePostLoader_js_node_modules_postcss_loader_src_index_js_ref_6_2_node_modules_vue_loader_lib_index_js_vue_loader_options_make_vue_vue_type_style_index_0_id_bba11c8e_scoped_true_lang_css___WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! -!../../../node_modules/style-loader!../../../node_modules/css-loader/dist/cjs.js??ref--6-1!../../../node_modules/vue-loader/lib/loaders/stylePostLoader.js!../../../node_modules/postcss-loader/src??ref--6-2!../../../node_modules/vue-loader/lib??vue-loader-options!./make.vue?vue&type=style&index=0&id=bba11c8e&scoped=true&lang=css& */ "./node_modules/style-loader/index.js!./node_modules/css-loader/dist/cjs.js?!./node_modules/vue-loader/lib/loaders/stylePostLoader.js!./node_modules/postcss-loader/src/index.js?!./node_modules/vue-loader/lib/index.js?!./resources/js/components/make.vue?vue&type=style&index=0&id=bba11c8e&scoped=true&lang=css&");
+/* harmony import */ var _node_modules_style_loader_index_js_node_modules_css_loader_dist_cjs_js_ref_6_1_node_modules_vue_loader_lib_loaders_stylePostLoader_js_node_modules_postcss_loader_src_index_js_ref_6_2_node_modules_vue_loader_lib_index_js_vue_loader_options_make_vue_vue_type_style_index_0_id_bba11c8e_scoped_true_lang_css___WEBPACK_IMPORTED_MODULE_0___default = /*#__PURE__*/__webpack_require__.n(_node_modules_style_loader_index_js_node_modules_css_loader_dist_cjs_js_ref_6_1_node_modules_vue_loader_lib_loaders_stylePostLoader_js_node_modules_postcss_loader_src_index_js_ref_6_2_node_modules_vue_loader_lib_index_js_vue_loader_options_make_vue_vue_type_style_index_0_id_bba11c8e_scoped_true_lang_css___WEBPACK_IMPORTED_MODULE_0__);
+/* harmony reexport (unknown) */ for(var __WEBPACK_IMPORT_KEY__ in _node_modules_style_loader_index_js_node_modules_css_loader_dist_cjs_js_ref_6_1_node_modules_vue_loader_lib_loaders_stylePostLoader_js_node_modules_postcss_loader_src_index_js_ref_6_2_node_modules_vue_loader_lib_index_js_vue_loader_options_make_vue_vue_type_style_index_0_id_bba11c8e_scoped_true_lang_css___WEBPACK_IMPORTED_MODULE_0__) if(["default"].indexOf(__WEBPACK_IMPORT_KEY__) < 0) (function(key) { __webpack_require__.d(__webpack_exports__, key, function() { return _node_modules_style_loader_index_js_node_modules_css_loader_dist_cjs_js_ref_6_1_node_modules_vue_loader_lib_loaders_stylePostLoader_js_node_modules_postcss_loader_src_index_js_ref_6_2_node_modules_vue_loader_lib_index_js_vue_loader_options_make_vue_vue_type_style_index_0_id_bba11c8e_scoped_true_lang_css___WEBPACK_IMPORTED_MODULE_0__[key]; }) }(__WEBPACK_IMPORT_KEY__));
+ /* harmony default export */ __webpack_exports__["default"] = (_node_modules_style_loader_index_js_node_modules_css_loader_dist_cjs_js_ref_6_1_node_modules_vue_loader_lib_loaders_stylePostLoader_js_node_modules_postcss_loader_src_index_js_ref_6_2_node_modules_vue_loader_lib_index_js_vue_loader_options_make_vue_vue_type_style_index_0_id_bba11c8e_scoped_true_lang_css___WEBPACK_IMPORTED_MODULE_0___default.a); 
+
+/***/ }),
+
+/***/ "./resources/js/components/make.vue?vue&type=template&id=bba11c8e&scoped=true&":
+/*!*************************************************************************************!*\
+  !*** ./resources/js/components/make.vue?vue&type=template&id=bba11c8e&scoped=true& ***!
+  \*************************************************************************************/
+/*! exports provided: render, staticRenderFns */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony import */ var _node_modules_vue_loader_lib_loaders_templateLoader_js_vue_loader_options_node_modules_vue_loader_lib_index_js_vue_loader_options_make_vue_vue_type_template_id_bba11c8e_scoped_true___WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! -!../../../node_modules/vue-loader/lib/loaders/templateLoader.js??vue-loader-options!../../../node_modules/vue-loader/lib??vue-loader-options!./make.vue?vue&type=template&id=bba11c8e&scoped=true& */ "./node_modules/vue-loader/lib/loaders/templateLoader.js?!./node_modules/vue-loader/lib/index.js?!./resources/js/components/make.vue?vue&type=template&id=bba11c8e&scoped=true&");
+/* harmony reexport (safe) */ __webpack_require__.d(__webpack_exports__, "render", function() { return _node_modules_vue_loader_lib_loaders_templateLoader_js_vue_loader_options_node_modules_vue_loader_lib_index_js_vue_loader_options_make_vue_vue_type_template_id_bba11c8e_scoped_true___WEBPACK_IMPORTED_MODULE_0__["render"]; });
+
+/* harmony reexport (safe) */ __webpack_require__.d(__webpack_exports__, "staticRenderFns", function() { return _node_modules_vue_loader_lib_loaders_templateLoader_js_vue_loader_options_node_modules_vue_loader_lib_index_js_vue_loader_options_make_vue_vue_type_template_id_bba11c8e_scoped_true___WEBPACK_IMPORTED_MODULE_0__["staticRenderFns"]; });
+
+
+
+/***/ }),
+
+/***/ "./resources/js/components/match.vue":
+/*!*******************************************!*\
+  !*** ./resources/js/components/match.vue ***!
+  \*******************************************/
+/*! exports provided: default */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony import */ var _match_vue_vue_type_template_id_7f7dc80a_scoped_true___WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ./match.vue?vue&type=template&id=7f7dc80a&scoped=true& */ "./resources/js/components/match.vue?vue&type=template&id=7f7dc80a&scoped=true&");
+/* harmony import */ var _match_vue_vue_type_script_lang_js___WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ./match.vue?vue&type=script&lang=js& */ "./resources/js/components/match.vue?vue&type=script&lang=js&");
+/* empty/unused harmony star reexport *//* harmony import */ var _match_vue_vue_type_style_index_0_id_7f7dc80a_scoped_true_lang_css___WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ./match.vue?vue&type=style&index=0&id=7f7dc80a&scoped=true&lang=css& */ "./resources/js/components/match.vue?vue&type=style&index=0&id=7f7dc80a&scoped=true&lang=css&");
+/* harmony import */ var _node_modules_vue_loader_lib_runtime_componentNormalizer_js__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! ../../../node_modules/vue-loader/lib/runtime/componentNormalizer.js */ "./node_modules/vue-loader/lib/runtime/componentNormalizer.js");
+
+
+
+
+
+
+/* normalize component */
+
+var component = Object(_node_modules_vue_loader_lib_runtime_componentNormalizer_js__WEBPACK_IMPORTED_MODULE_3__["default"])(
+  _match_vue_vue_type_script_lang_js___WEBPACK_IMPORTED_MODULE_1__["default"],
+  _match_vue_vue_type_template_id_7f7dc80a_scoped_true___WEBPACK_IMPORTED_MODULE_0__["render"],
+  _match_vue_vue_type_template_id_7f7dc80a_scoped_true___WEBPACK_IMPORTED_MODULE_0__["staticRenderFns"],
+  false,
+  null,
+  "7f7dc80a",
+  null
+  
+)
+
+/* hot reload */
+if (false) { var api; }
+component.options.__file = "resources/js/components/match.vue"
+/* harmony default export */ __webpack_exports__["default"] = (component.exports);
+
+/***/ }),
+
+/***/ "./resources/js/components/match.vue?vue&type=script&lang=js&":
+/*!********************************************************************!*\
+  !*** ./resources/js/components/match.vue?vue&type=script&lang=js& ***!
+  \********************************************************************/
+/*! exports provided: default */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony import */ var _node_modules_babel_loader_lib_index_js_ref_4_0_node_modules_vue_loader_lib_index_js_vue_loader_options_match_vue_vue_type_script_lang_js___WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! -!../../../node_modules/babel-loader/lib??ref--4-0!../../../node_modules/vue-loader/lib??vue-loader-options!./match.vue?vue&type=script&lang=js& */ "./node_modules/babel-loader/lib/index.js?!./node_modules/vue-loader/lib/index.js?!./resources/js/components/match.vue?vue&type=script&lang=js&");
+/* empty/unused harmony star reexport */ /* harmony default export */ __webpack_exports__["default"] = (_node_modules_babel_loader_lib_index_js_ref_4_0_node_modules_vue_loader_lib_index_js_vue_loader_options_match_vue_vue_type_script_lang_js___WEBPACK_IMPORTED_MODULE_0__["default"]); 
+
+/***/ }),
+
+/***/ "./resources/js/components/match.vue?vue&type=style&index=0&id=7f7dc80a&scoped=true&lang=css&":
+/*!****************************************************************************************************!*\
+  !*** ./resources/js/components/match.vue?vue&type=style&index=0&id=7f7dc80a&scoped=true&lang=css& ***!
+  \****************************************************************************************************/
+/*! no static exports found */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony import */ var _node_modules_style_loader_index_js_node_modules_css_loader_dist_cjs_js_ref_6_1_node_modules_vue_loader_lib_loaders_stylePostLoader_js_node_modules_postcss_loader_src_index_js_ref_6_2_node_modules_vue_loader_lib_index_js_vue_loader_options_match_vue_vue_type_style_index_0_id_7f7dc80a_scoped_true_lang_css___WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! -!../../../node_modules/style-loader!../../../node_modules/css-loader/dist/cjs.js??ref--6-1!../../../node_modules/vue-loader/lib/loaders/stylePostLoader.js!../../../node_modules/postcss-loader/src??ref--6-2!../../../node_modules/vue-loader/lib??vue-loader-options!./match.vue?vue&type=style&index=0&id=7f7dc80a&scoped=true&lang=css& */ "./node_modules/style-loader/index.js!./node_modules/css-loader/dist/cjs.js?!./node_modules/vue-loader/lib/loaders/stylePostLoader.js!./node_modules/postcss-loader/src/index.js?!./node_modules/vue-loader/lib/index.js?!./resources/js/components/match.vue?vue&type=style&index=0&id=7f7dc80a&scoped=true&lang=css&");
+/* harmony import */ var _node_modules_style_loader_index_js_node_modules_css_loader_dist_cjs_js_ref_6_1_node_modules_vue_loader_lib_loaders_stylePostLoader_js_node_modules_postcss_loader_src_index_js_ref_6_2_node_modules_vue_loader_lib_index_js_vue_loader_options_match_vue_vue_type_style_index_0_id_7f7dc80a_scoped_true_lang_css___WEBPACK_IMPORTED_MODULE_0___default = /*#__PURE__*/__webpack_require__.n(_node_modules_style_loader_index_js_node_modules_css_loader_dist_cjs_js_ref_6_1_node_modules_vue_loader_lib_loaders_stylePostLoader_js_node_modules_postcss_loader_src_index_js_ref_6_2_node_modules_vue_loader_lib_index_js_vue_loader_options_match_vue_vue_type_style_index_0_id_7f7dc80a_scoped_true_lang_css___WEBPACK_IMPORTED_MODULE_0__);
+/* harmony reexport (unknown) */ for(var __WEBPACK_IMPORT_KEY__ in _node_modules_style_loader_index_js_node_modules_css_loader_dist_cjs_js_ref_6_1_node_modules_vue_loader_lib_loaders_stylePostLoader_js_node_modules_postcss_loader_src_index_js_ref_6_2_node_modules_vue_loader_lib_index_js_vue_loader_options_match_vue_vue_type_style_index_0_id_7f7dc80a_scoped_true_lang_css___WEBPACK_IMPORTED_MODULE_0__) if(["default"].indexOf(__WEBPACK_IMPORT_KEY__) < 0) (function(key) { __webpack_require__.d(__webpack_exports__, key, function() { return _node_modules_style_loader_index_js_node_modules_css_loader_dist_cjs_js_ref_6_1_node_modules_vue_loader_lib_loaders_stylePostLoader_js_node_modules_postcss_loader_src_index_js_ref_6_2_node_modules_vue_loader_lib_index_js_vue_loader_options_match_vue_vue_type_style_index_0_id_7f7dc80a_scoped_true_lang_css___WEBPACK_IMPORTED_MODULE_0__[key]; }) }(__WEBPACK_IMPORT_KEY__));
+ /* harmony default export */ __webpack_exports__["default"] = (_node_modules_style_loader_index_js_node_modules_css_loader_dist_cjs_js_ref_6_1_node_modules_vue_loader_lib_loaders_stylePostLoader_js_node_modules_postcss_loader_src_index_js_ref_6_2_node_modules_vue_loader_lib_index_js_vue_loader_options_match_vue_vue_type_style_index_0_id_7f7dc80a_scoped_true_lang_css___WEBPACK_IMPORTED_MODULE_0___default.a); 
+
+/***/ }),
+
+/***/ "./resources/js/components/match.vue?vue&type=template&id=7f7dc80a&scoped=true&":
+/*!**************************************************************************************!*\
+  !*** ./resources/js/components/match.vue?vue&type=template&id=7f7dc80a&scoped=true& ***!
+  \**************************************************************************************/
+/*! exports provided: render, staticRenderFns */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony import */ var _node_modules_vue_loader_lib_loaders_templateLoader_js_vue_loader_options_node_modules_vue_loader_lib_index_js_vue_loader_options_match_vue_vue_type_template_id_7f7dc80a_scoped_true___WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! -!../../../node_modules/vue-loader/lib/loaders/templateLoader.js??vue-loader-options!../../../node_modules/vue-loader/lib??vue-loader-options!./match.vue?vue&type=template&id=7f7dc80a&scoped=true& */ "./node_modules/vue-loader/lib/loaders/templateLoader.js?!./node_modules/vue-loader/lib/index.js?!./resources/js/components/match.vue?vue&type=template&id=7f7dc80a&scoped=true&");
+/* harmony reexport (safe) */ __webpack_require__.d(__webpack_exports__, "render", function() { return _node_modules_vue_loader_lib_loaders_templateLoader_js_vue_loader_options_node_modules_vue_loader_lib_index_js_vue_loader_options_match_vue_vue_type_template_id_7f7dc80a_scoped_true___WEBPACK_IMPORTED_MODULE_0__["render"]; });
+
+/* harmony reexport (safe) */ __webpack_require__.d(__webpack_exports__, "staticRenderFns", function() { return _node_modules_vue_loader_lib_loaders_templateLoader_js_vue_loader_options_node_modules_vue_loader_lib_index_js_vue_loader_options_match_vue_vue_type_template_id_7f7dc80a_scoped_true___WEBPACK_IMPORTED_MODULE_0__["staticRenderFns"]; });
+
+
+
+/***/ }),
+
 /***/ "./resources/js/components/transactions.vue":
 /*!**************************************************!*\
   !*** ./resources/js/components/transactions.vue ***!
@@ -55690,9 +58103,11 @@ __webpack_require__(/*! ./bootstrap */ "./resources/js/bootstrap.js");
 // Vue.use(Datetime);
 // Vue.component('example-component', require('./components/ExampleComponent.vue').default);
 
-vue__WEBPACK_IMPORTED_MODULE_0___default.a.component('make-donation', __webpack_require__(/*! ./components/make-donation.vue */ "./resources/js/components/make-donation.vue")["default"]);
+vue__WEBPACK_IMPORTED_MODULE_0___default.a.component('make', __webpack_require__(/*! ./components/make.vue */ "./resources/js/components/make.vue")["default"]);
 vue__WEBPACK_IMPORTED_MODULE_0___default.a.component('dashboard', __webpack_require__(/*! ./components/dashboard.vue */ "./resources/js/components/dashboard.vue")["default"]);
 vue__WEBPACK_IMPORTED_MODULE_0___default.a.component('transactions', __webpack_require__(/*! ./components/transactions.vue */ "./resources/js/components/transactions.vue")["default"]);
+vue__WEBPACK_IMPORTED_MODULE_0___default.a.component('make-donation', __webpack_require__(/*! ./components/make-donation.vue */ "./resources/js/components/make-donation.vue")["default"]);
+vue__WEBPACK_IMPORTED_MODULE_0___default.a.component('match', __webpack_require__(/*! ./components/match.vue */ "./resources/js/components/match.vue")["default"]);
 var app = new vue__WEBPACK_IMPORTED_MODULE_0___default.a({
   el: '#app'
 });

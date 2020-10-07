@@ -110,7 +110,7 @@
                                             </li> -->
                                             {%else%}
                                             <li><a href="{% url 'authentication:registration' %}">Register</a></li>
-                                            <li><a href="{% url 'authentication:login-page' %}">Login </a></li>
+                                            <li><a href="{% url 'login-page' %}">Login </a></li>
                                             
                                             {%endif%}
                                             
@@ -120,9 +120,16 @@
                                             {% if request.user.is_authenticated%}
                                             
                                             <li><a href="{% url 'authentication:logout-user' %}">Logout</a></li>
+                                            
                                             {%endif%}
                                             {% if request.user.is_staff %}
-                                            <li><a href="{% url 'dashboard:admin-confirm' %}">admin</a></li>
+                                            <li><a href="#">Admin <i class="ti-angle-down"></i></a>
+                                            <ul class="submenu">
+                                                <li><a href="{% url 'account:match' %}">Match Users</a></li>
+                                                <li><a href="{% url 'dashboard:admin-confirm' %}">Confirm User</a></li>
+                                            </ul>
+                                            </li>
+                                            
                                             {%endif%}
                                         </ul>
                                     </nav>

@@ -19,7 +19,7 @@ class AuthCheckLoginMiddleware(object):
                 return None
             return HttpResponseRedirect('/admin')
         else:
-            return HttpResponseRedirect(reverse('authentication:login-page'))
+            return HttpResponseRedirect(reverse('login-page'))
 
 class AdminCheckMiddleware(object):
     def process_request(self, request):

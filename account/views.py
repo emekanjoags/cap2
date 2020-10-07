@@ -6,6 +6,8 @@ from django.views.generic.base import View
 from django.contrib.auth.models import User
 from authentication.models import Profile
 from django.core import mail
+from django.utils.decorators import decorator_from_middleware
+from utilities.general_middleware import AdminCheckMiddleware
 # Create your views here.
 
 class ProfileDisplay(View):
@@ -70,4 +72,6 @@ class ProfileDisplay(View):
         messages.success(request, 'Profile updated successfully')
         return HttpResponseRedirect(reverse('account:profile'))
 
-
+@decorator_from_middleware(AdminCheckMiddleware)
+def match(request):
+    return render(request, 'account/admin-match.html')

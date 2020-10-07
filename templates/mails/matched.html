@@ -1,0 +1,40 @@
+{% load static%}
+{% autoescape off %}
+<div style="font-family: roboto, -apple-system, BlinkMacSystemFont, segoe ui, Roboto, helvetica neue, Arial, sans-serif;">
+    <div>
+        <img src="{% static 'img/logofooter.png' %}" alt="logo" width="200px" height="50px">
+    </div>
+    <div style="text-align:center;width:100%" >
+        <img src="{% static 'img/congratulation.png' %}" alt="welcome" width="500px" height="300px">
+    </div>
+    <div style="margin:10px 50px">
+        <div style="margin-left:auto;margin-right:auto;padding:5px 20px;font-family: roboto, -apple-system, BlinkMacSystemFont, segoe ui, Roboto, helvetica neue, Arial, sans-serif;">
+            <h4 style="text-align:center">You have been matched</h4>
+            <div style="color:grey">
+                <p>Hello{{ payer}},</p>
+                <p>You have been matched to pay {{receiver}}, please check your dashboard to get more information.</p>
+
+            </div>       
+        </div>
+    </div>
+    <div style="text-align:center;width:70%;margin:20px auto;">
+        <hr>
+    </div>
+    <!-- <div style="text-align:center;width:100%" >
+        <img src="{% static 'images/logos/5slips.png' %}" alt="welcome" width="900px" height="500px">
+    </div> -->
+    <!-- <div style="text-align:center;width:70%;margin:20px auto;">
+        <hr>
+    </div> -->
+    <div style="text-align:center;margin:10px 70px;">
+        <a href="http://leveragecapital.com.ng" style="color:#ffffff;font-size:20px;border-radius:40px;text-decoration:none;padding:10px;width:100%;background:#0a8cff">
+            Visit our Website</a>
+ </div>
+    <div style="text-align:center;margin:70px 40px 10px 40px;color:grey">
+        <p style="background:rgb(248, 245, 245);text-align:center;">Contact Us</p>
+        <div style="font-size:9px;text-align:center;margin:10px 10px;">
+            <p><span style='color:#0a8cff'>Email:</span>support@leveragecapital.com.ng</p>
+        </div>
+    </div>
+</div>
+{% endautoescape %}

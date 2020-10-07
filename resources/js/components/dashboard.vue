@@ -4,21 +4,22 @@
         <div v-else>
             <div class='col-12' v-if="receiver_msg" v-for="(msg, index) in receiver_msg">
             <div style="background:green;color:#ffffff;padding:10px 14px;margin-bottom:20px;box-shadow: 5px 5px 5px gray;">
-                <p style="color:white">You have completed your payment and your Return on Investment is <span v-if="msg_type[index] == 1">&#8358;</span><span v-else>BTC </span>{{msg.r_amount}}. Your name will enter the receiver's list between {{msg.start}} and {{msg.end}}</p>
+                <p style="color:white" v-if='is_priority[index] == "true"'> You will be matched with another member on {{msg.end}} so that you can be paid your remaining ROI which is <span v-if="msg_type[index] == 1">&#8358;</span><span v-else>BTC </span>{{msg.r_amount}}.</p>
+                <p style="color:white" v-else>You have completed your payment and your Return on Investment is <span v-if="msg_type[index] == 1">&#8358;</span><span v-else>BTC </span>{{msg.r_amount}}. You will be matched on {{msg.end}}</p>
             </div>
            </div>
-           <div class="col-12">
+           <!-- <div class="col-12">
                 <div class="alert alert-success" v-show='on_list_msg'>
                     <p>{{on_list_msg}}</p>
                  </div>
-            </div>
+            </div> -->
          <div class="col-12">
             <div v-show="success_msg" class="alert alert-success">
                 <button type="button" class="close" data-dismiss="alert" aria-label="Close">
                     &times;
                 </button>
                 <span>
-                    <p>{{success_msg}}</p>
+                    <p><span style="color:green;">Success <i class="fa fa-check"></i></span>&nbsp;{{success_msg}}</p>
                 </span>
             </div>
             <div v-show="error_msg" class="alert alert-warning">
@@ -26,7 +27,7 @@
                     &times;
                 </button>
                 <span>
-                    <p>{{error_msg}}</p>
+                    <p><b>Failed!</b>&nbsp; {{error_msg}}</p>
                 </span>
             </div>
             
@@ -39,7 +40,7 @@
            <!-- CASH DONATIONS -->
         <div v-if="donation_view">
            <div class="col-lg-12">
-               <p v-if="pending_payment || pending_payment_b" class="info-area">Please make payment before the countdown runs out to avoid getting blocked, as soon as you pay and get confirmed you will be in line to enter the receiver's list. </p>
+               <p v-if="pending_payment || pending_payment_b" class="info-area">Please make payment before the countdown runs out to avoid getting blocked. As soon as you make payment and get confirmed you will receive your Return On Investment in 7 days</p>
                <p v-else class="info-area">You have no pending payments, to see your completed transactions go to  <a style="color:#ff4f2e;" href="/dashboard/transactions">Completed Transactions</a> section</p>
                <div class="col-md-4 list" v-if="money_pending_payments" v-for="(pending, index) in money_pending_payments">
                     <ul><span v-show="!pending.pop"><li v-if='expired' style="color:#000000;">{{expired}}</li><li v-else style="width:5px:height:5px;"><flip-countdown v-bind:deadline="timer_list[index].converted_time"></flip-countdown></li></span>
@@ -79,11 +80,11 @@
         <div v-else>
            <!-- WITHDRAWALS -->
            <div class="col-lg-12">
-                <p v-if="pending_withdrawal || pending_withdrawal_b" class="info-area">This member has reserved you and will make payment to you shortly</p>
+                <p v-if="pending_withdrawal || pending_withdrawal_b" class="info-area">You have been matched with this member, payment will be made to you shortly</p>
                 <p v-else class="info-area">You have no pending withdrawal, to see your completed transactions go to  <a style="color:#ff4f2e;" href="/dashboard/transactions"> Completed Transactions</a> section</p>
                 <div class="col-md-4 list" v-if="money_pending_receiving" v-for="(pending, index) in money_pending_receiving">
                      <ul><span v-if="pending.pop" style="text-align:center;color:#000000;">Member has made payment</span>
-                     <span v-else><li v-if='block[index].block_btn' style="color:#000000;">This member's time has expired, please block this member so that you can go back into the receiving list</li><li v-else style="width:5px:height:5px;"><flip-countdown v-bind:deadline="r_timer_list[index].converted_time"></flip-countdown></li></span>
+                     <span v-else><li v-if='block[index].block_btn' style="color:#000000;">This member's time has expired, please block this member so that you can be matched with another member</li><li v-else style="width:5px:height:5px;"><flip-countdown v-bind:deadline="r_timer_list[index].converted_time"></flip-countdown></li></span>
                          <li>Username: {{pending.givers_name}}</li>
                          <li>Amount: &#8358;{{pending.receiving_amount}}</li>
                          <li>Phone: {{pending.givers_phone}}</li>
@@ -106,7 +107,7 @@
             <!-- BITCOIN WITHDRAWAL -->
                 <div class="col-md-4 list" v-if="bitcoin_pending_receiving" v-for="(pending, index) in bitcoin_pending_receiving">
                     <ul><span v-if="pending.pop" style="text-align:center;color:#000000;">Member has made payment</span>
-                        <span v-else><li v-if='blockb[index].block_btn' style="color:#000000;">This member's time has expired, please block this member so that you can go back into the receiving list</li><li v-else style="width:5px:height:5px;"><flip-countdown v-bind:deadline="r_timer_listb[index].converted_time"></flip-countdown></li></span>
+                        <span v-else><li v-if='blockb[index].block_btn' style="color:#000000;">This member's time has expired, please block this member so that you can be matched with another member</li><li v-else style="width:5px:height:5px;"><flip-countdown v-bind:deadline="r_timer_listb[index].converted_time"></flip-countdown></li></span>
                         <li>Username: {{pending.givers_name}}</li>
                         <li>Amount: {{pending.receiving_amount}}BTC</li>
                         <li>Phone: {{pending.givers_phone}}</li>
@@ -168,6 +169,7 @@ export default {
             selected_filesb:[],
             close:false,
             msg_type:[],
+            is_priority:[],
             closem:false
             
         }
@@ -182,6 +184,7 @@ export default {
         .then(response=>{
             if(response.data.stat == 'no_pay_money'){
                 this.pending_payment = false
+                
             }
             else if(response.data.stat == 'good'){
                 this.money_pending_payments = response.data.content
@@ -220,6 +223,7 @@ export default {
         .then(response=>{
             if(response.data.stat == 'no_pay_money'){
                 this.pending_payment_b = false
+                
             }
             else if(response.data.stat == 'good'){
                 this.bitcoin_pending_payments = response.data.content
@@ -261,6 +265,7 @@ export default {
         .then(response=>{
             if(response.data.stat == 'no_receive_money'){
                 this.pending_withdrawal = false
+                
             }
             else if(response.data.stat == 'good'){
                 
@@ -284,6 +289,7 @@ export default {
                         
                     }
                 }
+            this.check_stat()
             this.is_loading = false
         })
         .catch(err=>{
@@ -297,6 +303,7 @@ export default {
         .then(response=>{
             if(response.data.stat == 'no_receive_money'){
                 this.pending_withdrawal_b = false
+                
                 
             }
             else if(response.data.stat == 'good'){
@@ -333,30 +340,25 @@ export default {
             console.log('error:')
         })
     },
+    check_stat(){
+        if(!this.pending_payment && !this.pending_payment_b){
+            if(this.pending_withdrawal || this.pending_withdrawal_b){
+                this.donation_view = false
+            }
+            
+        }
+    },
     viewPop(index){
         this.closem = !this.closem
-        
         var el = document.getElementsByClassName('proofm')[index]
-        if(this.closem == true){
-            el.style.display = 'block'
-        }
-        else if (this.closem == false){
-            el.style.display = 'none'
-        }
-        
+        el.style.display = this.closem ? 'block': 'none';
         
     
     },
     viewPopb(index){
         this.close = !this.close
-        
         var el = document.getElementsByClassName('proof')[index]
-        if(this.close == true){
-            el.style.display = 'block'
-        }
-        else if (this.close == false){
-            el.style.display = 'none'
-        }
+        el.style.display = this.close ? 'block': 'none';
         
         
     
@@ -368,9 +370,9 @@ export default {
             if(response.data.stat == 'not_receiver'){
                 this.receiver_msg = []
             }
-            else if(response.data.stat == 'on_list'){
-                this.on_list_msg = 'Your name is currently on the receivers list'
-            }
+            // else if(response.data.stat == 'on_list'){
+            //     this.on_list_msg = 'Your name is currently on the receivers list'
+            // }
             else if(response.data.stat == 'receiver'){
                 var content;
                 content = response.data.content
@@ -379,20 +381,20 @@ export default {
                 for(var obj = 0; obj < content.length;obj++){
                 
                     var r_amount = content[obj].amount
-                    var ld_amount = content[obj].amount / 1.5
-                    var d_amount = String(ld_amount).slice(0, 8)
+                    // var ld_amount = content[obj].amount / 1.5
+                    // var d_amount = String(ld_amount).slice(0, 8)
                     
                     
                     this.msg_type.push(content[obj].receiving_type)
+                    if(content[obj].is_priority){
+                        this.is_priority.push('true')
+                    }
                     var py_time = content[obj].date_start
                     var py_time2 = content[obj].date_end
                     var sd = py_time.slice(0,10)
                     var ed = py_time2.slice(0, 10)
-                    this.receiver_msg.push({d_amount:d_amount,
+                    this.receiver_msg.push({
                     r_amount:r_amount, start:sd, end:ed})
-
-
-
                 }
 
 
@@ -431,7 +433,7 @@ export default {
         .then(response=>{
             this.is_loading = false
             if(response.data.status = 'alright'){
-                this.success_msg = "Thank you for making this donation, your name will be in line to enter the receiver's list as soon as all your payments are confirmed"
+                this.success_msg = "Your investment process will be complete as soon as your are confirmed"
                 setTimeout(() => {
                             window.location.reload()
                         }, 2000)
@@ -457,7 +459,7 @@ export default {
         .then(response=>{
             this.is_loading = false
             if(response.data.status = 'alright'){
-                this.success_msg = "Thank you for making this donation, your name will be in line to enter the receiver's list as soon as all your payments are confirmed"
+                this.success_msg = "Your investment process will be complete as soon as your are confirmed"
                 setTimeout(() => {
                             window.location.reload()
                         }, 2000)
@@ -479,7 +481,7 @@ export default {
         .then(response=>{
             this.is_loading = false
             if(response.data.stat == 'user_blocked'){
-                this.success_msg = 'Operation successful, your name is in line to enter the next receivers list'
+                this.success_msg = 'you will be matched to another member shortly'
                 setTimeout(() => {
                             window.location.reload()
                         }, 2000)
@@ -510,7 +512,7 @@ export default {
         .then(response=>{
             this.is_loading = false
             if(response.data.stat == 'user_blocked'){
-                this.success_msg = 'Operation successful, your name is in line to enter the next receivers list'
+                this.success_msg = 'you will be matched to another member shortly'
                 setTimeout(() => {
                             window.location.reload()
                         }, 2000)
@@ -586,8 +588,8 @@ export default {
         this.BuildTransact()
         this.BuildTransactB()
         this.BuildReceiversB()
-        this.BuildReceivers()
         this.displayMsg()
+        this.BuildReceivers()
         
     },
     

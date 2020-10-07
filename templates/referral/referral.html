@@ -44,7 +44,7 @@
                           <tr>
                             <th scope="row">{{forloop.counter}}</th>
                             <td>{{ref.user.username}}</td>
-                            <td>&#8358;2000</td>
+                            <td>&#8358;{% if ref.amount %}{{ref.amount}}{%else %}0{%endif%}</td>
                             {% if ref.is_settled%}<td style='color:green'>active</td>{%else%}<td style='color:red'> not active</td>{%endif%}
                             <td>{{ref.created_at}}</td>
                             {% empty %}

@@ -8,6 +8,7 @@ from django.urls import reverse
 from account.models import Referral
 from .models import Profile
 from django.contrib.auth.models import User
+from dashboard.models import ReservedReceivers
 
 
 # Create your views here.
@@ -37,46 +38,42 @@ def registration(request):
             user = form.cleaned_data.get('username')
             form.save()
             messages.success(request, 'account successfully created for ' + user)
-            return HttpResponseRedirect(reverse('authentication:login-page'))
+            return HttpResponseRedirect(reverse('login-page'))
         # else:
         #     messages.warning(request, 'form not valid')
         #     return HttpResponseRedirect(reverse('authentication:registration'))
     context = {
         'form':form
     }
-    return render(request, 'auth/register.html', context)
+    return render(request, 'register.html', context)
 
 def loginPage(request):
-    num = 0
     if request.user.is_authenticated:
         return redirect('/')
     if request.method=='POST':
         username = request.POST['username']
         password = request.POST['password']
         user = authenticate(request, username=username, password=password)
-        msg = 'Welcome {}, please complete your registration process by adding your phone number to your profile page'.format(username)
         
-        if num:
-            msg = 'Welcome {}'.format(username)
         if user is not None:
             login(request, user)
             if request.user.is_staff:
                 return redirect ('/admin')
             else:
-                profile = Profile.objects.get(user=request.user)
-                num = profile.phone
-                if num:
-                    msg = 'Welcome {}'.format(username)
-                messages.success(request, msg)
+                is_giving = ReservedReceivers.objects.filter(user=request.user, have_paid=False, blocked=False)
+                is_receiving = ReservedReceivers.objects.filter(receiving_user=request.user, have_received=False, blocked=False)
+                if is_receiving or is_giving:
+                    return HttpResponseRedirect(reverse('dashboard:dashboard'))
+                messages.success(request, 'Welcome ' + username)
                 return redirect('/')
         else:
             messages.warning(request, 'username or password incorrect, username and password are case sensitive')
-            return HttpResponseRedirect(reverse('authentication:login-page'))
-    return render(request, 'auth/login.html')
+            return HttpResponseRedirect(reverse('login-page'))
+    return render(request, 'login.html')
 
 def logoutUser(request):
     logout(request)
-    return HttpResponseRedirect(reverse('authentication:login-page'))
+    return HttpResponseRedirect(reverse('login-page'))
 
 class PasswordLost(View):
     form = LostPasswordForm

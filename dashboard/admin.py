@@ -24,7 +24,12 @@ class AmountDonatedAdmin(admin.ModelAdmin):
     list_filter = ('completed', 'receiver_created',)
     filter_horizontal = ()
     ordering = ('amount',)
+
+class InvestorAdmin(admin.ModelAdmin):
+    list_display = ('user', 'transaction_type', 'package', 'amount', 'matched', 'invested_amt')
+    
 admin.site.register(Receivers, ReceiversAdmin)
+admin.site.register(Investor, InvestorAdmin)
 admin.site.register(ReceiversList)
 admin.site.register(ReservedReceivers, ReservedReceiversAdmin)
 admin.site.register(PayerRemnant)

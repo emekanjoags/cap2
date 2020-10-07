@@ -44,6 +44,7 @@ class Receivers(models.Model):
     blocked = models.BooleanField(default=False)
     display_msg = models.BooleanField(default=True)
     has_testified = models.BooleanField(default=False)
+    is_priority = models.BooleanField(default=False)# will be true for receivers that blocked their payers so that they can be matched quickly
 
 
     def __str__(self):
@@ -85,3 +86,19 @@ class Timer(models.Model):
         return 'last _disappear time  is {}'.format(self.list_disappear)
     class Meta:
         verbose_name_plural = 'Timer'
+
+class Investor(models.Model):
+    user = models.ForeignKey(User, on_delete=models.CASCADE, null=True, blank=True)
+    amount = models.FloatField(default=0)
+    invested_amt = models.FloatField(default=0)# amount that has been matched to a receiver
+    name = models.CharField(max_length=200, null=True, blank=True)
+    transaction_type = models.IntegerField(default=0) # 1 for naira and 2 for bitcoin
+    package = models.IntegerField(default=0)# 1 for standard and 2 for premium
+    date_created = models.DateTimeField(auto_now_add=True)
+    matched = models.BooleanField(default=False)
+    enter_list = models.BooleanField(default=True)
+    completed = models.BooleanField(default=False)# becomes true when the user has made all payments
+    received_roi = models.BooleanField(default=False)#becomes true when the investor has received his roi
+
+    def __str__(self):
+        return self.user.username
